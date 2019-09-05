@@ -1,4 +1,5 @@
-# RicketyRobots
+# :robot: Rickety Robots :robot:
+A browser-based client written in Elm.
 
 ## Frontend Model (not finalized, documentation WIP)
   * **keys** : `Keys`. List of active keyboard input
@@ -58,28 +59,24 @@
 
 
 ## Keyboard Shortcuts
-<kbd>1</kbd> or <kbd>R</kbd>: Select red robot
+<kbd>1</kbd> or <kbd>R</kbd> : Select red robot
 
-<kbd>2</kbd> or <kbd>G</kbd>: Select green robot
+<kbd>2</kbd> or <kbd>G</kbd> : Select green robot
 
-<kbd>3</kbd> or <kbd>B</kbd>: Select blue robot
+<kbd>3</kbd> or <kbd>B</kbd> : Select blue robot
 
-<kbd>4</kbd> or <kbd>Y</kbd>: Select yellow robot
+<kbd>4</kbd> or <kbd>Y</kbd> : Select yellow robot
 
-<kbd>5</kbd> or <kbd>S</kbd>: Select silver robot
+<kbd>5</kbd> or <kbd>S</kbd> : Select silver robot
 
-<kbd>←</kbd>, <kbd>↑</kbd>, <kbd>→</kbd>, or <kbd>↓</kbd>: Attempt to queue a move for the selected robot in the corresponding direction.
+<kbd>←</kbd>, <kbd>↑</kbd>, <kbd>→</kbd>, or <kbd>↓</kbd> : Attempt to queue a move for the selected robot in the corresponding direction.
 
-<kbd>Esc</kbd>: Clear queue of moves
+<kbd>Esc</kbd> : Clear queue of moves
 
-<kbd>Backspace</kbd>: Remove (undo) last move from queue
+<kbd>Backspace</kbd> : Remove (undo) last move from queue
 
 
 ## Build
-Compile javascript from root directory:
+Compile javascript from root directory: ```elm make ./src/Robots.elm --output=./assets/js/main.js```
 
-```elm make ./src/Robots.elm --output=./assets/js/main.js```
-
-Start project server at `[http://localhost:8000]`, then navigate to `[http://localhost:8000/Robots.html]`.
-
-```elm reactor```
+Start project server at `http://localhost:8000` with ```elm reactor```. Navigate to `http://localhost:8000/Robots.html` to see the project.
