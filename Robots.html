@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Ricochet Robots</title>
+  <link rel="stylesheet" href="./assets/css/style.css">
+  <script src="./assets/js/main.js"></script>
+</head>
+<body>
+	<main></main>
+  <script>
+  
+    function randInt() {
+      return Math.floor(Math.random() * Math.floor(16));
+    }
+
+    function randName() {
+      arr1 = ["Robot", "Doctor", "Puzzle", "Automaton", "Data", "Buzz", "Infinity", "Cyborg", "Android", "Electro", "Robo", "Battery", "Beep" ];
+      arr2 = ["Lover", "Love", "Power", "Clicker", "Friend", "Genius", "Beep", "Boop", "Sim", "Asimov", "Talos" ];
+      arr3 = ["69", "420", "XxX", "2001", ""];
+      return arr1[Math.floor(Math.random()*arr1.length)] + arr2[Math.floor(Math.random()*arr2.length)]+ arr3[Math.floor(Math.random()*arr3.length)];
+    }
+
+    var app = Elm.Main.init({node:document.querySelector('main')});
+
+    var user = {
+        "code": 201,
+        "content": []
+      };
+
+    var users = {
+      "code": 200,
+      "content": [
+        { "username": "art", color:"#e0a85e", score:16 }
+      , { "username": "simon", color:"#95e05e", score:25 }
+      , { "username": "pete", color:"#5eb7e0", score:50 }
+      , { "username": "arlo", color:"#e05e9b", score:8 }
+      ]};
+    
+    function robots() {
+      return {
+      "code": 101,
+      "content": [
+        { "pos": { x: randInt(), y: randInt() }, color: "red", moves: ["up", "down", "left", "right"] }
+      , { "pos": { x: randInt(), y: randInt() }, color: "green", moves: ["up", "down", "left", "right"] }
+      , { "pos": { x: randInt(), y: randInt() }, color: "blue", moves: ["down", "left", "right"] }
+      , { "pos": { x: randInt(), y: randInt() }, color: "yellow", moves: ["up", "down", "left", "right"] }
+      , { "pos": { x: randInt(), y: randInt() }, color: "silver", moves: ["up", "down", "left", "right"] }
+      ]};
+    }
+    
+    var goals = {
+      "code": 102,
+      "content": [
+        { "pos": { x: 11, y:  1}, symbol: "RedMoon", "active": false }
+      , { "pos": { x:  4, y:  1}, symbol: "GreenMoon", "active": false}
+      , { "pos": { x:  1, y:  10}, symbol: "BlueMoon", "active": false}
+      , { "pos": { x: 12, y: 13}, symbol: "YellowMoon", "active": false}
+      , { "pos": { x: 13, y: 11}, symbol: "RedPlanet", "active": false}
+      , { "pos": { x:  5, y:  9}, symbol: "GreenPlanet", "active": false}
+      , { "pos": { x:  9, y:  4}, symbol: "BluePlanet", "active": false}
+      , { "pos": { x:  5, y:  5}, symbol: "YellowPlanet", "active": false}
+      , { "pos": { x:  4, y: 12}, symbol: "RedCross", "active": false}
+      , { "pos": { x: 11, y: 10}, symbol: "GreenCross", "active": false}
+      , { "pos": { x:  3, y:  6}, symbol: "BlueCross", "active": false}
+      , { "pos": { x: 12, y:  6}, symbol: "YellowCross", "active": false}
+      , { "pos": { x:  1, y:  4}, symbol: "RedGear", "active": false}
+      , { "pos": { x: 14, y:  3}, symbol: "GreenGear", "active": false}
+      , { "pos": { x: 10, y: 12}, symbol: "BlueGear", "active": false}
+      , { "pos": { x:  6, y: 14}, symbol: "YellowGear", "active": false}
+      ]};
+    goals.content[randInt()].active = true
+
+    var chat = {
+      "code": 202,
+      "content": [
+        { "user": users.content[0],
+          "msg": "Howdy",
+          "kind": 0 },
+        { "user": users.content[2],
+          "msg": "get ready to lose, nerd",
+          "kind": 0 },
+          ]
+    };
+
+    app.ports.outputPort.subscribe(function (data) {
+
+      dataobj = JSON.parse(data);
+      switch(dataobj.code) {
+        
+        case 100: // received request for new game
+          chat.content.push(
+            { "user": { "username": "System", color:"#fff", score:0 },
+              "msg": "Beginning a new game.",
+              "kind": 1 }, )
+          app.ports.inputPort.send( robots() );
+          app.ports.inputPort.send( goals );
+          app.ports.inputPort.send( chat );
+          break;
+
+        case 200: // received new user
+          user.content = dataobj.content;
+          user.content.username = randName();
+          users.content.push(user.content);
+          app.ports.inputPort.send( user );
+          app.ports.inputPort.send( users );
+          chat.content.push(
+            { "user": { "username": "System", color:"#fff", score:0 },
+              "msg": user.content.username + " has joined the game!",
+              "kind": 1 }, )
+          app.ports.inputPort.send( chat );
+          break;
+
+        case 202: // received chatline
+          chat.content.push( dataobj.content )
+          app.ports.inputPort.send( chat );
+          break;
+      }
+
+
+
+    });
+
+    
+      app.ports.inputPort.send( goals );
+      app.ports.inputPort.send( chat );
+      app.ports.inputPort.send( robots() );
+
+
+  </script>
+</body>
+</html>

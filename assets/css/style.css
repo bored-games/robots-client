@@ -1,0 +1,538 @@
+body {
+	margin: 0;
+	padding: 0;
+	word-wrap: break-word;
+	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+	font-size: 14px;
+	line-height: 1.5;
+	color: #f5f5f5;
+  background: #222325;
+}
+
+h2 {
+  margin: 0 0 .5rem;
+  padding: 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.7px;
+  color: #555;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .4);
+  text-transform: uppercase;
+  font-weight: normal;
+}
+
+a {
+	color: #4d6670;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #1d4650;
+}
+
+main {
+  display: flex;
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.scorebar {
+  flex: 0 0 200px;
+  background: #141416;
+	display: flex;
+	flex-direction: column;
+	border-right: 1px solid #252626;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.5);
+  z-index: 50;
+}
+
+.sidebar {
+  flex: 0 560px;
+  background: #141416;
+	display: flex;
+	flex-direction: column;
+	border-left: 1px solid #252626;
+  box-shadow: -2px 0px 8px rgba(0, 0, 0, .4);
+}
+
+.chat {
+  flex: 1 1 auto;
+  padding: 0.75rem;
+}
+
+.chat__line {
+  padding: 0.25rem 0.5rem;
+  background: #1a1b1c;
+  color: #b0b0b0;
+}
+
+.chat__line--system {
+  color: #808081;
+  font-size: .8rem;
+}
+
+.chat__line:nth-of-type(odd) {
+  background: #1d1e1f;
+}
+
+.chat__username {
+  display: inline-block;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.message {
+  border-top: 1px solid #2a2a2b;
+  flex: 0 0 12.5%;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
+}
+
+textarea, input[type="text"], select {
+  padding: 0.35rem 0.5rem;
+  background: #020306;
+  border-radius: 2px;
+  resize: none;
+  flex: 1 1 100%;
+  border: none;
+  color: #d0d0d0;
+  font-family: "Segoe UI";
+  font-size: 0.9rem;
+  box-shadow: 0 0 2px 1px inset rgba(0, 0, 0, 1);
+}
+
+.message__actions {
+  flex: 0;
+  padding: 0.5rem 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.submit {
+  background: linear-gradient(to bottom, #1d4150 0, #1d4650 40%, #1d5045 100%);
+  color: #fff;
+  border-radius: 2px;
+  padding: 0.75rem 0.75rem;
+  border: 0;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .6);
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(0, 0, 0, .6), 0 0 8px rgba(0, 0, 0, .4);
+  margin-left: 0.25rem;
+  align-self: center;
+}
+
+
+.message__actions button {
+  height: 2.5rem;
+  width: 2.5rem;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  mask-size: 2.0rem 2.0rem;
+  background: #666;
+  transition: .15s linear background;
+}
+
+.sidebar__polloptions {
+  border-top: 1px solid #2a2a2b;
+  padding: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);
+  background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
+}
+
+.poll__command {
+  color: #999;
+  font-family: Monospace;
+  font-size: 0.8rem;
+  background: rgba(0, 0, 0, .5);
+  padding: 0.25rem;
+  margin: 0 .25rem;
+}
+
+.sidebar__settings {
+  border-top: 1px solid #2a2a2b;
+  padding: 0.75rem 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
+}
+
+.sidebar__settings input, .sidebar__settings select {
+  margin: 0 .25rem;
+  flex: 1 1 auto;
+}
+
+.sidebar__settings h2, .sidebar__polloptions h2 {
+  flex: 1 1 100%;
+}
+
+.message__actions button:hover {
+  background: #bcbca0;
+}
+
+.message__actions .settings {
+  mask: url('../static/images/icons/settings.png') center center/2.0rem 2.0rem no-repeat;
+}
+
+.message__actions .new {
+  mask: url('../static/images/icons/new.png') center center/2.0rem 2.0rem no-repeat;
+}
+
+.message__actions .poll {
+  mask: url('../static/images/icons/poll.png') center center/2.0rem 2.0rem no-repeat;
+}
+
+.message__actions .emoticons {
+  mask: url('../static/images/icons/emoticons.png') center center/2.0rem 2.0rem no-repeat;
+}
+
+.flex-spacer {
+  flex: 1 1 auto;
+}
+
+.main {
+	flex: 1 1 100%;
+	display: flex;
+	flex-direction: column;
+  background: url('../static/images/backgrounds/rock.jpg') no-repeat fixed;
+  background-size: cover;
+}
+
+
+.controls {
+  background: rgba(0, 0, 0, .3);
+  color: #777;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .5);
+  padding: .5rem 1.0rem;
+  font-size: 0.8rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+.controls__robots {
+  display: flex;
+}
+
+.controls__directions {
+  display: flex;
+}
+
+.controls__robot {
+  height: 3.0rem;
+  width: 3.0rem;
+  margin: 0.25rem;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 90%;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.controls__button {
+  height: 3.0rem;
+  width: 3.0rem;
+  margin: 0.25rem;
+  background-color: #656565;
+  mask-repeat: no-repeat;
+  mask-position: center center;
+  mask-size: 90%;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: .1s linear all;
+}
+
+.controls__button:hover, .controls__button.active {
+  background-color: #aaa;
+}
+
+.controls__button.inactive {
+  background-color: #262626;
+  cursor: not-allowed;
+}
+
+.controls__robot.active {
+  background-color: #3b3b34
+}
+
+
+.controls__red { background-image: url('../static/images/game/red-robot.png'); }
+.controls__green { background-image: url('../static/images/game/green-robot.png'); }
+.controls__blue { background-image: url('../static/images/game/blue-robot.png'); }
+.controls__yellow { background-image: url('../static/images/game/yellow-robot.png'); }
+.controls__silver { background-image: url('../static/images/game/silver-robot.png'); }
+
+
+.controls__up { mask-image: url('../static/images/icons/up.png'); }
+.controls__down { mask-image: url('../static/images/icons/down.png'); }
+.controls__left { mask-image: url('../static/images/icons/left.png') }
+.controls__right { mask-image: url('../static/images/icons/right.png'); }
+.controls__undo { mask-image: url('../static/images/icons/undo.png'); }
+.controls__cancel { mask-image: url('../static/images/icons/cancel.png'); }
+
+
+.debug {
+  background: rgba(0, 0, 0, .3);
+  color: #777;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .5);
+  padding: .5rem 1.0rem;
+  font-family: "Consolas";
+  font-size: 0.8rem;
+}
+
+.debug:before {
+  content: '> ';
+}
+
+.game {
+  border: 6px solid #212121;
+  flex: 0 0 auto;
+  border-radius: 3px;
+  box-shadow: 0 0 2px 0 inset rgba(0, 0, 0, .8), 0 0 15px 5px rgba(0, 0, 0, .3), 0 0 5px rgba(0, 0, 0, .7);
+  
+  height: 0;
+  padding-bottom: 62%;
+  width: 62%;
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+}
+
+.square {
+  min-height: 6.25%;
+  max-height: 6.25%;
+  padding-bottom: 6.25%;
+  width: 6.25%;
+  border: 0px solid #1d2323;
+  box-shadow: 0 0 1px 1px inset rgba(0, 0, 0, .15);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  position: relative;
+
+  text-align: center;
+  color: #d4cdc3;
+  font-size: 0.7rem;
+  line-height: 3.0rem;
+}
+
+.square:after {
+  padding-bottom: 100%;
+  display: block;
+  content: '';
+}
+
+.square--1 { background-image: url('../static/images/game/empty.png'); }
+.square--2 { background-image: url('../static/images/game/s-2.png'); }
+.square--3 { background-image: url('../static/images/game/s-3.png'); }
+.square--4 { background-image: url('../static/images/game/s-4.png'); }
+.square--5 { background-image: url('../static/images/game/s-5.png'); }
+.square--6 { background-image: url('../static/images/game/s-6.png'); }
+.square--7 { background-image: url('../static/images/game/s-7.png'); }
+.square--8 { background-image: url('../static/images/game/s-8.png'); }
+.square--9 { background-image: url('../static/images/game/s-9.png'); }
+.square--10 { background-image: url('../static/images/game/s-10.png'); }
+.square--11 { background-image: url('../static/images/game/s-11.png'); }
+.square--12 { background-image: url('../static/images/game/s-12.png'); }
+.square--13 { background-image: url('../static/images/game/s-13.png'); }
+.square--14 { background-image: url('../static/images/game/s-14.png'); }
+.square--15 { background-image: url('../static/images/game/s-15.png'); }
+.square--16 { background-image: url('../static/images/game/s-16.png'); }
+.square--17 { background-image: url('../static/images/game/s-17.png'); }
+.square--18 { background-image: url('../static/images/game/s-18.png'); }
+.square--19 { background-image: url('../static/images/game/s-19.png'); }
+.square--20 { background-image: url('../static/images/game/s-20.png'); }
+.square--21 { background-image: url('../static/images/game/s-21.png'); }
+.square--22 { background-image: url('../static/images/game/s-22.png'); }
+.square--23 { background-image: url('../static/images/game/s-23.png'); }
+.square--24 { background-image: url('../static/images/game/s-24.png'); }
+.square--25 { background-image: url('../static/images/game/s-25.png'); }
+.square--26 { background-image: url('../static/images/game/s-26.png'); }
+.square--27 { background-image: url('../static/images/game/s-27.png'); }
+
+.square--block {
+  background: #7a776d;
+}
+
+.robot {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-size: 90% 90%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.robot--red { background-image: url('../static/images/game/red-robot.png'); }
+.robot--blue { background-image: url('../static/images/game/blue-robot.png');; }
+.robot--green { background-image: url('../static/images/game/green-robot.png');; }
+.robot--yellow { background-image: url('../static/images/game/yellow-robot.png');; }
+.robot--silver { background-image: url('../static/images/game/silver-robot.png');; }
+
+
+/****** Scorebar ******/
+
+.scores {
+  flex: 1 1 auto;
+  padding: 0.75rem;
+}
+
+.score {
+  padding: 0.25rem 0.5rem;
+  color: #b0b0b0;
+  display: flex;
+}
+
+.score__username {
+  flex: 1 1 auto;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.timer {
+  flex: 0 0 auto;
+  margin: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+  font-family: Monospace;
+  font-size: 2.0rem;
+  color: #656565;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, .8);
+  justify-content: center;
+  font-weight: 200;
+}
+
+.timer__countdown {
+  flex: 0 0 100%;
+  border-bottom: 1px solid #333;
+  align-self: flex-end;
+  opacity: .25;
+  display: flex;
+  align-items: center;
+}
+
+.timer__current-timer {
+  flex: 0 0 100%;
+  border-top: 1px solid #060606;
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+}
+
+.timer__current-timer span, .timer__countdown span {
+  flex: 1 1 auto;
+}
+
+.icon {
+  flex: 0 0 auto;
+  height: 1.5rem;
+  width: 1.5rem;
+  background: currentColor;
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  mask-position: center center;
+}
+
+.icon--timer {
+  mask-image: url('../static/images/icons/timer.png');
+}
+
+.icon--clock {
+  mask-image: url('../static/images/icons/clock.png');
+}
+
+.goal {
+  height: 5.0rem;
+  width: 5.0rem;
+  margin-bottom: 1.0rem;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.square .goal {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  opacity: 0.5;
+}
+
+
+
+.red-moon { background-image: url('../static/images/game/red-moon.png'); }
+.green-moon { background-image: url('../static/images/game/green-moon.png'); }
+.yellow-moon { background-image: url('../static/images/game/yellow-moon.png'); }
+.blue-moon { background-image: url('../static/images/game/blue-moon.png'); }
+.red-gear { background-image: url('../static/images/game/red-gear.png'); }
+.green-gear { background-image: url('../static/images/game/green-gear.png'); }
+.yellow-gear { background-image: url('../static/images/game/yellow-gear.png'); }
+.blue-gear { background-image: url('../static/images/game/blue-gear.png'); }
+.red-planet { background-image: url('../static/images/game/red-planet.png'); }
+.green-planet { background-image: url('../static/images/game/green-planet.png'); }
+.yellow-planet { background-image: url('../static/images/game/yellow-planet.png'); }
+.blue-planet { background-image: url('../static/images/game/blue-planet.png'); }
+.red-cross { background-image: url('../static/images/game/red-cross.png'); }
+.green-cross { background-image: url('../static/images/game/green-cross.png'); }
+.yellow-cross { background-image: url('../static/images/game/yellow-cross.png'); }
+.blue-cross { background-image: url('../static/images/game/blue-cross.png'); }
+
+/****** Emoticons ******/
+.sidebar__emoticons {
+  display: flex;
+  flex-wrap: wrap;
+  width: auto;
+  padding: 0.25rem;
+}
+
+.emoticon {
+  height: 32px;
+  width: 32px;
+  background: transparent;
+  background-size: 100% 100%;
+  background-repeat: none;
+  background-position: center center;
+  flex: 0 0 auto;
+  margin: 3px;
+  cursor: pointer;
+}
+
+span.emoticon {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+}
+
+.emoticon--cool { background-image: url('../static/images/emoticons/cool.png'); }
+.emoticon--crazy { background-image: url('../static/images/emoticons/crazy.png'); }
+.emoticon--damn { background-image: url('../static/images/emoticons/damn.png'); }
+.emoticon--geek { background-image: url('../static/images/emoticons/geek.png'); }
+.emoticon--grin { background-image: url('../static/images/emoticons/grin.png'); }
+.emoticon--huh { background-image: url('../static/images/emoticons/huh.png'); }
+.emoticon--lol { background-image: url('../static/images/emoticons/lol.png'); }
+.emoticon--love { background-image: url('../static/images/emoticons/love.png'); }
+.emoticon--omg { background-image: url('../static/images/emoticons/omg.png'); }
+.emoticon--pout { background-image: url('../static/images/emoticons/pout.png'); }
+.emoticon--sad { background-image: url('../static/images/emoticons/sad.png'); }
+.emoticon--smile { background-image: url('../static/images/emoticons/smile.png'); }
+.emoticon--stars { background-image: url('../static/images/emoticons/stars.png'); }
+.emoticon--ugh { background-image: url('../static/images/emoticons/ugh.png'); }
+.emoticon--waiting { background-image: url('../static/images/emoticons/waiting.png'); }
+.emoticon--whoopsy { background-image: url('../static/images/emoticons/whoopsy.png'); }
+.emoticon--wink { background-image: url('../static/images/emoticons/wink.png'); }
+.emoticon--wtf { background-image: url('../static/images/emoticons/wtf.png'); }
