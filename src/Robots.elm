@@ -6,10 +6,8 @@ import Html exposing (..)
 import Html.Attributes exposing (style, type_, placeholder, value, class)
 import Html.Events exposing (onInput, onSubmit, onClick)
 import Time
-import Random exposing (Seed)
 import Tuple
 import Set
-import Random.Set
 import Json.Encode
 import Json.Decode
 import Grid
@@ -88,7 +86,6 @@ type alias Model =
   , activeRobot : Maybe Robot
  -- , legalMoves : List ( Move )
   , movesQueue : List ( Move )
-  , seed : Seed
   }
 
 type alias Keys =
@@ -152,7 +149,6 @@ init _ =
     Nothing                                                                  -- activeRobot
   --  [ (Move Red Up), (Move Yellow Right)]                                    -- legalMoves
     []                                                                       -- movesQueue
-    (Random.initialSeed 0)
   ,  outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", encodeUser { username = "patty", color = "#6c6adc", score = 0 }) ] ) ) -- initialize user?
   )
 
