@@ -1,5 +1,13 @@
 port module Main exposing (Model, Msg(..), init, inputPort, main, outputPort, subscriptions, update, view)
 
+import Coordinate exposing (..)
+import Direction exposing (Direction(..))
+import Board
+import Color exposing (..)
+import Robot
+import Robot exposing (Robot)
+import Goal exposing (GoalSymbol(..), Goal)
+
 import Browser
 import Browser.Events
 import Html exposing (..)
@@ -10,10 +18,9 @@ import Tuple
 import Set
 import Json.Encode
 import Json.Decode
-import Grid
+
 
 -- MAIN
-
 
 main =
   Browser.element
@@ -32,22 +39,11 @@ type alias JSONMessage =
   , content : Json.Encode.Value
   }
 
-type alias Position = 
+{-- type alias Coordinate = 
   { x : Int 
   , y : Int
-  }
+  }--}
 
-type alias Goal =
-  { pos : Position
-  , symbol : GoalSymbol
-  , active : Bool
-  }
-
-type alias Robot =
-  { pos : Position
-  , color : Color
-  , moves : List Direction
-  }
 
 type alias Move =
   { color : Color
@@ -75,7 +71,7 @@ type alias Model =
   , messageInProgress : String
   , nameInProgress : String
   , colorInProgress : String
-  , boundaryBoard : Grid.Grid Color
+  , boundaryBoard : Board.Grid Color
   , testboard : List ( List Int )
   , goal : GoalSymbol
   , goalList : List Goal
@@ -120,7 +116,7 @@ init _ =
     "" -- `messageInProgress`
     "" -- `nameInProgress`
     "" -- `colorInProgress`
-    (Grid.square 16 (testFill) )                    -- boundaryBoard
+    (Board.square 16 (testFill) )                    -- boundaryBoard
     [ [ 7,  8,  7,  2, 15, 17,  2,  2,  8,  7, 16, 15,  2,  2,  2,  8],
       [ 5,  1,  1,  1,  8,  5,  1,  1,  1,  1,  3,  7,  1,  1,  1,  9],
       [ 5,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  4, 26],
@@ -138,7 +134,7 @@ init _ =
       [ 5,  1,  1,  1,  1,  3,  7,  1,  1,  1,  1,  1,  2, 11,  1,  3],
       [ 6,  4,  4,  9,  6,  4,  4,  4,  4,  9,  6,  4,  4,  4,  4,  9] ]      -- board
     RedMoon                                                                   -- goalSymbol
-    [ { symbol = RedMoon, pos = { x = 1, y = 3 }, active = True }, { symbol = BlueGear, pos = { x = 14, y = 3 }, active = True } ]
+    [ ]
     { settings = "none",
       pollOptions = "none",
       emoticons = "none",
@@ -152,37 +148,7 @@ init _ =
   ,  outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", encodeUser { username = "patty", color = "#6c6adc", score = 0 }) ] ) ) -- initialize user?
   )
 
-type Color
-  = Red
-  | Green
-  | Blue
-  | Yellow
-  | Silver
 
--- TODO: Include Wildcard?
-type GoalSymbol
-  = RedMoon
-  | GreenMoon
-  | BlueMoon
-  | YellowMoon
-  | RedPlanet
-  | GreenPlanet
-  | BluePlanet
-  | YellowPlanet
-  | GreenCross
-  | RedCross
-  | BlueCross
-  | YellowCross
-  | RedGear
-  | GreenGear
-  | BlueGear
-  | YellowGear
-
-type Direction
-  = Left
-  | Up
-  | Down
-  | Right
 
 -- UPDATE
 
@@ -365,20 +331,20 @@ update msg model =
           ( { model | users = []}, Cmd.none )
 
     GetRobotList json ->
-      case (Json.Decode.decodeValue decodeRobotsList json) of
+      case (Json.Decode.decodeValue Robot.decodeRobotsList json) of
         Ok robotList ->
           ( { model | robots = robotList}, Cmd.none )
         Err _ ->
           ( { model | robots = []}, Cmd.none )
           
     GetGoalList json ->
-      case (Json.Decode.decodeValue decodeGoalList json) of
+      case (Json.Decode.decodeValue Goal.decodeGoalList json) of
         Ok goalList ->
           let
             activeGoal =
               case List.head (List.filter .active goalList) of
               Nothing ->
-                RedMoon -- TODO: handle error?
+                RedMoon -- TODO: handle error!
               Just anyGoal ->
                 .symbol anyGoal
           in
@@ -433,16 +399,16 @@ update msg model =
         activeRobot =
           if isDown then
             case key of
-              "1"      -> (getRobotByColor Red model.robots)
-              "r"      -> (getRobotByColor Red model.robots)
-              "2"      -> (getRobotByColor Green model.robots)
-              "g"      -> (getRobotByColor Green model.robots)
-              "3"      -> (getRobotByColor Blue model.robots)
-              "b"      -> (getRobotByColor Blue model.robots)
-              "4"      -> (getRobotByColor Yellow model.robots)
-              "y"      -> (getRobotByColor Yellow model.robots)
-              "5"      -> (getRobotByColor Silver model.robots)
-              "s"      -> (getRobotByColor Silver model.robots)
+              "1"      -> (Robot.getByColor Red model.robots)
+              "r"      -> (Robot.getByColor Red model.robots)
+              "2"      -> (Robot.getByColor Green model.robots)
+              "g"      -> (Robot.getByColor Green model.robots)
+              "3"      -> (Robot.getByColor Blue model.robots)
+              "b"      -> (Robot.getByColor Blue model.robots)
+              "4"      -> (Robot.getByColor Yellow model.robots)
+              "y"      -> (Robot.getByColor Yellow model.robots)
+              "5"      -> (Robot.getByColor Silver model.robots)
+              "s"      -> (Robot.getByColor Silver model.robots)
               "Escape" -> Nothing
               _        -> model.activeRobot
           else
@@ -464,7 +430,7 @@ update msg model =
 
     -- Set active robot color for next move
     SetActiveRobot color ->
-      ( { model | activeRobot = getRobotByColor color model.robots}, Cmd.none )
+      ( { model | activeRobot = Robot.getByColor color model.robots}, Cmd.none )
     
     -- Only push if there is an active robot and move is in set of legal moves.
     AddMove dir ->
@@ -488,27 +454,6 @@ update msg model =
       ( { model | movesQueue = [], activeRobot = Nothing}, Cmd.none )
 
 
--- TODO: Move to elixir
--- Get all legal moves for 1 robot
-getBoardLegalMoves : Robot -> List ( List ( Int ) ) -> List Move
-getBoardLegalMoves robot board =
-  []
-
-getRobotByColor : Color -> List Robot -> Maybe Robot
-getRobotByColor color robots =
-  let
-    matchRobotByColor robot =
-      robot.color == color
-  in  
-    (List.head (List.filter matchRobotByColor robots))
-
-getColorFromRobot : Maybe Robot -> Maybe Color
-getColorFromRobot robot =
-  case robot of
-    Nothing -> Nothing
-    Just r -> Just (.color r)
-
-
 pushMove : Direction -> Maybe Robot -> List Move -> List Move
 pushMove dir activeRobot oldQueue =
   case activeRobot of
@@ -524,7 +469,7 @@ printMoveList : List Move -> String
 printMoveList moveList =
   case moveList of
     a::b ->
-      (getColorString (Just (.color a))) ++ ":" ++ getDirectionString (.direction a) ++ " -> " ++ (printMoveList b)
+      (Color.toString (Just (.color a))) ++ ":" ++ Direction.toString (.direction a) ++ " -> " ++ (printMoveList b)
     _ ->
       ""
 
@@ -563,54 +508,6 @@ encodeChatline user msg kind =
                        ("msg", Json.Encode.string msg),
                        ("kind", Json.Encode.int kind) ]
 
-decodeGoalSymbol : Json.Decode.Decoder GoalSymbol
-decodeGoalSymbol =
-  Json.Decode.string
-    |> Json.Decode.andThen (\str ->
-      case str of
-        "RedMoon"      -> Json.Decode.succeed RedMoon
-        "GreenMoon"    -> Json.Decode.succeed GreenMoon
-        "BlueMoon"     -> Json.Decode.succeed BlueMoon
-        "YellowMoon"   -> Json.Decode.succeed YellowMoon
-        "RedPlanet"    -> Json.Decode.succeed RedPlanet
-        "GreenPlanet"  -> Json.Decode.succeed GreenPlanet
-        "BluePlanet"   -> Json.Decode.succeed BluePlanet
-        "YellowPlanet" -> Json.Decode.succeed YellowPlanet
-        "GreenCross"   -> Json.Decode.succeed GreenCross
-        "RedCross"     -> Json.Decode.succeed RedCross
-        "BlueCross"    -> Json.Decode.succeed BlueCross
-        "YellowCross"  -> Json.Decode.succeed YellowCross
-        "RedGear"      -> Json.Decode.succeed RedGear
-        "GreenGear"    -> Json.Decode.succeed GreenGear
-        "BlueGear"     -> Json.Decode.succeed BlueGear
-        "YellowGear"   -> Json.Decode.succeed YellowGear
-        somethingElse  -> Json.Decode.fail <| "Unknown Goal Symbol: " ++ somethingElse
-    )
-
-decodeColorSymbol : Json.Decode.Decoder Color
-decodeColorSymbol =
-    Json.Decode.string
-        |> Json.Decode.andThen (\str ->
-           case str of
-                "red"         -> Json.Decode.succeed Red
-                "green"       -> Json.Decode.succeed Green
-                "blue"        -> Json.Decode.succeed Blue
-                "yellow"      -> Json.Decode.succeed Yellow
-                "silver"      -> Json.Decode.succeed Silver
-                somethingElse -> Json.Decode.fail <| "Unknown Color: " ++ somethingElse
-        )
-
-decodeDirection : Json.Decode.Decoder Direction
-decodeDirection =
-    Json.Decode.string
-        |> Json.Decode.andThen (\str ->
-           case str of
-                "up"         -> Json.Decode.succeed Up
-                "down"       -> Json.Decode.succeed Down
-                "left"        -> Json.Decode.succeed Left
-                "right"      -> Json.Decode.succeed Right
-                somethingElse -> Json.Decode.fail <| "Unknown Direction: " ++ somethingElse
-        )
 
 decodeJSON : Json.Decode.Decoder JSONMessage
 decodeJSON =
@@ -618,41 +515,6 @@ decodeJSON =
     JSONMessage
     (Json.Decode.field "code" Json.Decode.int)
     (Json.Decode.field "content" Json.Decode.value)
-
-decodeRobot : Json.Decode.Decoder Robot
-decodeRobot =
-  Json.Decode.map3
-    Robot
-    (Json.Decode.field "pos" (Json.Decode.map2 Position
-      (Json.Decode.field "x" Json.Decode.int)
-      (Json.Decode.field "y" Json.Decode.int)
-    ))
-    (Json.Decode.field "color" decodeColorSymbol)
-    (Json.Decode.field "moves" decodeDirectionsList)
-  
-decodeRobotsList : Json.Decode.Decoder (List Robot)
-decodeRobotsList =
-  Json.Decode.list decodeRobot
-
-decodeDirectionsList : Json.Decode.Decoder (List Direction)
-decodeDirectionsList =
-  Json.Decode.list decodeDirection
-
-decodeGoal : Json.Decode.Decoder Goal
-decodeGoal =
-  Json.Decode.map3
-    Goal
-    (Json.Decode.field "pos" (Json.Decode.map2 Position
-      (Json.Decode.field "x" Json.Decode.int)
-      (Json.Decode.field "y" Json.Decode.int)
-    ))
-    (Json.Decode.field "symbol" decodeGoalSymbol)
-    (Json.Decode.field "active" Json.Decode.bool)
-  
-decodeGoalList : Json.Decode.Decoder (List Goal)
-decodeGoalList =
-  Json.Decode.list decodeGoal
-  
 
 decodeUser : Json.Decode.Decoder User
 decodeUser =
@@ -697,27 +559,6 @@ subscriptions model =
 
 
 -- VIEW
-
-goalToString : GoalSymbol -> { plaintext: String, filename: String }
-goalToString goal =
-  case goal of
-    RedMoon -> { plaintext = "Red Moon", filename = "red-moon" }
-    GreenMoon -> { plaintext = "Green Moon", filename = "green-moon" }
-    BlueMoon -> { plaintext = "Blue Moon", filename = "blue-moon" }
-    YellowMoon -> { plaintext = "Yellow Moon", filename = "yellow-moon" }
-    RedPlanet -> { plaintext = "Red Planet", filename = "red-planet" }
-    GreenPlanet -> { plaintext = "Green Planet", filename = "green-planet" }
-    BluePlanet -> { plaintext = "Blue Planet", filename = "blue-planet" }
-    YellowPlanet -> { plaintext = "Yellow Planet", filename = "yellow-planet" }
-    GreenCross -> { plaintext = "Green Cross", filename = "red-cross" }
-    RedCross -> { plaintext = "Red Cross", filename = "green-cross" }
-    BlueCross -> { plaintext = "Blue Cross", filename = "blue-cross" }
-    YellowCross -> { plaintext = "Yellow Cross", filename = "yellow-cross" }
-    RedGear -> { plaintext = "Red Gear", filename = "red-gear" }
-    GreenGear -> { plaintext = "Green Gear", filename = "green-gear" }
-    BlueGear -> { plaintext = "Blue Gear", filename = "blue-gear" }
-    YellowGear -> { plaintext = "Yellow Gear", filename = "yellow-gear" }
-
 
 formatTimer : Int -> String
 formatTimer seconds =
@@ -768,18 +609,18 @@ drawSquare rowi colj val robots goals =
   let
     robotSquares = List.map .pos robots
     matchedRobot = 
-      case (List.head (List.filter (matchRobot rowi colj) robots)) of
+      case (List.head (List.filter (Robot.matchRobot rowi colj) robots)) of
         Nothing ->
           ""
         Just matchedRobotObj ->
-          (getColorString (Just (.color matchedRobotObj)))
+          (Color.toString (Just (.color matchedRobotObj)))
 
     matchedGoal = 
-      case (List.head (List.filter (matchGoal rowi colj) goals)) of
+      case (List.head (List.filter (Goal.matchGoal rowi colj) goals)) of
         Nothing ->
           ""
         Just matchedGoalObj ->
-          (.filename (goalToString matchedGoalObj.symbol))
+          (.filename (Goal.toString matchedGoalObj.symbol))
 
   in
     case val of
@@ -796,41 +637,7 @@ drawSquare rowi colj val robots goals =
          , div [ class ("robot robot--"++matchedRobot) ] []
          ]
 
-getColorSymbol : String -> Maybe Color
-getColorSymbol str =
-  case str of
-    "red" -> Just Red
-    "green" -> Just Green
-    "blue" -> Just Blue
-    "yellow" -> Just Yellow
-    "silver" -> Just Silver
-    _ -> Nothing
 
-getColorString : Maybe Color -> String
-getColorString color =
-  case color of
-    Nothing -> "unknown-color"
-    Just Red -> "red"
-    Just Green -> "green"
-    Just Blue -> "blue"
-    Just Yellow -> "yellow"
-    Just Silver -> "silver"
-
-getDirectionString : Direction -> String
-getDirectionString dir =
-  case dir of
-    Left -> "left"
-    Up -> "up"
-    Down -> "down"
-    Right -> "right"
-
-matchRobot : Int -> Int -> Robot -> Bool
-matchRobot rowi colj robot =
-  robot.pos == { x = colj, y = rowi }
-
-matchGoal : Int -> Int -> Goal -> Bool
-matchGoal rowi colj record =
-  record.pos == { x = colj, y = rowi }
 
 drawEmoticon : String -> Html Msg
 drawEmoticon str =
@@ -927,7 +734,7 @@ view model =
             (h2 [] [ text "Scoreboard" ] :: ((List.reverse (List.sortBy .score model.users)) |> drawScores))
         , div [ class "timer", onClick (IncrementScore model.user) ]
           [
-            div [ class ("goal " ++ .filename (goalToString model.goal)) ] [ ]
+            div [ class ("goal " ++ .filename (Goal.toString model.goal)) ] [ ]
           , div [ class "timer__countdown" ]
             [
               span [] [ text (formatTimer model.countdown) ]
@@ -943,11 +750,11 @@ view model =
       , div [ class "main"] [
           div [ class "controls" ]
           [ div [ class "controls__robots" ]
-            [ div [ class ("controls__robot controls__red" ++ (if (getColorFromRobot model.activeRobot == Just Red) then " active" else "")), onClick (SetActiveRobot Red)] []
-            , div [ class ("controls__robot controls__green" ++ (if (getColorFromRobot model.activeRobot == Just Green) then " active" else "")), onClick (SetActiveRobot Green) ] []
-            , div [ class ("controls__robot controls__blue" ++ (if (getColorFromRobot model.activeRobot == Just Blue) then " active" else "")), onClick (SetActiveRobot Blue) ] []
-            , div [ class ("controls__robot controls__yellow" ++ (if (getColorFromRobot model.activeRobot == Just Yellow) then " active" else "")), onClick (SetActiveRobot Yellow) ] []
-            , div [ class ("controls__robot controls__silver" ++ (if (getColorFromRobot model.activeRobot == Just Silver) then " active" else "")), onClick (SetActiveRobot Silver) ] []
+            [ div [ class ("controls__robot controls__red" ++ (if (Robot.getColor model.activeRobot == Just Red) then " active" else "")), onClick (SetActiveRobot Red)] []
+            , div [ class ("controls__robot controls__green" ++ (if (Robot.getColor model.activeRobot == Just Green) then " active" else "")), onClick (SetActiveRobot Green) ] []
+            , div [ class ("controls__robot controls__blue" ++ (if (Robot.getColor model.activeRobot == Just Blue) then " active" else "")), onClick (SetActiveRobot Blue) ] []
+            , div [ class ("controls__robot controls__yellow" ++ (if (Robot.getColor model.activeRobot == Just Yellow) then " active" else "")), onClick (SetActiveRobot Yellow) ] []
+            , div [ class ("controls__robot controls__silver" ++ (if (Robot.getColor model.activeRobot == Just Silver) then " active" else "")), onClick (SetActiveRobot Silver) ] []
             ]
           , div [ class "controls__directions" ]
             [ div [ class ("controls__button controls__left" ++ (if model.keys.left then " active" else "")), onClick (AddMove Left) ] []
@@ -957,7 +764,7 @@ view model =
             , div [ class ("controls__button controls__undo" ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick PopMove ] []
             , div [ class ("controls__button controls__cancel" ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick ClearMoves ] []
             ]
-          , div [ ] [ text ( getColorString (Grid.get (1, 1) model.boundaryBoard) ++ "   " ++ model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]
+          , div [ ] [ text ( Color.toString (Board.get (1, 1) model.boundaryBoard) ++ "   " ++ model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]
            ]
         , div [ class "game" ] (model.testboard |> drawBoard)
         ]

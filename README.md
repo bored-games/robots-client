@@ -1,11 +1,11 @@
 # :robot: Rickety Robots :robot:
-A browser-based client written in Elm.
+A browser-based Ricochet Robots client written in Elm, to be paired with a backend written in Elixir. Includes chat, scorekeeping, and democratically-driven game management!
 
 ## Frontend Model (not finalized, documentation WIP)
   * **keys** : `Keys`. List of active keyboard input
   * **user** : `User`. Information about the current user.
   * **users** : `List User`. Information about all users, including scores.
-  * **chat** : `List Chatline`. A line of text in chat.
+  * **chat** : `List Chatline`. A list of lines of text/usernames.
   * **messageInProgress** : `String`. Current chat input text.
   * **nameInProgress** : `String`. Current name-change input text.
   * **colorInProgress** : `String`. Current color-change input selection.

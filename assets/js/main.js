@@ -4645,7 +4645,7 @@ var elm$core$Array$initialize = F2(
 			return A5(elm$core$Array$initializeHelp, fn, initialFromIndex, len, _List_Nil, tail);
 		}
 	});
-var author$project$Grid$rectangle = F3(
+var author$project$Board$rectangle = F3(
 	function (width, height, filler) {
 		return A2(
 			elm$core$Array$initialize,
@@ -4659,11 +4659,11 @@ var author$project$Grid$rectangle = F3(
 					});
 			});
 	});
-var author$project$Grid$square = F2(
+var author$project$Board$square = F2(
 	function (size, filler) {
-		return A3(author$project$Grid$rectangle, size, size, filler);
+		return A3(author$project$Board$rectangle, size, size, filler);
 	});
-var author$project$Main$BlueGear = {$: 'BlueGear'};
+var author$project$Goal$RedMoon = {$: 'RedMoon'};
 var author$project$Main$Keys = function (up) {
 	return function (left) {
 		return function (down) {
@@ -4726,7 +4726,6 @@ var author$project$Main$Model = function (debugString) {
 		};
 	};
 };
-var author$project$Main$RedMoon = {$: 'RedMoon'};
 var elm$core$Maybe$Just = function (a) {
 	return {$: 'Just', a: a};
 };
@@ -4981,17 +4980,17 @@ var author$project$Main$encodeUser = function (user) {
 			]));
 };
 var author$project$Main$outputPort = _Platform_outgoingPort('outputPort', elm$json$Json$Encode$string);
-var author$project$Main$Blue = {$: 'Blue'};
+var author$project$Color$Blue = {$: 'Blue'};
 var author$project$Main$testFill = F2(
 	function (x, y) {
-		return author$project$Main$Blue;
+		return author$project$Color$Blue;
 	});
 var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		author$project$Main$Model('Initialized model.')(
 			author$project$Main$Keys(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false))(
 			{color: '#6c6adc', score: 0, username: 'patty'})(_List_Nil)(_List_Nil)('')('')('')(
-			A2(author$project$Grid$square, 16, author$project$Main$testFill))(
+			A2(author$project$Board$square, 16, author$project$Main$testFill))(
 			_List_fromArray(
 				[
 					_List_fromArray(
@@ -5026,20 +5025,7 @@ var author$project$Main$init = function (_n0) {
 					[5, 1, 1, 1, 1, 3, 7, 1, 1, 1, 1, 1, 2, 11, 1, 3]),
 					_List_fromArray(
 					[6, 4, 4, 9, 6, 4, 4, 4, 4, 9, 6, 4, 4, 4, 4, 9])
-				]))(author$project$Main$RedMoon)(
-			_List_fromArray(
-				[
-					{
-					active: true,
-					pos: {x: 1, y: 3},
-					symbol: author$project$Main$RedMoon
-				},
-					{
-					active: true,
-					pos: {x: 14, y: 3},
-					symbol: author$project$Main$BlueGear
-				}
-				]))(
+				]))(author$project$Goal$RedMoon)(_List_Nil)(
 			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'none'})(60)(0)(_List_Nil)(elm$core$Maybe$Nothing)(_List_Nil),
 		author$project$Main$outputPort(
 			A2(
@@ -6021,7 +6007,99 @@ var author$project$Main$subscriptions = function (model) {
 					A2(elm$json$Json$Decode$field, 'key', elm$json$Json$Decode$string)))
 			]));
 };
-var author$project$Main$Down = {$: 'Down'};
+var author$project$Color$Green = {$: 'Green'};
+var author$project$Color$Red = {$: 'Red'};
+var author$project$Color$Silver = {$: 'Silver'};
+var author$project$Color$Yellow = {$: 'Yellow'};
+var author$project$Direction$Down = {$: 'Down'};
+var author$project$Direction$Left = {$: 'Left'};
+var author$project$Direction$Right = {$: 'Right'};
+var author$project$Direction$Up = {$: 'Up'};
+var author$project$Coordinate$toCoordinate = F2(
+	function (x, y) {
+		return _Utils_Tuple2(x, y);
+	});
+var author$project$Goal$Goal = F3(
+	function (pos, symbol, active) {
+		return {active: active, pos: pos, symbol: symbol};
+	});
+var author$project$Goal$BlueCross = {$: 'BlueCross'};
+var author$project$Goal$BlueGear = {$: 'BlueGear'};
+var author$project$Goal$BlueMoon = {$: 'BlueMoon'};
+var author$project$Goal$BluePlanet = {$: 'BluePlanet'};
+var author$project$Goal$GreenCross = {$: 'GreenCross'};
+var author$project$Goal$GreenGear = {$: 'GreenGear'};
+var author$project$Goal$GreenMoon = {$: 'GreenMoon'};
+var author$project$Goal$GreenPlanet = {$: 'GreenPlanet'};
+var author$project$Goal$RedCross = {$: 'RedCross'};
+var author$project$Goal$RedGear = {$: 'RedGear'};
+var author$project$Goal$RedPlanet = {$: 'RedPlanet'};
+var author$project$Goal$YellowCross = {$: 'YellowCross'};
+var author$project$Goal$YellowGear = {$: 'YellowGear'};
+var author$project$Goal$YellowMoon = {$: 'YellowMoon'};
+var author$project$Goal$YellowPlanet = {$: 'YellowPlanet'};
+var elm$json$Json$Decode$andThen = _Json_andThen;
+var elm$json$Json$Decode$fail = _Json_fail;
+var author$project$Goal$decodeGoalSymbol = A2(
+	elm$json$Json$Decode$andThen,
+	function (str) {
+		switch (str) {
+			case 'RedMoon':
+				return elm$json$Json$Decode$succeed(author$project$Goal$RedMoon);
+			case 'GreenMoon':
+				return elm$json$Json$Decode$succeed(author$project$Goal$GreenMoon);
+			case 'BlueMoon':
+				return elm$json$Json$Decode$succeed(author$project$Goal$BlueMoon);
+			case 'YellowMoon':
+				return elm$json$Json$Decode$succeed(author$project$Goal$YellowMoon);
+			case 'RedPlanet':
+				return elm$json$Json$Decode$succeed(author$project$Goal$RedPlanet);
+			case 'GreenPlanet':
+				return elm$json$Json$Decode$succeed(author$project$Goal$GreenPlanet);
+			case 'BluePlanet':
+				return elm$json$Json$Decode$succeed(author$project$Goal$BluePlanet);
+			case 'YellowPlanet':
+				return elm$json$Json$Decode$succeed(author$project$Goal$YellowPlanet);
+			case 'GreenCross':
+				return elm$json$Json$Decode$succeed(author$project$Goal$GreenCross);
+			case 'RedCross':
+				return elm$json$Json$Decode$succeed(author$project$Goal$RedCross);
+			case 'BlueCross':
+				return elm$json$Json$Decode$succeed(author$project$Goal$BlueCross);
+			case 'YellowCross':
+				return elm$json$Json$Decode$succeed(author$project$Goal$YellowCross);
+			case 'RedGear':
+				return elm$json$Json$Decode$succeed(author$project$Goal$RedGear);
+			case 'GreenGear':
+				return elm$json$Json$Decode$succeed(author$project$Goal$GreenGear);
+			case 'BlueGear':
+				return elm$json$Json$Decode$succeed(author$project$Goal$BlueGear);
+			case 'YellowGear':
+				return elm$json$Json$Decode$succeed(author$project$Goal$YellowGear);
+			default:
+				var somethingElse = str;
+				return elm$json$Json$Decode$fail('Unknown Goal Symbol: ' + somethingElse);
+		}
+	},
+	elm$json$Json$Decode$string);
+var elm$json$Json$Decode$bool = _Json_decodeBool;
+var elm$json$Json$Decode$int = _Json_decodeInt;
+var elm$json$Json$Decode$map3 = _Json_map3;
+var author$project$Goal$decodeGoal = A4(
+	elm$json$Json$Decode$map3,
+	author$project$Goal$Goal,
+	A2(
+		elm$json$Json$Decode$field,
+		'pos',
+		A3(
+			elm$json$Json$Decode$map2,
+			author$project$Coordinate$toCoordinate,
+			A2(elm$json$Json$Decode$field, 'x', elm$json$Json$Decode$int),
+			A2(elm$json$Json$Decode$field, 'y', elm$json$Json$Decode$int))),
+	A2(elm$json$Json$Decode$field, 'symbol', author$project$Goal$decodeGoalSymbol),
+	A2(elm$json$Json$Decode$field, 'active', elm$json$Json$Decode$bool));
+var elm$json$Json$Decode$list = _Json_decodeList;
+var author$project$Goal$decodeGoalList = elm$json$Json$Decode$list(author$project$Goal$decodeGoal);
 var author$project$Main$GetChat = function (a) {
 	return {$: 'GetChat', a: a};
 };
@@ -6037,13 +6115,6 @@ var author$project$Main$GetUser = function (a) {
 var author$project$Main$GetUsersList = function (a) {
 	return {$: 'GetUsersList', a: a};
 };
-var author$project$Main$Green = {$: 'Green'};
-var author$project$Main$Left = {$: 'Left'};
-var author$project$Main$Red = {$: 'Red'};
-var author$project$Main$Right = {$: 'Right'};
-var author$project$Main$Silver = {$: 'Silver'};
-var author$project$Main$Up = {$: 'Up'};
-var author$project$Main$Yellow = {$: 'Yellow'};
 var author$project$Main$Chatline = F3(
 	function (user, msg, kind) {
 		return {kind: kind, msg: msg, user: user};
@@ -6052,8 +6123,6 @@ var author$project$Main$User = F3(
 	function (username, color, score) {
 		return {color: color, score: score, username: username};
 	});
-var elm$json$Json$Decode$int = _Json_decodeInt;
-var elm$json$Json$Decode$map3 = _Json_map3;
 var author$project$Main$decodeUser = A4(
 	elm$json$Json$Decode$map3,
 	author$project$Main$User,
@@ -6066,89 +6135,7 @@ var author$project$Main$decodeChatline = A4(
 	A2(elm$json$Json$Decode$field, 'user', author$project$Main$decodeUser),
 	A2(elm$json$Json$Decode$field, 'msg', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'kind', elm$json$Json$Decode$int));
-var elm$json$Json$Decode$list = _Json_decodeList;
 var author$project$Main$decodeChatList = elm$json$Json$Decode$list(author$project$Main$decodeChatline);
-var author$project$Main$Goal = F3(
-	function (pos, symbol, active) {
-		return {active: active, pos: pos, symbol: symbol};
-	});
-var author$project$Main$Position = F2(
-	function (x, y) {
-		return {x: x, y: y};
-	});
-var author$project$Main$BlueCross = {$: 'BlueCross'};
-var author$project$Main$BlueMoon = {$: 'BlueMoon'};
-var author$project$Main$BluePlanet = {$: 'BluePlanet'};
-var author$project$Main$GreenCross = {$: 'GreenCross'};
-var author$project$Main$GreenGear = {$: 'GreenGear'};
-var author$project$Main$GreenMoon = {$: 'GreenMoon'};
-var author$project$Main$GreenPlanet = {$: 'GreenPlanet'};
-var author$project$Main$RedCross = {$: 'RedCross'};
-var author$project$Main$RedGear = {$: 'RedGear'};
-var author$project$Main$RedPlanet = {$: 'RedPlanet'};
-var author$project$Main$YellowCross = {$: 'YellowCross'};
-var author$project$Main$YellowGear = {$: 'YellowGear'};
-var author$project$Main$YellowMoon = {$: 'YellowMoon'};
-var author$project$Main$YellowPlanet = {$: 'YellowPlanet'};
-var elm$json$Json$Decode$andThen = _Json_andThen;
-var elm$json$Json$Decode$fail = _Json_fail;
-var author$project$Main$decodeGoalSymbol = A2(
-	elm$json$Json$Decode$andThen,
-	function (str) {
-		switch (str) {
-			case 'RedMoon':
-				return elm$json$Json$Decode$succeed(author$project$Main$RedMoon);
-			case 'GreenMoon':
-				return elm$json$Json$Decode$succeed(author$project$Main$GreenMoon);
-			case 'BlueMoon':
-				return elm$json$Json$Decode$succeed(author$project$Main$BlueMoon);
-			case 'YellowMoon':
-				return elm$json$Json$Decode$succeed(author$project$Main$YellowMoon);
-			case 'RedPlanet':
-				return elm$json$Json$Decode$succeed(author$project$Main$RedPlanet);
-			case 'GreenPlanet':
-				return elm$json$Json$Decode$succeed(author$project$Main$GreenPlanet);
-			case 'BluePlanet':
-				return elm$json$Json$Decode$succeed(author$project$Main$BluePlanet);
-			case 'YellowPlanet':
-				return elm$json$Json$Decode$succeed(author$project$Main$YellowPlanet);
-			case 'GreenCross':
-				return elm$json$Json$Decode$succeed(author$project$Main$GreenCross);
-			case 'RedCross':
-				return elm$json$Json$Decode$succeed(author$project$Main$RedCross);
-			case 'BlueCross':
-				return elm$json$Json$Decode$succeed(author$project$Main$BlueCross);
-			case 'YellowCross':
-				return elm$json$Json$Decode$succeed(author$project$Main$YellowCross);
-			case 'RedGear':
-				return elm$json$Json$Decode$succeed(author$project$Main$RedGear);
-			case 'GreenGear':
-				return elm$json$Json$Decode$succeed(author$project$Main$GreenGear);
-			case 'BlueGear':
-				return elm$json$Json$Decode$succeed(author$project$Main$BlueGear);
-			case 'YellowGear':
-				return elm$json$Json$Decode$succeed(author$project$Main$YellowGear);
-			default:
-				var somethingElse = str;
-				return elm$json$Json$Decode$fail('Unknown Goal Symbol: ' + somethingElse);
-		}
-	},
-	elm$json$Json$Decode$string);
-var elm$json$Json$Decode$bool = _Json_decodeBool;
-var author$project$Main$decodeGoal = A4(
-	elm$json$Json$Decode$map3,
-	author$project$Main$Goal,
-	A2(
-		elm$json$Json$Decode$field,
-		'pos',
-		A3(
-			elm$json$Json$Decode$map2,
-			author$project$Main$Position,
-			A2(elm$json$Json$Decode$field, 'x', elm$json$Json$Decode$int),
-			A2(elm$json$Json$Decode$field, 'y', elm$json$Json$Decode$int))),
-	A2(elm$json$Json$Decode$field, 'symbol', author$project$Main$decodeGoalSymbol),
-	A2(elm$json$Json$Decode$field, 'active', elm$json$Json$Decode$bool));
-var author$project$Main$decodeGoalList = elm$json$Json$Decode$list(author$project$Main$decodeGoal);
 var author$project$Main$JSONMessage = F2(
 	function (code, content) {
 		return {code: code, content: content};
@@ -6158,63 +6145,6 @@ var author$project$Main$decodeJSON = A3(
 	author$project$Main$JSONMessage,
 	A2(elm$json$Json$Decode$field, 'code', elm$json$Json$Decode$int),
 	A2(elm$json$Json$Decode$field, 'content', elm$json$Json$Decode$value));
-var author$project$Main$Robot = F3(
-	function (pos, color, moves) {
-		return {color: color, moves: moves, pos: pos};
-	});
-var author$project$Main$decodeColorSymbol = A2(
-	elm$json$Json$Decode$andThen,
-	function (str) {
-		switch (str) {
-			case 'red':
-				return elm$json$Json$Decode$succeed(author$project$Main$Red);
-			case 'green':
-				return elm$json$Json$Decode$succeed(author$project$Main$Green);
-			case 'blue':
-				return elm$json$Json$Decode$succeed(author$project$Main$Blue);
-			case 'yellow':
-				return elm$json$Json$Decode$succeed(author$project$Main$Yellow);
-			case 'silver':
-				return elm$json$Json$Decode$succeed(author$project$Main$Silver);
-			default:
-				var somethingElse = str;
-				return elm$json$Json$Decode$fail('Unknown Color: ' + somethingElse);
-		}
-	},
-	elm$json$Json$Decode$string);
-var author$project$Main$decodeDirection = A2(
-	elm$json$Json$Decode$andThen,
-	function (str) {
-		switch (str) {
-			case 'up':
-				return elm$json$Json$Decode$succeed(author$project$Main$Up);
-			case 'down':
-				return elm$json$Json$Decode$succeed(author$project$Main$Down);
-			case 'left':
-				return elm$json$Json$Decode$succeed(author$project$Main$Left);
-			case 'right':
-				return elm$json$Json$Decode$succeed(author$project$Main$Right);
-			default:
-				var somethingElse = str;
-				return elm$json$Json$Decode$fail('Unknown Direction: ' + somethingElse);
-		}
-	},
-	elm$json$Json$Decode$string);
-var author$project$Main$decodeDirectionsList = elm$json$Json$Decode$list(author$project$Main$decodeDirection);
-var author$project$Main$decodeRobot = A4(
-	elm$json$Json$Decode$map3,
-	author$project$Main$Robot,
-	A2(
-		elm$json$Json$Decode$field,
-		'pos',
-		A3(
-			elm$json$Json$Decode$map2,
-			author$project$Main$Position,
-			A2(elm$json$Json$Decode$field, 'x', elm$json$Json$Decode$int),
-			A2(elm$json$Json$Decode$field, 'y', elm$json$Json$Decode$int))),
-	A2(elm$json$Json$Decode$field, 'color', author$project$Main$decodeColorSymbol),
-	A2(elm$json$Json$Decode$field, 'moves', author$project$Main$decodeDirectionsList));
-var author$project$Main$decodeRobotsList = elm$json$Json$Decode$list(author$project$Main$decodeRobot);
 var author$project$Main$decodeUsersList = elm$json$Json$Decode$list(author$project$Main$decodeUser);
 var author$project$Main$encodeChatline = F3(
 	function (user, msg, kind) {
@@ -6231,34 +6161,6 @@ var author$project$Main$encodeChatline = F3(
 					'kind',
 					elm$json$Json$Encode$int(kind))
 				]));
-	});
-var elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2(elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
-var elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return elm$core$Maybe$Just(x);
-	} else {
-		return elm$core$Maybe$Nothing;
-	}
-};
-var author$project$Main$getRobotByColor = F2(
-	function (color, robots) {
-		var matchRobotByColor = function (robot) {
-			return _Utils_eq(robot.color, color);
-		};
-		return elm$core$List$head(
-			A2(elm$core$List$filter, matchRobotByColor, robots));
 	});
 var author$project$Main$Move = F2(
 	function (color, direction) {
@@ -6380,6 +6282,91 @@ var author$project$Main$updateKeys = F3(
 			default:
 				return keys;
 		}
+	});
+var author$project$Board$decodeDirection = A2(
+	elm$json$Json$Decode$andThen,
+	function (str) {
+		switch (str) {
+			case 'up':
+				return elm$json$Json$Decode$succeed(author$project$Direction$Up);
+			case 'down':
+				return elm$json$Json$Decode$succeed(author$project$Direction$Down);
+			case 'left':
+				return elm$json$Json$Decode$succeed(author$project$Direction$Left);
+			case 'right':
+				return elm$json$Json$Decode$succeed(author$project$Direction$Right);
+			default:
+				var somethingElse = str;
+				return elm$json$Json$Decode$fail('Unknown Direction: ' + somethingElse);
+		}
+	},
+	elm$json$Json$Decode$string);
+var author$project$Board$decodeDirectionsList = elm$json$Json$Decode$list(author$project$Board$decodeDirection);
+var author$project$Color$decodeColorSymbol = A2(
+	elm$json$Json$Decode$andThen,
+	function (str) {
+		switch (str) {
+			case 'red':
+				return elm$json$Json$Decode$succeed(author$project$Color$Red);
+			case 'green':
+				return elm$json$Json$Decode$succeed(author$project$Color$Green);
+			case 'blue':
+				return elm$json$Json$Decode$succeed(author$project$Color$Blue);
+			case 'yellow':
+				return elm$json$Json$Decode$succeed(author$project$Color$Yellow);
+			case 'silver':
+				return elm$json$Json$Decode$succeed(author$project$Color$Silver);
+			default:
+				var somethingElse = str;
+				return elm$json$Json$Decode$fail('Unknown Color: ' + somethingElse);
+		}
+	},
+	elm$json$Json$Decode$string);
+var author$project$Robot$Robot = F3(
+	function (pos, color, moves) {
+		return {color: color, moves: moves, pos: pos};
+	});
+var author$project$Robot$decodeRobot = A4(
+	elm$json$Json$Decode$map3,
+	author$project$Robot$Robot,
+	A2(
+		elm$json$Json$Decode$field,
+		'pos',
+		A3(
+			elm$json$Json$Decode$map2,
+			author$project$Coordinate$toCoordinate,
+			A2(elm$json$Json$Decode$field, 'x', elm$json$Json$Decode$int),
+			A2(elm$json$Json$Decode$field, 'y', elm$json$Json$Decode$int))),
+	A2(elm$json$Json$Decode$field, 'color', author$project$Color$decodeColorSymbol),
+	A2(elm$json$Json$Decode$field, 'moves', author$project$Board$decodeDirectionsList));
+var author$project$Robot$decodeRobotsList = elm$json$Json$Decode$list(author$project$Robot$decodeRobot);
+var elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2(elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return elm$core$Maybe$Just(x);
+	} else {
+		return elm$core$Maybe$Nothing;
+	}
+};
+var author$project$Robot$getByColor = F2(
+	function (color, robots) {
+		var matchRobotByColor = function (robot) {
+			return _Utils_eq(robot.color, color);
+		};
+		return elm$core$List$head(
+			A2(elm$core$List$filter, matchRobotByColor, robots));
 	});
 var elm$core$Debug$log = _Debug_log;
 var elm$core$Platform$Cmd$batch = _Platform_batch;
@@ -6643,7 +6630,7 @@ var author$project$Main$update = F2(
 					}
 				case 'GetRobotList':
 					var json = _n0.a;
-					var _n3 = A2(elm$json$Json$Decode$decodeValue, author$project$Main$decodeRobotsList, json);
+					var _n3 = A2(elm$json$Json$Decode$decodeValue, author$project$Robot$decodeRobotsList, json);
 					if (_n3.$ === 'Ok') {
 						var robotList = _n3.a;
 						return _Utils_Tuple2(
@@ -6660,7 +6647,7 @@ var author$project$Main$update = F2(
 					}
 				case 'GetGoalList':
 					var json = _n0.a;
-					var _n4 = A2(elm$json$Json$Decode$decodeValue, author$project$Main$decodeGoalList, json);
+					var _n4 = A2(elm$json$Json$Decode$decodeValue, author$project$Goal$decodeGoalList, json);
 					if (_n4.$ === 'Ok') {
 						var goalList = _n4.a;
 						var activeGoal = function () {
@@ -6672,7 +6659,7 @@ var author$project$Main$update = F2(
 									},
 									goalList));
 							if (_n5.$ === 'Nothing') {
-								return author$project$Main$RedMoon;
+								return author$project$Goal$RedMoon;
 							} else {
 								var anyGoal = _n5.a;
 								return function ($) {
@@ -6750,13 +6737,13 @@ var author$project$Main$update = F2(
 						if (isDown) {
 							switch (key) {
 								case 'ArrowLeft':
-									return A3(author$project$Main$pushMove, author$project$Main$Left, model.activeRobot, model.movesQueue);
+									return A3(author$project$Main$pushMove, author$project$Direction$Left, model.activeRobot, model.movesQueue);
 								case 'ArrowRight':
-									return A3(author$project$Main$pushMove, author$project$Main$Right, model.activeRobot, model.movesQueue);
+									return A3(author$project$Main$pushMove, author$project$Direction$Right, model.activeRobot, model.movesQueue);
 								case 'ArrowUp':
-									return A3(author$project$Main$pushMove, author$project$Main$Up, model.activeRobot, model.movesQueue);
+									return A3(author$project$Main$pushMove, author$project$Direction$Up, model.activeRobot, model.movesQueue);
 								case 'ArrowDown':
-									return A3(author$project$Main$pushMove, author$project$Main$Down, model.activeRobot, model.movesQueue);
+									return A3(author$project$Main$pushMove, author$project$Direction$Down, model.activeRobot, model.movesQueue);
 								case 'Escape':
 									return _List_Nil;
 								default:
@@ -6838,25 +6825,25 @@ var author$project$Main$update = F2(
 						if (isDown) {
 							switch (key) {
 								case '1':
-									return A2(author$project$Main$getRobotByColor, author$project$Main$Red, model.robots);
+									return A2(author$project$Robot$getByColor, author$project$Color$Red, model.robots);
 								case 'r':
-									return A2(author$project$Main$getRobotByColor, author$project$Main$Red, model.robots);
+									return A2(author$project$Robot$getByColor, author$project$Color$Red, model.robots);
 								case '2':
-									return A2(author$project$Main$getRobotByColor, author$project$Main$Green, model.robots);
+									return A2(author$project$Robot$getByColor, author$project$Color$Green, model.robots);
 								case 'g':
-									return A2(author$project$Main$getRobotByColor, author$project$Main$Green, model.robots);
+									return A2(author$project$Robot$getByColor, author$project$Color$Green, model.robots);
 								case '3':
-									return A2(author$project$Main$getRobotByColor, author$project$Main$Blue, model.robots);
+									return A2(author$project$Robot$getByColor, author$project$Color$Blue, model.robots);
 								case 'b':
-									return A2(author$project$Main$getRobotByColor, author$project$Main$Blue, model.robots);
+									return A2(author$project$Robot$getByColor, author$project$Color$Blue, model.robots);
 								case '4':
-									return A2(author$project$Main$getRobotByColor, author$project$Main$Yellow, model.robots);
+									return A2(author$project$Robot$getByColor, author$project$Color$Yellow, model.robots);
 								case 'y':
-									return A2(author$project$Main$getRobotByColor, author$project$Main$Yellow, model.robots);
+									return A2(author$project$Robot$getByColor, author$project$Color$Yellow, model.robots);
 								case '5':
-									return A2(author$project$Main$getRobotByColor, author$project$Main$Silver, model.robots);
+									return A2(author$project$Robot$getByColor, author$project$Color$Silver, model.robots);
 								case 's':
-									return A2(author$project$Main$getRobotByColor, author$project$Main$Silver, model.robots);
+									return A2(author$project$Robot$getByColor, author$project$Color$Silver, model.robots);
 								case 'Escape':
 									return elm$core$Maybe$Nothing;
 								default:
@@ -6877,7 +6864,7 @@ var author$project$Main$update = F2(
 						_Utils_update(
 							model,
 							{
-								activeRobot: A2(author$project$Main$getRobotByColor, color, model.robots)
+								activeRobot: A2(author$project$Robot$getByColor, color, model.robots)
 							}),
 						elm$core$Platform$Cmd$none);
 				case 'AddMove':
@@ -6913,12 +6900,12 @@ var author$project$Main$update = F2(
 			}
 		}
 	});
-var author$project$Grid$toColumn = elm$core$Tuple$first;
+var author$project$Coordinate$toColumn = elm$core$Tuple$first;
 var elm$core$Tuple$second = function (_n0) {
 	var y = _n0.b;
 	return y;
 };
-var author$project$Grid$toRow = elm$core$Tuple$second;
+var author$project$Coordinate$toRow = elm$core$Tuple$second;
 var elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
 var elm$core$Array$bitMask = 4294967295 >>> (32 - elm$core$Array$shiftStep);
 var elm$core$Bitwise$and = _Bitwise_and;
@@ -6961,11 +6948,11 @@ var elm$core$Array$get = F2(
 			A2(elm$core$Elm$JsArray$unsafeGet, elm$core$Array$bitMask & index, tail)) : elm$core$Maybe$Just(
 			A3(elm$core$Array$getHelp, startShift, index, tree)));
 	});
-var author$project$Grid$get = F2(
+var author$project$Board$get = F2(
 	function (coord, grid) {
 		var a1 = A2(
 			elm$core$Array$get,
-			author$project$Grid$toRow(coord),
+			author$project$Coordinate$toRow(coord),
 			grid);
 		if (a1.$ === 'Nothing') {
 			return elm$core$Maybe$Nothing;
@@ -6973,30 +6960,11 @@ var author$project$Grid$get = F2(
 			var val = a1.a;
 			return A2(
 				elm$core$Array$get,
-				author$project$Grid$toColumn(coord),
+				author$project$Coordinate$toColumn(coord),
 				val);
 		}
 	});
-var author$project$Main$AddMove = function (a) {
-	return {$: 'AddMove', a: a};
-};
-var author$project$Main$ClearMoves = {$: 'ClearMoves'};
-var author$project$Main$IncrementScore = function (a) {
-	return {$: 'IncrementScore', a: a};
-};
-var author$project$Main$NewGame = {$: 'NewGame'};
-var author$project$Main$PopMove = {$: 'PopMove'};
-var author$project$Main$SendMessage = {$: 'SendMessage'};
-var author$project$Main$SetActiveRobot = function (a) {
-	return {$: 'SetActiveRobot', a: a};
-};
-var author$project$Main$SetMessage = function (a) {
-	return {$: 'SetMessage', a: a};
-};
-var author$project$Main$ToggleEmoticons = {$: 'ToggleEmoticons'};
-var author$project$Main$TogglePollOptions = {$: 'TogglePollOptions'};
-var author$project$Main$ToggleSettings = {$: 'ToggleSettings'};
-var author$project$Main$getColorString = function (color) {
+var author$project$Color$toString = function (color) {
 	if (color.$ === 'Nothing') {
 		return 'unknown-color';
 	} else {
@@ -7019,7 +6987,7 @@ var author$project$Main$getColorString = function (color) {
 		}
 	}
 };
-var author$project$Main$goalToString = function (goal) {
+var author$project$Goal$toString = function (goal) {
 	switch (goal.$) {
 		case 'RedMoon':
 			return {filename: 'red-moon', plaintext: 'Red Moon'};
@@ -7055,17 +7023,36 @@ var author$project$Main$goalToString = function (goal) {
 			return {filename: 'yellow-gear', plaintext: 'Yellow Gear'};
 	}
 };
-var author$project$Main$matchGoal = F3(
+var author$project$Main$AddMove = function (a) {
+	return {$: 'AddMove', a: a};
+};
+var author$project$Main$ClearMoves = {$: 'ClearMoves'};
+var author$project$Main$IncrementScore = function (a) {
+	return {$: 'IncrementScore', a: a};
+};
+var author$project$Main$NewGame = {$: 'NewGame'};
+var author$project$Main$PopMove = {$: 'PopMove'};
+var author$project$Main$SendMessage = {$: 'SendMessage'};
+var author$project$Main$SetActiveRobot = function (a) {
+	return {$: 'SetActiveRobot', a: a};
+};
+var author$project$Main$SetMessage = function (a) {
+	return {$: 'SetMessage', a: a};
+};
+var author$project$Main$ToggleEmoticons = {$: 'ToggleEmoticons'};
+var author$project$Main$TogglePollOptions = {$: 'TogglePollOptions'};
+var author$project$Main$ToggleSettings = {$: 'ToggleSettings'};
+var author$project$Goal$matchGoal = F3(
 	function (rowi, colj, record) {
 		return _Utils_eq(
 			record.pos,
-			{x: colj, y: rowi});
+			_Utils_Tuple2(colj, rowi));
 	});
-var author$project$Main$matchRobot = F3(
+var author$project$Robot$matchRobot = F3(
 	function (rowi, colj, robot) {
 		return _Utils_eq(
 			robot.pos,
-			{x: colj, y: rowi});
+			_Utils_Tuple2(colj, rowi));
 	});
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$Attributes$stringProperty = F2(
@@ -7088,13 +7075,13 @@ var author$project$Main$drawSquare = F5(
 			var _n2 = elm$core$List$head(
 				A2(
 					elm$core$List$filter,
-					A2(author$project$Main$matchRobot, rowi, colj),
+					A2(author$project$Robot$matchRobot, rowi, colj),
 					robots));
 			if (_n2.$ === 'Nothing') {
 				return '';
 			} else {
 				var matchedRobotObj = _n2.a;
-				return author$project$Main$getColorString(
+				return author$project$Color$toString(
 					elm$core$Maybe$Just(
 						function ($) {
 							return $.color;
@@ -7105,7 +7092,7 @@ var author$project$Main$drawSquare = F5(
 			var _n1 = elm$core$List$head(
 				A2(
 					elm$core$List$filter,
-					A2(author$project$Main$matchGoal, rowi, colj),
+					A2(author$project$Goal$matchGoal, rowi, colj),
 					goals));
 			if (_n1.$ === 'Nothing') {
 				return '';
@@ -7114,7 +7101,7 @@ var author$project$Main$drawSquare = F5(
 				return function ($) {
 					return $.filename;
 				}(
-					author$project$Main$goalToString(matchedGoalObj.symbol));
+					author$project$Goal$toString(matchedGoalObj.symbol));
 			}
 		}();
 		if (!val) {
@@ -7635,17 +7622,6 @@ var author$project$Main$formatTimer = function (seconds) {
 	var min = ((seconds / 60) | 0) - (hrs * 60);
 	return ((hrs > 0) ? (elm$core$String$fromInt(hrs) + ':') : '') + (elm$core$String$fromInt(min) + (':' + (((sec < 10) ? '0' : '') + elm$core$String$fromInt(sec))));
 };
-var author$project$Main$getColorFromRobot = function (robot) {
-	if (robot.$ === 'Nothing') {
-		return elm$core$Maybe$Nothing;
-	} else {
-		var r = robot.a;
-		return elm$core$Maybe$Just(
-			function ($) {
-				return $.color;
-			}(r));
-	}
-};
 var elm$virtual_dom$VirtualDom$Custom = function (a) {
 	return {$: 'Custom', a: a};
 };
@@ -7665,7 +7641,7 @@ var author$project$Main$onEnter = function (msg) {
 	var decoder = A2(elm$json$Json$Decode$andThen, filterKey, elm$html$Html$Events$keyCode);
 	return A2(elm$html$Html$Events$custom, 'keydown', decoder);
 };
-var author$project$Main$getDirectionString = function (dir) {
+var author$project$Direction$toString = function (dir) {
 	switch (dir.$) {
 		case 'Left':
 			return 'left';
@@ -7681,16 +7657,27 @@ var author$project$Main$printMoveList = function (moveList) {
 	if (moveList.b) {
 		var a = moveList.a;
 		var b = moveList.b;
-		return author$project$Main$getColorString(
+		return author$project$Color$toString(
 			elm$core$Maybe$Just(
 				function ($) {
 					return $.color;
-				}(a))) + (':' + (author$project$Main$getDirectionString(
+				}(a))) + (':' + (author$project$Direction$toString(
 			function ($) {
 				return $.direction;
 			}(a)) + (' -> ' + author$project$Main$printMoveList(b))));
 	} else {
 		return '';
+	}
+};
+var author$project$Robot$getColor = function (robot) {
+	if (robot.$ === 'Nothing') {
+		return elm$core$Maybe$Nothing;
+	} else {
+		var r = robot.a;
+		return elm$core$Maybe$Just(
+			function ($) {
+				return $.color;
+			}(r));
 	}
 };
 var elm$core$List$append = F2(
@@ -7791,7 +7778,7 @@ var author$project$Main$view = function (model) {
 										'goal ' + function ($) {
 											return $.filename;
 										}(
-											author$project$Main$goalToString(model.goal)))
+											author$project$Goal$toString(model.goal)))
 									]),
 								_List_Nil),
 								A2(
@@ -7874,10 +7861,10 @@ var author$project$Main$view = function (model) {
 											[
 												elm$html$Html$Attributes$class(
 												'controls__robot controls__red' + (_Utils_eq(
-													author$project$Main$getColorFromRobot(model.activeRobot),
-													elm$core$Maybe$Just(author$project$Main$Red)) ? ' active' : '')),
+													author$project$Robot$getColor(model.activeRobot),
+													elm$core$Maybe$Just(author$project$Color$Red)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$SetActiveRobot(author$project$Main$Red))
+												author$project$Main$SetActiveRobot(author$project$Color$Red))
 											]),
 										_List_Nil),
 										A2(
@@ -7886,10 +7873,10 @@ var author$project$Main$view = function (model) {
 											[
 												elm$html$Html$Attributes$class(
 												'controls__robot controls__green' + (_Utils_eq(
-													author$project$Main$getColorFromRobot(model.activeRobot),
-													elm$core$Maybe$Just(author$project$Main$Green)) ? ' active' : '')),
+													author$project$Robot$getColor(model.activeRobot),
+													elm$core$Maybe$Just(author$project$Color$Green)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$SetActiveRobot(author$project$Main$Green))
+												author$project$Main$SetActiveRobot(author$project$Color$Green))
 											]),
 										_List_Nil),
 										A2(
@@ -7898,10 +7885,10 @@ var author$project$Main$view = function (model) {
 											[
 												elm$html$Html$Attributes$class(
 												'controls__robot controls__blue' + (_Utils_eq(
-													author$project$Main$getColorFromRobot(model.activeRobot),
-													elm$core$Maybe$Just(author$project$Main$Blue)) ? ' active' : '')),
+													author$project$Robot$getColor(model.activeRobot),
+													elm$core$Maybe$Just(author$project$Color$Blue)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$SetActiveRobot(author$project$Main$Blue))
+												author$project$Main$SetActiveRobot(author$project$Color$Blue))
 											]),
 										_List_Nil),
 										A2(
@@ -7910,10 +7897,10 @@ var author$project$Main$view = function (model) {
 											[
 												elm$html$Html$Attributes$class(
 												'controls__robot controls__yellow' + (_Utils_eq(
-													author$project$Main$getColorFromRobot(model.activeRobot),
-													elm$core$Maybe$Just(author$project$Main$Yellow)) ? ' active' : '')),
+													author$project$Robot$getColor(model.activeRobot),
+													elm$core$Maybe$Just(author$project$Color$Yellow)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$SetActiveRobot(author$project$Main$Yellow))
+												author$project$Main$SetActiveRobot(author$project$Color$Yellow))
 											]),
 										_List_Nil),
 										A2(
@@ -7922,10 +7909,10 @@ var author$project$Main$view = function (model) {
 											[
 												elm$html$Html$Attributes$class(
 												'controls__robot controls__silver' + (_Utils_eq(
-													author$project$Main$getColorFromRobot(model.activeRobot),
-													elm$core$Maybe$Just(author$project$Main$Silver)) ? ' active' : '')),
+													author$project$Robot$getColor(model.activeRobot),
+													elm$core$Maybe$Just(author$project$Color$Silver)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$SetActiveRobot(author$project$Main$Silver))
+												author$project$Main$SetActiveRobot(author$project$Color$Silver))
 											]),
 										_List_Nil)
 									])),
@@ -7944,7 +7931,7 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Attributes$class(
 												'controls__button controls__left' + (model.keys.left ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Main$Left))
+												author$project$Main$AddMove(author$project$Direction$Left))
 											]),
 										_List_Nil),
 										A2(
@@ -7954,7 +7941,7 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Attributes$class(
 												'controls__button controls__up' + (model.keys.up ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Main$Up))
+												author$project$Main$AddMove(author$project$Direction$Up))
 											]),
 										_List_Nil),
 										A2(
@@ -7964,7 +7951,7 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Attributes$class(
 												'controls__button controls__right' + (model.keys.right ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Main$Right))
+												author$project$Main$AddMove(author$project$Direction$Right))
 											]),
 										_List_Nil),
 										A2(
@@ -7974,7 +7961,7 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Attributes$class(
 												'controls__button controls__down' + (model.keys.down ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Main$Down))
+												author$project$Main$AddMove(author$project$Direction$Down))
 											]),
 										_List_Nil),
 										A2(
@@ -8002,9 +7989,9 @@ var author$project$Main$view = function (model) {
 								_List_fromArray(
 									[
 										elm$html$Html$text(
-										author$project$Main$getColorString(
+										author$project$Color$toString(
 											A2(
-												author$project$Grid$get,
+												author$project$Board$get,
 												_Utils_Tuple2(1, 1),
 												model.boundaryBoard)) + ('   ' + (model.debugString + ('   ' + author$project$Main$printMoveList(
 											elm$core$List$reverse(model.movesQueue))))))
