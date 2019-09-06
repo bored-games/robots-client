@@ -4,9 +4,9 @@ import Coordinate exposing (..)
 import Direction exposing (Direction(..))
 import Board
 import Color exposing (..)
-import Robot
 import Robot exposing (Robot)
 import Goal exposing (GoalSymbol(..), Goal)
+import User exposing (User)
 
 import Browser
 import Browser.Events
@@ -39,27 +39,9 @@ type alias JSONMessage =
   , content : Json.Encode.Value
   }
 
-{-- type alias Coordinate = 
-  { x : Int 
-  , y : Int
-  }--}
-
-
 type alias Move =
   { color : Color
   , direction : Direction
-  }
-
-type alias User =
-  { username : String
-  , color : String
-  , score : Int
-  }
-
-type alias Chatline =
-  { user : User
-  , msg : String
-  , kind : Int
   }
 
 type alias Model =
@@ -99,7 +81,6 @@ type alias Keys =
   , esc : Bool
   }
 
-systemUser = { username = "System", color = "#ccc", score = 0 }
 
 testFill : Int -> Int -> Color
 testFill x y =
@@ -143,15 +124,13 @@ init _ =
     0                                                                        -- currentTimer
     []                                                                       -- robots
     Nothing                                                                  -- activeRobot
-  --  [ (Move Red Up), (Move Yellow Right)]                                    -- legalMoves
     []                                                                       -- movesQueue
-  ,  outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", encodeUser { username = "patty", color = "#6c6adc", score = 0 }) ] ) ) -- initialize user?
+  ,  outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", User.encodeUser { username = "patty", color = "#6c6adc", score = 0 }) ] ) ) -- initialize user?
   )
 
 
 
 -- UPDATE
-
 
 type Msg
   = SetName String
@@ -212,7 +191,7 @@ update msg model =
        , nameInProgress = ""
        , toggleStates = newToggleStates
       }
-      , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 201), ("content", encodeUser newUser) ] ) ) )
+      , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 201), ("content", User.encodeUser newUser) ] ) ) )
 
     SetMessage message ->
       ( { model | messageInProgress = message }
@@ -496,18 +475,6 @@ updateKeys isDown key keys =
     "Escape"     -> { keys | esc   = isDown }
     _            -> keys
 
-encodeUser : User -> Json.Encode.Value
-encodeUser user =
-  Json.Encode.object [ ("username", Json.Encode.string user.username),
-                       ("color", Json.Encode.string user.color),
-                       ("score", Json.Encode.int user.score) ]
-
-encodeChatline : User -> String -> Int -> Json.Encode.Value
-encodeChatline user msg kind =
-  Json.Encode.object [ ("user", encodeUser user),
-                       ("msg", Json.Encode.string msg),
-                       ("kind", Json.Encode.int kind) ]
-
 
 decodeJSON : Json.Decode.Decoder JSONMessage
 decodeJSON =
@@ -515,31 +482,6 @@ decodeJSON =
     JSONMessage
     (Json.Decode.field "code" Json.Decode.int)
     (Json.Decode.field "content" Json.Decode.value)
-
-decodeUser : Json.Decode.Decoder User
-decodeUser =
-  Json.Decode.map3
-    User
-    (Json.Decode.field "username" Json.Decode.string)
-    (Json.Decode.field "color" Json.Decode.string)
-    (Json.Decode.field "score" Json.Decode.int)
-  
-decodeUsersList : Json.Decode.Decoder (List User)
-decodeUsersList =
-  Json.Decode.list decodeUser
-  
-
-decodeChatline : Json.Decode.Decoder Chatline
-decodeChatline =
-  Json.Decode.map3
-    Chatline
-    (Json.Decode.field "user" decodeUser)
-    (Json.Decode.field "msg" Json.Decode.string)
-    (Json.Decode.field "kind" Json.Decode.int)
-
-decodeChatList : Json.Decode.Decoder (List Chatline)
-decodeChatList =
-  Json.Decode.list decodeChatline
 
 
 -- SUBSCRIPTIONS
@@ -555,7 +497,6 @@ subscriptions model =
     , Browser.Events.onKeyUp (Json.Decode.map (KeyChanged False) (Json.Decode.field "key" Json.Decode.string))
     , Browser.Events.onKeyDown (Json.Decode.map (KeyChanged True) (Json.Decode.field "key" Json.Decode.string))
     ]
-
 
 
 -- VIEW
