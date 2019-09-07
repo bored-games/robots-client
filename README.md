@@ -76,7 +76,7 @@ A browser-based Ricochet Robots client written in Elm, to be paired with a backe
 <kbd>Backspace</kbd> : Remove (undo) last move from queue
 
 ## Polls and Settings
-Administration is performed through the use of `/poll <option> [param1] <param2]` and `/set <option> [param1] [param2]` commands entered through chat. A poll must succeed with more Yes votes than No votes to change settings. Only an **owner** can unilaterally change settings with `/set`. Available option/parameters:
+Administration is performed through the use of `/poll <option> [param1, param2]` and `/set <option> [param1, param2]` commands entered through chat. A poll must succeed with more Yes votes than No votes to change settings. Only an **owner** can unilaterally change settings with `/set`. Available option/parameters:
 
  * `owner <UID>` : Grant owner status to user
  * `user <UID>` : Remove owner status from user

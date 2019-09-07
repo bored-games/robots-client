@@ -7490,6 +7490,7 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 				elm$html$Html$text('/poll reset_scores ')
 			]))
 	]);
+var elm$html$Html$Attributes$title = elm$html$Html$Attributes$stringProperty('title');
 var author$project$Main$drawScore = function (user) {
 	return A2(
 		elm$html$Html$div,
@@ -7515,7 +7516,8 @@ var author$project$Main$drawScore = function (user) {
 							elm$html$Html$span,
 							_List_fromArray(
 								[
-									elm$html$Html$Attributes$class('owner')
+									elm$html$Html$Attributes$class('owner'),
+									elm$html$Html$Attributes$title('Owner')
 								]),
 							_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
 						A2(
@@ -7524,7 +7526,8 @@ var author$project$Main$drawScore = function (user) {
 								elm$html$Html$span,
 								_List_fromArray(
 									[
-										elm$html$Html$Attributes$class('muted')
+										elm$html$Html$Attributes$class('muted'),
+										elm$html$Html$Attributes$title('Muted')
 									]),
 								_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
 							_List_Nil)))),
@@ -8050,7 +8053,8 @@ var author$project$Main$view = function (model) {
 										elm$html$Html$div,
 										_List_fromArray(
 											[
-												elm$html$Html$Attributes$class('icon icon--timer')
+												elm$html$Html$Attributes$class('icon icon--timer'),
+												elm$html$Html$Attributes$title('Countdown before best solution wins!')
 											]),
 										_List_Nil)
 									])),
@@ -8074,7 +8078,8 @@ var author$project$Main$view = function (model) {
 										elm$html$Html$div,
 										_List_fromArray(
 											[
-												elm$html$Html$Attributes$class('icon icon--clock')
+												elm$html$Html$Attributes$class('icon icon--clock'),
+												elm$html$Html$Attributes$title('Time spent on current puzzle')
 											]),
 										_List_Nil)
 									])),
@@ -8100,7 +8105,8 @@ var author$project$Main$view = function (model) {
 										elm$html$Html$div,
 										_List_fromArray(
 											[
-												elm$html$Html$Attributes$class('icon icon--count')
+												elm$html$Html$Attributes$class('icon icon--count'),
+												elm$html$Html$Attributes$title('Number of moves in current solution attempt')
 											]),
 										_List_Nil)
 									])),
@@ -8126,7 +8132,8 @@ var author$project$Main$view = function (model) {
 										elm$html$Html$div,
 										_List_fromArray(
 											[
-												elm$html$Html$Attributes$class('icon icon--robot')
+												elm$html$Html$Attributes$class('icon icon--robot'),
+												elm$html$Html$Attributes$title('Number of robots in current solution attempt')
 											]),
 										_List_Nil)
 									]))
@@ -8165,7 +8172,8 @@ var author$project$Main$view = function (model) {
 													author$project$Robot$getColor(model.activeRobot),
 													elm$core$Maybe$Just(author$project$Color$Red)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$SetActiveRobot(author$project$Color$Red))
+												author$project$Main$SetActiveRobot(author$project$Color$Red)),
+												elm$html$Html$Attributes$title('Select red robot ([R] or [1])')
 											]),
 										_List_Nil),
 										A2(
@@ -8177,7 +8185,8 @@ var author$project$Main$view = function (model) {
 													author$project$Robot$getColor(model.activeRobot),
 													elm$core$Maybe$Just(author$project$Color$Green)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$SetActiveRobot(author$project$Color$Green))
+												author$project$Main$SetActiveRobot(author$project$Color$Green)),
+												elm$html$Html$Attributes$title('Select red robot ([G] or [2])')
 											]),
 										_List_Nil),
 										A2(
@@ -8189,7 +8198,8 @@ var author$project$Main$view = function (model) {
 													author$project$Robot$getColor(model.activeRobot),
 													elm$core$Maybe$Just(author$project$Color$Blue)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$SetActiveRobot(author$project$Color$Blue))
+												author$project$Main$SetActiveRobot(author$project$Color$Blue)),
+												elm$html$Html$Attributes$title('Select red robot ([B] or [3])')
 											]),
 										_List_Nil),
 										A2(
@@ -8201,7 +8211,8 @@ var author$project$Main$view = function (model) {
 													author$project$Robot$getColor(model.activeRobot),
 													elm$core$Maybe$Just(author$project$Color$Yellow)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$SetActiveRobot(author$project$Color$Yellow))
+												author$project$Main$SetActiveRobot(author$project$Color$Yellow)),
+												elm$html$Html$Attributes$title('Select red robot ([Y] or [4])')
 											]),
 										_List_Nil),
 										A2(
@@ -8213,7 +8224,8 @@ var author$project$Main$view = function (model) {
 													author$project$Robot$getColor(model.activeRobot),
 													elm$core$Maybe$Just(author$project$Color$Silver)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$SetActiveRobot(author$project$Color$Silver))
+												author$project$Main$SetActiveRobot(author$project$Color$Silver)),
+												elm$html$Html$Attributes$title('Select red robot ([S] or [5])')
 											]),
 										_List_Nil)
 									])),
@@ -8230,9 +8242,10 @@ var author$project$Main$view = function (model) {
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class(
-												'controls__button controls__left' + (model.keys.left ? ' active' : '')),
+												'controls__button controls__left' + ((_Utils_eq(model.activeRobot, elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.left ? ' active' : ''))),
 												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Move$Left))
+												author$project$Main$AddMove(author$project$Move$Left)),
+												elm$html$Html$Attributes$title('Move current robot left')
 											]),
 										_List_Nil),
 										A2(
@@ -8240,9 +8253,10 @@ var author$project$Main$view = function (model) {
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class(
-												'controls__button controls__up' + (model.keys.up ? ' active' : '')),
+												'controls__button controls__up' + ((_Utils_eq(model.activeRobot, elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.up ? ' active' : ''))),
 												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Move$Up))
+												author$project$Main$AddMove(author$project$Move$Up)),
+												elm$html$Html$Attributes$title('Move current robot up')
 											]),
 										_List_Nil),
 										A2(
@@ -8250,9 +8264,10 @@ var author$project$Main$view = function (model) {
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class(
-												'controls__button controls__right' + (model.keys.right ? ' active' : '')),
+												'controls__button controls__right' + ((_Utils_eq(model.activeRobot, elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.right ? ' active' : ''))),
 												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Move$Right))
+												author$project$Main$AddMove(author$project$Move$Right)),
+												elm$html$Html$Attributes$title('Move current robot right')
 											]),
 										_List_Nil),
 										A2(
@@ -8260,9 +8275,10 @@ var author$project$Main$view = function (model) {
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class(
-												'controls__button controls__down' + (model.keys.down ? ' active' : '')),
+												'controls__button controls__down' + ((_Utils_eq(model.activeRobot, elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.down ? ' active' : ''))),
 												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Move$Down))
+												author$project$Main$AddMove(author$project$Move$Down)),
+												elm$html$Html$Attributes$title('Move current robot down')
 											]),
 										_List_Nil),
 										A2(
@@ -8271,7 +8287,8 @@ var author$project$Main$view = function (model) {
 											[
 												elm$html$Html$Attributes$class(
 												'controls__button controls__undo' + ((model.keys.backspace ? ' active' : '') + (elm$core$List$isEmpty(model.movesQueue) ? ' inactive' : ''))),
-												elm$html$Html$Events$onClick(author$project$Main$PopMove)
+												elm$html$Html$Events$onClick(author$project$Main$PopMove),
+												elm$html$Html$Attributes$title('Undo last move')
 											]),
 										_List_Nil),
 										A2(
@@ -8280,7 +8297,8 @@ var author$project$Main$view = function (model) {
 											[
 												elm$html$Html$Attributes$class(
 												'controls__button controls__cancel' + ((model.keys.esc ? ' active' : '') + (elm$core$List$isEmpty(model.movesQueue) ? ' inactive' : ''))),
-												elm$html$Html$Events$onClick(author$project$Main$ClearMoves)
+												elm$html$Html$Events$onClick(author$project$Main$ClearMoves),
+												elm$html$Html$Attributes$title('Clear current moves')
 											]),
 										_List_Nil)
 									]))

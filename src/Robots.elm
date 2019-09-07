@@ -12,7 +12,7 @@ import Chat exposing (Chatline)
 import Browser
 import Browser.Events
 import Html exposing (..)
-import Html.Attributes exposing (style, type_, placeholder, value, class)
+import Html.Attributes exposing (style, type_, title, placeholder, value, class)
 import Html.Events exposing (onInput, onSubmit, onClick)
 import Time
 import Tuple
@@ -564,8 +564,8 @@ drawScore user =
   div [ class "score" ] 
   [ div [ class "score__username", style "color" user.color ]
     ((text user.username) ::
-    (if user.owner then span [ class "owner" ] [] else span [] []) ::
-    (if user.muted then span [ class "muted" ] [] else span [] []) ::
+    (if user.owner then span [ class "owner", title "Owner" ] [] else span [] []) ::
+    (if user.muted then span [ class "muted", title "Muted" ] [] else span [] []) ::
     [])
   , text (String.fromInt user.score)
   ]
@@ -737,38 +737,38 @@ view model =
         , div [ class "timer", onClick (IncrementScore model.user) ]
           [ div [ class "timer__countdown" ]
             [ span [] [ text (formatTimer model.countdown) ]
-            , div [ class "icon icon--timer" ] []
+            , div [ class "icon icon--timer", title "Countdown before best solution wins!" ] []
             ]
           , div [ class "timer__current-timer" ]
             [ span [] [ text (formatTimer model.currentTimer) ]
-            , div [ class "icon icon--clock" ] []
+            , div [ class "icon icon--clock", title "Time spent on current puzzle" ] []
             ]
           , div [ class ("counter__moves" ++ (if Move.countMoves model.movesQueue > 0 then " active" else "")) ]
             [ span [] [ text (String.fromInt (Move.countMoves model.movesQueue)) ]
-            , div [ class "icon icon--count" ] []
+            , div [ class "icon icon--count", title "Number of moves in current solution attempt" ] []
             ]            
           , div [ class ("counter__robots" ++ (if Move.countRobots model.movesQueue > 0 then " active" else "")) ]
             [ span [] [ text (String.fromInt (Move.countRobots model.movesQueue)) ]
-            , div [ class "icon icon--robot" ] []
+            , div [ class "icon icon--robot", title "Number of robots in current solution attempt" ] []
             ]
           ]
         ]
       , div [ class "main"] [
           div [ class "controls" ]
           [ div [ class "controls__robots" ]
-            [ div [ class ("controls__robot controls__red" ++ (if (Robot.getColor model.activeRobot == Just Red) then " active" else "")), onClick (SetActiveRobot Red)] []
-            , div [ class ("controls__robot controls__green" ++ (if (Robot.getColor model.activeRobot == Just Green) then " active" else "")), onClick (SetActiveRobot Green) ] []
-            , div [ class ("controls__robot controls__blue" ++ (if (Robot.getColor model.activeRobot == Just Blue) then " active" else "")), onClick (SetActiveRobot Blue) ] []
-            , div [ class ("controls__robot controls__yellow" ++ (if (Robot.getColor model.activeRobot == Just Yellow) then " active" else "")), onClick (SetActiveRobot Yellow) ] []
-            , div [ class ("controls__robot controls__silver" ++ (if (Robot.getColor model.activeRobot == Just Silver) then " active" else "")), onClick (SetActiveRobot Silver) ] []
+            [ div [ class ("controls__robot controls__red" ++ (if (Robot.getColor model.activeRobot == Just Red) then " active" else "")), onClick (SetActiveRobot Red), title "Select red robot ([R] or [1])"] []
+            , div [ class ("controls__robot controls__green" ++ (if (Robot.getColor model.activeRobot == Just Green) then " active" else "")), onClick (SetActiveRobot Green), title "Select red robot ([G] or [2])" ] []
+            , div [ class ("controls__robot controls__blue" ++ (if (Robot.getColor model.activeRobot == Just Blue) then " active" else "")), onClick (SetActiveRobot Blue), title "Select red robot ([B] or [3])" ] []
+            , div [ class ("controls__robot controls__yellow" ++ (if (Robot.getColor model.activeRobot == Just Yellow) then " active" else "")), onClick (SetActiveRobot Yellow), title "Select red robot ([Y] or [4])" ] []
+            , div [ class ("controls__robot controls__silver" ++ (if (Robot.getColor model.activeRobot == Just Silver) then " active" else "")), onClick (SetActiveRobot Silver), title "Select red robot ([S] or [5])" ] []
             ]
           , div [ class "controls__directions" ]
-            [ div [ class ("controls__button controls__left" ++ (if model.keys.left then " active" else "")), onClick (AddMove Left) ] []
-            , div [ class ("controls__button controls__up" ++ (if model.keys.up then " active" else "")), onClick (AddMove Up) ] []
-            , div [ class ("controls__button controls__right" ++ (if model.keys.right then " active" else "")), onClick (AddMove Right) ] []
-            , div [ class ("controls__button controls__down" ++ (if model.keys.down then " active" else "")), onClick (AddMove Down) ] []
-            , div [ class ("controls__button controls__undo" ++ (if model.keys.backspace then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick PopMove ] []
-            , div [ class ("controls__button controls__cancel" ++ (if model.keys.esc then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick ClearMoves ] []
+            [ div [ class ("controls__button controls__left" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.left then " active" else "")), onClick (AddMove Left), title "Move current robot left" ] []
+            , div [ class ("controls__button controls__up" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.up then " active" else "")), onClick (AddMove Up), title "Move current robot up" ] []
+            , div [ class ("controls__button controls__right" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.right then " active" else "")), onClick (AddMove Right), title "Move current robot right" ] []
+            , div [ class ("controls__button controls__down" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.down then " active" else "")), onClick (AddMove Down), title "Move current robot down" ] []
+            , div [ class ("controls__button controls__undo" ++ (if model.keys.backspace then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick PopMove, title "Undo last move" ] []
+            , div [ class ("controls__button controls__cancel" ++ (if model.keys.esc then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick ClearMoves, title "Clear current moves" ] []
             ]
            ]
         , div [ class "game" ] (model.boundaryBoard |> drawBoard)
