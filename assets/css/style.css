@@ -40,7 +40,7 @@ main {
 }
 
 .scorebar {
-  flex: 0 0 200px;
+  flex: 0 0 250px;
   background: #141416;
 	display: flex;
 	flex-direction: column;
@@ -212,6 +212,7 @@ textarea, input[type="text"], select {
   background: rgba(0, 0, 0, .3);
   color: #777;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, .5);
+  border-bottom: 1px solid #111;
   padding: .5rem 1.0rem;
   font-size: 0.8rem;
   display: flex;
@@ -390,7 +391,7 @@ textarea, input[type="text"], select {
 }
 
 .score {
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0;
   color: #b0b0b0;
   display: flex;
 }
@@ -401,23 +402,46 @@ textarea, input[type="text"], select {
   margin-right: 0.5rem;
 }
 
+.muted, .owner {
+  height: 1.0rem;
+  width: 1.0rem;
+  display: inline-block;
+  margin-left: .25rem;
+  vertical-align: middle;
+  mask-size: 100% 100%;
+  mask-position: center center;
+  mask-repeat: no-repeat;
+  background-color: #666;
+  margin-top: -2px;
+}
+
+.muted { mask-image: url('../static/images/icons/mute.png'); }
+.owner { mask-image: url('../static/images/icons/owner.png'); }
+
+.sidebar__goal {
+  border-bottom: 1px solid #333;
+  padding: 0.75rem;
+}
+
 .timer {
   flex: 0 0 auto;
-  margin: 0.75rem;
+  padding: 0.75rem;
   display: flex;
   flex-wrap: wrap;
   text-align: center;
   font-family: Monospace;
-  font-size: 2.0rem;
-  color: #656565;
+  font-size: 1.4rem;
+  background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
+  color: #858585;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, .8);
   justify-content: center;
   font-weight: 200;
+  border-top: 1px solid #060606;
+  justify-content: space-around;
 }
 
 .timer__countdown {
-  flex: 0 0 100%;
-  border-bottom: 1px solid #333;
+  flex: 0 0 auto;
   align-self: flex-end;
   opacity: .25;
   display: flex;
@@ -425,8 +449,7 @@ textarea, input[type="text"], select {
 }
 
 .timer__current-timer {
-  flex: 0 0 100%;
-  border-top: 1px solid #060606;
+  flex: 0 0 auto;
   align-self: flex-start;
   display: flex;
   align-items: center;
@@ -440,6 +463,7 @@ textarea, input[type="text"], select {
   flex: 0 0 auto;
   height: 1.5rem;
   width: 1.5rem;
+  margin: 0 0.5rem;
   background: currentColor;
   mask-size: 100% 100%;
   mask-repeat: no-repeat;
@@ -455,9 +479,8 @@ textarea, input[type="text"], select {
 }
 
 .goal {
-  height: 5.0rem;
-  width: 5.0rem;
-  margin-bottom: 1.0rem;
+  height: 4.0rem;
+  width: 4.0rem;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-position: center center;

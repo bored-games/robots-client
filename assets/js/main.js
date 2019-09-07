@@ -4957,6 +4957,7 @@ var author$project$Main$testFill = F2(
 	function (x, y) {
 		return 1;
 	});
+var elm$json$Json$Encode$bool = _Json_wrap;
 var elm$json$Json$Encode$int = _Json_wrap;
 var elm$json$Json$Encode$object = function (pairs) {
 	return _Json_wrap(
@@ -4983,14 +4984,20 @@ var author$project$User$encodeUser = function (user) {
 				elm$json$Json$Encode$string(user.color)),
 				_Utils_Tuple2(
 				'score',
-				elm$json$Json$Encode$int(user.score))
+				elm$json$Json$Encode$int(user.score)),
+				_Utils_Tuple2(
+				'owner',
+				elm$json$Json$Encode$bool(user.owner)),
+				_Utils_Tuple2(
+				'muted',
+				elm$json$Json$Encode$bool(user.muted))
 			]));
 };
 var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		author$project$Main$Model('Initialized model.')(
 			author$project$Main$Keys(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false))(
-			{color: '#6c6adc', score: 0, username: 'patty'})(_List_Nil)(_List_Nil)('')('')('')(
+			{color: '#6c6adc', muted: false, owner: true, score: 0, username: 'patty'})(_List_Nil)(_List_Nil)('')('')('')(
 			A2(author$project$Board$square, 16, author$project$Main$testFill))(
 			_List_fromArray(
 				[
@@ -5041,7 +5048,7 @@ var author$project$Main$init = function (_n0) {
 							_Utils_Tuple2(
 							'content',
 							author$project$User$encodeUser(
-								{color: '#6c6adc', score: 0, username: 'patty'}))
+								{color: '#6c6adc', muted: false, owner: true, score: 0, username: 'patty'}))
 						])))));
 };
 var author$project$Main$GetJSON = function (a) {
@@ -6020,17 +6027,21 @@ var author$project$Chat$Chatline = F3(
 	function (user, msg, kind) {
 		return {kind: kind, msg: msg, user: user};
 	});
-var author$project$User$User = F3(
-	function (username, color, score) {
-		return {color: color, score: score, username: username};
+var author$project$User$User = F5(
+	function (username, color, score, owner, muted) {
+		return {color: color, muted: muted, owner: owner, score: score, username: username};
 	});
-var elm$json$Json$Decode$map3 = _Json_map3;
-var author$project$User$decodeUser = A4(
-	elm$json$Json$Decode$map3,
+var elm$json$Json$Decode$bool = _Json_decodeBool;
+var elm$json$Json$Decode$map5 = _Json_map5;
+var author$project$User$decodeUser = A6(
+	elm$json$Json$Decode$map5,
 	author$project$User$User,
 	A2(elm$json$Json$Decode$field, 'username', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'color', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'score', elm$json$Json$Decode$int));
+	A2(elm$json$Json$Decode$field, 'score', elm$json$Json$Decode$int),
+	A2(elm$json$Json$Decode$field, 'owner', elm$json$Json$Decode$bool),
+	A2(elm$json$Json$Decode$field, 'muted', elm$json$Json$Decode$bool));
+var elm$json$Json$Decode$map3 = _Json_map3;
 var author$project$Chat$decodeChatline = A4(
 	elm$json$Json$Decode$map3,
 	author$project$Chat$Chatline,
@@ -6131,7 +6142,6 @@ var author$project$Goal$decodeGoalSymbol = A2(
 		}
 	},
 	elm$json$Json$Decode$string);
-var elm$json$Json$Decode$bool = _Json_decodeBool;
 var author$project$Goal$decodeGoal = A4(
 	elm$json$Json$Decode$map3,
 	author$project$Goal$Goal,
@@ -7436,10 +7446,28 @@ var author$project$Main$drawScore = function (user) {
 						elm$html$Html$Attributes$class('score__username'),
 						A2(elm$html$Html$Attributes$style, 'color', user.color)
 					]),
-				_List_fromArray(
-					[
-						elm$html$Html$text(user.username)
-					])),
+				A2(
+					elm$core$List$cons,
+					elm$html$Html$text(user.username),
+					A2(
+						elm$core$List$cons,
+						user.owner ? A2(
+							elm$html$Html$span,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$class('owner')
+								]),
+							_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
+						A2(
+							elm$core$List$cons,
+							user.muted ? A2(
+								elm$html$Html$span,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('muted')
+									]),
+								_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
+							_List_Nil)))),
 				elm$html$Html$text(
 				elm$core$String$fromInt(user.score))
 			]));
@@ -7860,9 +7888,7 @@ var author$project$Main$view = function (model) {
 						elm$html$Html$div,
 						_List_fromArray(
 							[
-								elm$html$Html$Attributes$class('timer'),
-								elm$html$Html$Events$onClick(
-								author$project$Main$IncrementScore(model.user))
+								elm$html$Html$Attributes$class('sidebar__goal')
 							]),
 						_List_fromArray(
 							[
@@ -7876,7 +7902,18 @@ var author$project$Main$view = function (model) {
 										}(
 											author$project$Goal$toString(model.goal)))
 									]),
-								_List_Nil),
+								_List_Nil)
+							])),
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('timer'),
+								elm$html$Html$Events$onClick(
+								author$project$Main$IncrementScore(model.user))
+							]),
+						_List_fromArray(
+							[
 								A2(
 								elm$html$Html$div,
 								_List_fromArray(

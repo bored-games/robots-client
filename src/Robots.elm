@@ -566,7 +566,11 @@ formatTimer seconds =
 drawScore : User -> Html Msg
 drawScore user =
   div [ class "score" ] 
-  [ div [ class "score__username", style "color" user.color ] [ text user.username ]
+  [ div [ class "score__username", style "color" user.color ]
+    ((text user.username) ::
+    (if user.owner then span [ class "owner" ] [] else span [] []) ::
+    (if user.muted then span [ class "muted" ] [] else span [] []) ::
+    [])
   , text (String.fromInt user.score)
   ]
 
@@ -644,7 +648,7 @@ drawEmoticons =
 drawSettings : Model -> List (Html Msg)
 drawSettings model =
   [ h2 [ ] [ text "Settings" ]
-  , input [ type_ "text", onInput SetName, placeholder ("Set name (" ++ model.user.username ++ ")"), value model.nameInProgress ] []
+  , input [ type_ "text", onInput SetName, placeholder "New name", value model.nameInProgress ] []
   , select [ onInput SetColor ]
     [
       option [ value "", style "color" "#707070" ] [ text "Change color" ]
@@ -725,18 +729,16 @@ view model =
         [
           div [ class "scores" ] 
             (h2 [] [ text "Scoreboard" ] :: ((List.reverse (List.sortBy .score model.users)) |> drawScores))
-        , div [ class "debug" ] [ text ( Debug.toString (Board.get (1, 1) model.boundaryBoard) ++ "   " ++ model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]          
+        , div [ class "debug" ]
+          [ text ( Debug.toString (Board.get (1, 1) model.boundaryBoard) ++ "   " ++ model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]          
+        , div [ class "sidebar__goal" ] [ div [ class ("goal " ++ .filename (Goal.toString model.goal)) ] [ ] ]
         , div [ class "timer", onClick (IncrementScore model.user) ]
-          [
-            div [ class ("goal " ++ .filename (Goal.toString model.goal)) ] [ ]
-          , div [ class "timer__countdown" ]
-            [
-              span [] [ text (formatTimer model.countdown) ]
+          [ div [ class "timer__countdown" ]
+            [ span [] [ text (formatTimer model.countdown) ]
             , div [ class "icon icon--timer" ] []
             ]
           , div [ class "timer__current-timer" ]
-            [ 
-              span [] [ text (formatTimer model.currentTimer) ]
+            [ span [] [ text (formatTimer model.currentTimer) ]
             , div [ class "icon icon--clock" ] []
             ]
           ]

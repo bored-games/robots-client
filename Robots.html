@@ -64,10 +64,10 @@
     var users = {
       "code": 200,
       "content": [
-        { "username": "art", color:"#e0a85e", score:16 }
-      , { "username": "simon", color:"#95e05e", score:25 }
-      , { "username": "pete", color:"#5eb7e0", score:50 }
-      , { "username": "arlo", color:"#e05e9b", score:8 }
+        { "username": "art", color:"#e0a85e", score:16, owner:false, muted:false }
+      , { "username": "simon", color:"#95e05e", score:25, owner:false, muted:false }
+      , { "username": "pete", color:"#5eb7e0", score:50, owner:false, muted:true }
+      , { "username": "arlo", color:"#e05e9b", score:8, owner:false, muted:false }
       ]};
     
     function robots() {
@@ -123,7 +123,7 @@
         
         case 100: // received request for new game
           chat.content.push(
-            { "user": { "username": "System", color:"#fff", score:0 },
+            { "user": { "username": "System", color:"#fff", score:0, owner:false, muted:false },
               "msg": "Beginning a new game.",
               "kind": 1 }, )
           app.ports.inputPort.send( robots() );
@@ -138,7 +138,7 @@
           app.ports.inputPort.send( user );
           app.ports.inputPort.send( users );
           chat.content.push(
-            { "user": { "username": "System", color:"#fff", score:0 },
+            { "user": { "username": "System", color:"#fff", score:0, owner:false, muted:false },
               "msg": user.content.username + " has joined the game!",
               "kind": 1 }, )
           app.ports.inputPort.send( chat );
