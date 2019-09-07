@@ -93,7 +93,7 @@ init _ =
   (Model
     "Initialized model."
     (Keys False False False False False False False False False False False False False)
-    { username = "patty", color = "#6c6adc", score = 0 }
+    { username = "patty", color = "#6c6adc", score = 0, owner = True, muted = False }
     [ ] -- `users` (and scores)
     [ ] -- `chat`
     "" -- `messageInProgress`
@@ -143,7 +143,7 @@ init _ =
     []                                                                       -- robots
     Nothing                                                                  -- activeRobot
     []                                                                       -- movesQueue
-  ,  outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", User.encodeUser { username = "patty", color = "#6c6adc", score = 0 }) ] ) ) -- initialize user?
+  ,  outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", User.encodeUser { username = "patty", color = "#6c6adc", score = 0, owner = True, muted = False }) ] ) ) -- initialize user?
   )
 
 
