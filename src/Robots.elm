@@ -1,7 +1,7 @@
 port module Main exposing (Model, Msg(..), init, inputPort, main, outputPort, subscriptions, update, view)
 
 import Coordinate exposing (..)
-import Direction exposing (Direction(..))
+import Move exposing (Direction(..), Move)
 import Board
 import Color exposing (..)
 import Robot exposing (Robot)
@@ -40,10 +40,6 @@ type alias JSONMessage =
   , content : Json.Encode.Value
   }
 
-type alias Move =
-  { color : Color
-  , direction : Direction
-  }
 
 type alias Model =
   { debugString : String
@@ -494,7 +490,7 @@ printMoveList : List Move -> String
 printMoveList moveList =
   case moveList of
     a::b ->
-      (Color.toString (Just (.color a))) ++ ":" ++ Direction.toString (.direction a) ++ " -> " ++ (printMoveList b)
+      (Color.toString (Just (.color a))) ++ ":" ++ Move.directionToString (.direction a) ++ " -> " ++ (printMoveList b)
     _ ->
       ""
 
@@ -674,7 +670,13 @@ drawPollOptions : List (Html Msg)
 drawPollOptions =
   [ h2 [ ] [ text "Poll Commands" ]
   , div [ class "poll__command" ] [ text ( "Coming soon." ) ]
-  , div [ class "poll__command" ] [ text ( "/poll new" ) ]
+  , div [ class "poll__command" ] [ text ( "/poll owner " ) ]
+  , div [ class "poll__command" ] [ text ( "/poll user " ) ]
+  , div [ class "poll__command" ] [ text ( "/poll mute " ) ]
+  , div [ class "poll__command" ] [ text ( "/poll loud " ) ]
+  , div [ class "poll__command" ] [ text ( "/poll kick " ) ]
+  , div [ class "poll__command" ] [ text ( "/poll set_score " ) ]
+  , div [ class "poll__command" ] [ text ( "/poll reset_scores " ) ]
   ]
 
 parseEmoticonHtml : String -> List (Html Msg)
@@ -740,6 +742,14 @@ view model =
           , div [ class "timer__current-timer" ]
             [ span [] [ text (formatTimer model.currentTimer) ]
             , div [ class "icon icon--clock" ] []
+            ]
+          , div [ class ("counter__moves" ++ (if Move.countMoves model.movesQueue > 0 then " active" else "")) ]
+            [ span [] [ text (String.fromInt (Move.countMoves model.movesQueue)) ]
+            , div [ class "icon icon--count" ] []
+            ]            
+          , div [ class ("counter__robots" ++ (if Move.countRobots model.movesQueue > 0 then " active" else "")) ]
+            [ span [] [ text (String.fromInt (Move.countRobots model.movesQueue)) ]
+            , div [ class "icon icon--robot" ] []
             ]
           ]
         ]

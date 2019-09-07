@@ -3,7 +3,7 @@ module Robot exposing (..)
 import Color
 import Coordinate
 import Board
-import Direction exposing (Direction(..))
+import Move exposing (Direction(..))
 
 import Json.Decode
 

@@ -1,7 +1,7 @@
 module Board exposing (..)
 
 import Coordinate exposing (Coordinate)
-import Direction exposing (Direction(..))
+import Move exposing (Direction(..))
 
 import Array exposing (Array)
 import Maybe

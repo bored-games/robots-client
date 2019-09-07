@@ -6071,10 +6071,6 @@ var author$project$Color$Green = {$: 'Green'};
 var author$project$Color$Red = {$: 'Red'};
 var author$project$Color$Silver = {$: 'Silver'};
 var author$project$Color$Yellow = {$: 'Yellow'};
-var author$project$Direction$Down = {$: 'Down'};
-var author$project$Direction$Left = {$: 'Left'};
-var author$project$Direction$Right = {$: 'Right'};
-var author$project$Direction$Up = {$: 'Up'};
 var author$project$Coordinate$toCoordinate = F2(
 	function (x, y) {
 		return _Utils_Tuple2(x, y);
@@ -6192,7 +6188,7 @@ var author$project$Main$popMove = function (oldQueue) {
 		return b;
 	}
 };
-var author$project$Main$Move = F2(
+var author$project$Move$Move = F2(
 	function (color, direction) {
 		return {color: color, direction: direction};
 	});
@@ -6234,7 +6230,7 @@ var author$project$Main$pushMove = F3(
 			var robot = activeRobot.a;
 			return A2(elm$core$List$member, dir, robot.moves) ? A2(
 				elm$core$List$cons,
-				A2(author$project$Main$Move, robot.color, dir),
+				A2(author$project$Move$Move, robot.color, dir),
 				oldQueue) : oldQueue;
 		}
 	});
@@ -6337,18 +6333,22 @@ var author$project$Main$updateKeys = F3(
 				return keys;
 		}
 	});
+var author$project$Move$Down = {$: 'Down'};
+var author$project$Move$Left = {$: 'Left'};
+var author$project$Move$Right = {$: 'Right'};
+var author$project$Move$Up = {$: 'Up'};
 var author$project$Board$decodeDirection = A2(
 	elm$json$Json$Decode$andThen,
 	function (str) {
 		switch (str) {
 			case 'up':
-				return elm$json$Json$Decode$succeed(author$project$Direction$Up);
+				return elm$json$Json$Decode$succeed(author$project$Move$Up);
 			case 'down':
-				return elm$json$Json$Decode$succeed(author$project$Direction$Down);
+				return elm$json$Json$Decode$succeed(author$project$Move$Down);
 			case 'left':
-				return elm$json$Json$Decode$succeed(author$project$Direction$Left);
+				return elm$json$Json$Decode$succeed(author$project$Move$Left);
 			case 'right':
-				return elm$json$Json$Decode$succeed(author$project$Direction$Right);
+				return elm$json$Json$Decode$succeed(author$project$Move$Right);
 			default:
 				var somethingElse = str;
 				return elm$json$Json$Decode$fail('Unknown Direction: ' + somethingElse);
@@ -6831,13 +6831,13 @@ var author$project$Main$update = F2(
 						if (isDown) {
 							switch (key) {
 								case 'ArrowLeft':
-									return A3(author$project$Main$pushMove, author$project$Direction$Left, model.activeRobot, model.movesQueue);
+									return A3(author$project$Main$pushMove, author$project$Move$Left, model.activeRobot, model.movesQueue);
 								case 'ArrowRight':
-									return A3(author$project$Main$pushMove, author$project$Direction$Right, model.activeRobot, model.movesQueue);
+									return A3(author$project$Main$pushMove, author$project$Move$Right, model.activeRobot, model.movesQueue);
 								case 'ArrowUp':
-									return A3(author$project$Main$pushMove, author$project$Direction$Up, model.activeRobot, model.movesQueue);
+									return A3(author$project$Main$pushMove, author$project$Move$Up, model.activeRobot, model.movesQueue);
 								case 'ArrowDown':
-									return A3(author$project$Main$pushMove, author$project$Direction$Down, model.activeRobot, model.movesQueue);
+									return A3(author$project$Main$pushMove, author$project$Move$Down, model.activeRobot, model.movesQueue);
 								case 'Escape':
 									return _List_Nil;
 								case 'Backspace':
@@ -7427,7 +7427,67 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll new')
+				elm$html$Html$text('/poll owner ')
+			])),
+		A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('poll__command')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('/poll user ')
+			])),
+		A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('poll__command')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('/poll mute ')
+			])),
+		A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('poll__command')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('/poll loud ')
+			])),
+		A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('poll__command')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('/poll kick ')
+			])),
+		A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('poll__command')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('/poll set_score ')
+			])),
+		A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('poll__command')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('/poll reset_scores ')
 			]))
 	]);
 var author$project$Main$drawScore = function (user) {
@@ -7532,7 +7592,7 @@ var author$project$Main$drawSettings = function (model) {
 				[
 					elm$html$Html$Attributes$type_('text'),
 					elm$html$Html$Events$onInput(author$project$Main$SetName),
-					elm$html$Html$Attributes$placeholder('Set name (' + (model.user.username + ')')),
+					elm$html$Html$Attributes$placeholder('New name'),
 					elm$html$Html$Attributes$value(model.nameInProgress)
 				]),
 			_List_Nil),
@@ -7748,7 +7808,7 @@ var author$project$Main$onEnter = function (msg) {
 	var decoder = A2(elm$json$Json$Decode$andThen, filterKey, elm$html$Html$Events$keyCode);
 	return A2(elm$html$Html$Events$custom, 'keydown', decoder);
 };
-var author$project$Direction$toString = function (dir) {
+var author$project$Move$directionToString = function (dir) {
 	switch (dir.$) {
 		case 'Left':
 			return 'left';
@@ -7768,13 +7828,69 @@ var author$project$Main$printMoveList = function (moveList) {
 			elm$core$Maybe$Just(
 				function ($) {
 					return $.color;
-				}(a))) + (':' + (author$project$Direction$toString(
+				}(a))) + (':' + (author$project$Move$directionToString(
 			function ($) {
 				return $.direction;
 			}(a)) + (' -> ' + author$project$Main$printMoveList(b))));
 	} else {
 		return '';
 	}
+};
+var author$project$Move$countMoves = function (moves) {
+	return elm$core$List$length(moves);
+};
+var elm$core$Set$Set_elm_builtin = function (a) {
+	return {$: 'Set_elm_builtin', a: a};
+};
+var elm$core$Set$empty = elm$core$Set$Set_elm_builtin(elm$core$Dict$empty);
+var elm$core$Set$insert = F2(
+	function (key, _n0) {
+		var dict = _n0.a;
+		return elm$core$Set$Set_elm_builtin(
+			A3(elm$core$Dict$insert, key, _Utils_Tuple0, dict));
+	});
+var elm$core$Set$fromList = function (list) {
+	return A3(elm$core$List$foldl, elm$core$Set$insert, elm$core$Set$empty, list);
+};
+var elm$core$Dict$sizeHelp = F2(
+	function (n, dict) {
+		sizeHelp:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return n;
+			} else {
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$n = A2(elm$core$Dict$sizeHelp, n + 1, right),
+					$temp$dict = left;
+				n = $temp$n;
+				dict = $temp$dict;
+				continue sizeHelp;
+			}
+		}
+	});
+var elm$core$Dict$size = function (dict) {
+	return A2(elm$core$Dict$sizeHelp, 0, dict);
+};
+var elm$core$Set$size = function (_n0) {
+	var dict = _n0.a;
+	return elm$core$Dict$size(dict);
+};
+var author$project$Move$countRobots = function (moves) {
+	return elm$core$Set$size(
+		elm$core$Set$fromList(
+			A2(
+				elm$core$List$map,
+				author$project$Color$toString,
+				A2(
+					elm$core$List$map,
+					elm$core$Maybe$Just,
+					A2(
+						elm$core$List$map,
+						function ($) {
+							return $.color;
+						},
+						moves)))));
 };
 var author$project$Robot$getColor = function (robot) {
 	if (robot.$ === 'Nothing') {
@@ -7961,6 +8077,58 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Attributes$class('icon icon--clock')
 											]),
 										_List_Nil)
+									])),
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class(
+										'counter__moves' + ((author$project$Move$countMoves(model.movesQueue) > 0) ? ' active' : ''))
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$span,
+										_List_Nil,
+										_List_fromArray(
+											[
+												elm$html$Html$text(
+												elm$core$String$fromInt(
+													author$project$Move$countMoves(model.movesQueue)))
+											])),
+										A2(
+										elm$html$Html$div,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('icon icon--count')
+											]),
+										_List_Nil)
+									])),
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class(
+										'counter__robots' + ((author$project$Move$countRobots(model.movesQueue) > 0) ? ' active' : ''))
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$span,
+										_List_Nil,
+										_List_fromArray(
+											[
+												elm$html$Html$text(
+												elm$core$String$fromInt(
+													author$project$Move$countRobots(model.movesQueue)))
+											])),
+										A2(
+										elm$html$Html$div,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('icon icon--robot')
+											]),
+										_List_Nil)
 									]))
 							]))
 					])),
@@ -8064,7 +8232,7 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Attributes$class(
 												'controls__button controls__left' + (model.keys.left ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Direction$Left))
+												author$project$Main$AddMove(author$project$Move$Left))
 											]),
 										_List_Nil),
 										A2(
@@ -8074,7 +8242,7 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Attributes$class(
 												'controls__button controls__up' + (model.keys.up ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Direction$Up))
+												author$project$Main$AddMove(author$project$Move$Up))
 											]),
 										_List_Nil),
 										A2(
@@ -8084,7 +8252,7 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Attributes$class(
 												'controls__button controls__right' + (model.keys.right ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Direction$Right))
+												author$project$Main$AddMove(author$project$Move$Right))
 											]),
 										_List_Nil),
 										A2(
@@ -8094,7 +8262,7 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Attributes$class(
 												'controls__button controls__down' + (model.keys.down ? ' active' : '')),
 												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Direction$Down))
+												author$project$Main$AddMove(author$project$Move$Down))
 											]),
 										_List_Nil),
 										A2(

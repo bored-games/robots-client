@@ -271,7 +271,6 @@ textarea, input[type="text"], select {
 .controls__yellow { background-image: url('../static/images/game/yellow-robot.png'); }
 .controls__silver { background-image: url('../static/images/game/silver-robot.png'); }
 
-
 .controls__up { mask-image: url('../static/images/icons/up.png'); }
 .controls__down { mask-image: url('../static/images/icons/down.png'); }
 .controls__left { mask-image: url('../static/images/icons/left.png') }
@@ -428,31 +427,43 @@ textarea, input[type="text"], select {
   padding: 0.75rem;
   display: flex;
   flex-wrap: wrap;
-  text-align: center;
   font-family: Monospace;
   font-size: 1.4rem;
   background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
   color: #858585;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, .8);
-  justify-content: center;
   font-weight: 200;
   border-top: 1px solid #060606;
-  justify-content: space-around;
+  text-align: right;
 }
 
 .timer__countdown {
-  flex: 0 0 auto;
-  align-self: flex-end;
+  flex: 0 0 50%;
   opacity: .25;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .timer__current-timer {
-  flex: 0 0 auto;
-  align-self: flex-start;
+  flex: 0 0 50%;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+}
+
+.counter__moves {
+  display: flex;
+  flex: 0 0 50%;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.counter__robots {
+  flex: 0 0 50%;
+  align-items: center;
+  justify-content: flex-end;
+  display: flex;
 }
 
 .timer__current-timer span, .timer__countdown span {
@@ -470,13 +481,10 @@ textarea, input[type="text"], select {
   mask-position: center center;
 }
 
-.icon--timer {
-  mask-image: url('../static/images/icons/timer.png');
-}
-
-.icon--clock {
-  mask-image: url('../static/images/icons/clock.png');
-}
+.icon--timer { mask-image: url('../static/images/icons/timer.png'); }
+.icon--clock { mask-image: url('../static/images/icons/clock.png'); }
+.icon--count { mask-image: url('../static/images/icons/count.png'); }
+.icon--robot { mask-image: url('../static/images/icons/robot.png'); }
 
 .goal {
   height: 4.0rem;
