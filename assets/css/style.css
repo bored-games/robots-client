@@ -284,7 +284,7 @@ textarea, input[type="text"], select {
   color: #777;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, .5);
   padding: .5rem 1.0rem;
-  font-family: "Consolas";
+  font-family: Monospace;
   font-size: 0.8rem;
 }
 
@@ -335,16 +335,16 @@ textarea, input[type="text"], select {
 }
 
 .square--0 { background-image: url('../static/images/game/s-0.png'); }
-.square--1 { background-image: url('../static/images/game/s-1.png'); }
-.square--2 { background-image: url('../static/images/game/s-2.png'); }
-.square--3 { background-image: url('../static/images/game/s-3.png'); }
-.square--4 { background-image: url('../static/images/game/s-4.png'); }
+.square--1, .square--93, .square--129, .square--145 { background-image: url('../static/images/game/s-1.png'); }
+.square--2, .square--50 { background-image: url('../static/images/game/s-2.png'); }
+.square--3, .square--51, .square--147, .square--179 { background-image: url('../static/images/game/s-3.png'); }
+.square--4, .square--100 { background-image: url('../static/images/game/s-4.png'); }
 .square--5 { background-image: url('../static/images/game/s-5.png'); }
-.square--6 { background-image: url('../static/images/game/s-6.png'); }
-.square--8 { background-image: url('../static/images/game/s-8.png'); }
-.square--9 { background-image: url('../static/images/game/s-9.png'); }
+.square--6, .square--38, .square--54, .square--102, .square--118 { background-image: url('../static/images/game/s-6.png'); }
+.square--8, .square--72, .square--200 { background-image: url('../static/images/game/s-8.png'); }
+.square--9, .square--153, .square--201, .square--217 { background-image: url('../static/images/game/s-9.png'); }
 .square--10 { background-image: url('../static/images/game/s-10.png'); }
-.square--12 { background-image: url('../static/images/game/s-12.png'); }
+.square--12, .square--204, .square--108, .square--236 { background-image: url('../static/images/game/s-12.png'); }
 .square--16 { background-image: url('../static/images/game/s-16.png'); }
 .square--20 { background-image: url('../static/images/game/s-20.png'); }
 .square--24 { background-image: url('../static/images/game/s-24.png'); }

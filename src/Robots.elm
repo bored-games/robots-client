@@ -54,7 +54,7 @@ type alias Model =
   , messageInProgress : String
   , nameInProgress : String
   , colorInProgress : String
-  , boundaryBoard : Board.Grid Color
+  , boundaryBoard : Board.Grid Int
   , testboard : List ( List Int )
   , goal : GoalSymbol
   , goalList : List Goal
@@ -80,18 +80,19 @@ type alias Keys =
   , four : Bool
   , five : Bool
   , esc : Bool
+  , backspace : Bool
   }
 
 
-testFill : Int -> Int -> Color
+testFill : Int -> Int -> Int
 testFill x y =
-  Blue
+  1
 
 init : () -> (Model, Cmd Msg)
 init _ =
   (Model
     "Initialized model."
-    (Keys False False False False False False False False False False False False)
+    (Keys False False False False False False False False False False False False False)
     { username = "patty", color = "#6c6adc", score = 0 }
     [ ] -- `users` (and scores)
     [ ] -- `chat`
@@ -99,22 +100,38 @@ init _ =
     "" -- `nameInProgress`
     "" -- `colorInProgress`
     (Board.square 16 (testFill) )                    -- boundaryBoard
-    [ [ 9,  3,  9,  1,  5, 65,  1,  1,  3,  9, 33,  5,  1,  1,  1,  3],
-      [ 8,  0,  0,  0,  3,  8,  0,  0,  0,  0,  2,  9,  0,  0,  0,  6],
-      [ 8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  4, 67],
-      [10, 12,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  3, 10],
-      [24,  1,  0,  0, 32,  4,  0,  0,  0,  6,  8,  0,  0,  0,  0,  2],
-      [12,  0,  0,  0,  2,  9,  0,  0,  0,  1,128,  0,  0,  0,  0,  2],
-      [ 9,  0,  0,  6,  8,  0, 32,  4,  4, 64,  0,  2, 12,  0,  0,  2],
-      [ 8,  0,  4, 65,128,  0,  2, 99, 99,  8,  0, 16,  1,  0,  0,  2],
-      [ 8,  0,  3,  8,  0,  0,  2, 99, 99,  8,  0,  0,  0,  0,  0,  2],
-      [ 8,  0,  0,  0,  2, 12, 16,  1,  1,128, 32,  4,  0,  0,  0,  2],
-      [ 8,  6,  8,  0, 16,  1,  0,  0,  0,  0,  2,  9,  0,  0,  0,  2],
-      [ 8,  1,128,  0,  4, 64,  0,  0,  0,  0,  4, 64,  2, 12,  0,  6],
-      [12,  0,  0,  0,  3,  8,  0,  0,  0,  0,  3,  8, 16,  1,  0,  3],
-      [ 9,  0,  0,  0,  0, 32,  4,  0,  0,  0,  0,  0,  6,  8,  0,  2],
-      [ 8,  0,  0,  0,  0,  2,  9,  0,  0,  0,  0,  0,  1,128,  0,  2],
-      [12,  4,  4,  6, 12,  4,  4,  4,  4,  6, 12,  4,  4,  4,  4,  6] ]      -- board
+    [ [217,145,147,153,145,145,145,145,145,145,145,147,153,145,145,179],
+      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,54],
+      [200,38,72,0,0,0,0,0,0,0,0,0,0,0,0,51],
+      [238,93,128,0,0,0,0,0,0,0,0,0,0,0,0,50],
+      [217,129,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
+      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
+      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
+      [200,0,0,0,0,0,0,256,257,0,0,0,0,0,0,50],
+      [200,0,0,0,0,0,0,258,259,0,0,0,0,0,0,54],
+      [204,0,0,0,0,0,0,0,0,0,0,0,0,0,0,51],
+      [201,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
+      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
+      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
+      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
+      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
+      [236,100,100,102,108,100,100,100,102,108,100,100,100,100,100,118] ]
+-- [ [ 9,  3,  9,  1,  5, 65,  1,  1,  3,  9, 33,  5,  1,  1,  1,  3],
+--       [ 8,  0,  0,  0,  3,  8,  0,  0,  0,  0,  2,  9,  0,  0,  0,  6],
+--       [ 8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  4, 67],
+--       [10, 12,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  3, 10],
+--       [24,  1,  0,  0, 32,  4,  0,  0,  0,  6,  8,  0,  0,  0,  0,  2],
+--       [12,  0,  0,  0,  2,  9,  0,  0,  0,  1,128,  0,  0,  0,  0,  2],
+--       [ 9,  0,  0,  6,  8,  0, 32,  4,  4, 64,  0,  2, 12,  0,  0,  2],
+--       [ 8,  0,  4, 65,128,  0,  2, 99, 99,  8,  0, 16,  1,  0,  0,  2],
+--       [ 8,  0,  3,  8,  0,  0,  2, 99, 99,  8,  0,  0,  0,  0,  0,  2],
+--       [ 8,  0,  0,  0,  2, 12, 16,  1,  1,128, 32,  4,  0,  0,  0,  2],
+--       [ 8,  6,  8,  0, 16,  1,  0,  0,  0,  0,  2,  9,  0,  0,  0,  2],
+--       [ 8,  1,128,  0,  4, 64,  0,  0,  0,  0,  4, 64,  2, 12,  0,  6],
+--       [12,  0,  0,  0,  3,  8,  0,  0,  0,  0,  3,  8, 16,  1,  0,  3],
+--       [ 9,  0,  0,  0,  0, 32,  4,  0,  0,  0,  0,  0,  6,  8,  0,  2],
+--       [ 8,  0,  0,  0,  0,  2,  9,  0,  0,  0,  0,  0,  1,128,  0,  2],
+--       [12,  4,  4,  6, 12,  4,  4,  4,  4,  6, 12,  4,  4,  4,  4,  6] ]      -- board
     RedMoon                                                                   -- goalSymbol
     [ ]
     { settings = "none",
@@ -148,7 +165,9 @@ type Msg
   | InsertEmoticon String
   | DisplayCountdown String
   | Tick Time.Posix
+  | Ping Time.Posix
   | GetJSON Json.Encode.Value      -- Parse incoming JSON
+  | GetBoard Json.Encode.Value     -- 100
   | GetRobotList Json.Encode.Value -- 101
   | GetGoalList Json.Encode.Value  -- 102
   | GetUsersList Json.Encode.Value -- 200
@@ -288,12 +307,21 @@ update msg model =
     Tick newTime ->
       ( { model | currentTimer = (model.currentTimer + 1) }, Cmd.none )
 
+    Ping newTime ->
+      ( { model | currentTimer = (model.currentTimer + 1) }
+        , outputPort (Json.Encode.encode
+                        0
+                      ( Json.Encode.object
+                      [ ( "code", Json.Encode.int 1),
+                        ( "content", Json.Encode.string "ping" ) ] ) )
+      )
+
     GetJSON json ->
       case (Json.Decode.decodeValue decodeJSON json) of
         Ok {code, content} ->
           case code of
             100 ->
-              ((Debug.log "TODO: Update board layout" model), Cmd.none )
+              update (GetBoard content) model
             101 ->
               update (GetRobotList content) model
             102 ->
@@ -309,6 +337,13 @@ update msg model =
 
         Err _ ->
           ( { model | users = []}, Cmd.none )
+
+    GetBoard json ->
+      case (Json.Decode.decodeValue Board.decodeBoard json) of
+        Ok board ->
+          ( { model | boundaryBoard = board}, Cmd.none )
+        Err _ ->
+          ( { model | robots = []}, Cmd.none )
 
     GetRobotList json ->
       case (Json.Decode.decodeValue Robot.decodeRobotsList json) of
@@ -381,14 +416,19 @@ update msg model =
             case key of
               "1"      -> (Robot.getByColor Red model.robots)
               "r"      -> (Robot.getByColor Red model.robots)
+              "R"      -> (Robot.getByColor Red model.robots)
               "2"      -> (Robot.getByColor Green model.robots)
               "g"      -> (Robot.getByColor Green model.robots)
+              "G"      -> (Robot.getByColor Green model.robots)
               "3"      -> (Robot.getByColor Blue model.robots)
               "b"      -> (Robot.getByColor Blue model.robots)
+              "B"      -> (Robot.getByColor Blue model.robots)
               "4"      -> (Robot.getByColor Yellow model.robots)
               "y"      -> (Robot.getByColor Yellow model.robots)
+              "Y"      -> (Robot.getByColor Yellow model.robots)
               "5"      -> (Robot.getByColor Silver model.robots)
               "s"      -> (Robot.getByColor Silver model.robots)
+              "S"      -> (Robot.getByColor Silver model.robots)
               "Escape" -> Nothing
               _        -> model.activeRobot
           else
@@ -402,6 +442,7 @@ update msg model =
               "ArrowUp"    -> pushMove Up model.activeRobot model.movesQueue
               "ArrowDown"  -> pushMove Down model.activeRobot model.movesQueue
               "Escape"     -> []
+              "Backspace"  -> popMove model.movesQueue
               _ -> model.movesQueue
           else
             model.movesQueue
@@ -422,10 +463,7 @@ update msg model =
     -- Remove last move from queue (for Undo)
     PopMove ->
       let
-        moves =
-          case model.movesQueue of
-            [] -> []
-            a::b -> b
+        moves = popMove model.movesQueue
       in
       ( { model | movesQueue = moves }, Cmd.none )
       
@@ -444,6 +482,13 @@ pushMove dir activeRobot oldQueue =
       else
         oldQueue
 
+popMove : List Move -> List Move
+popMove oldQueue =
+  case oldQueue of
+    [] -> []
+    a::b -> b
+
+
 -- debug function:
 printMoveList : List Move -> String
 printMoveList moveList =
@@ -457,23 +502,29 @@ printMoveList moveList =
 updateKeys : Bool -> String -> Keys -> Keys
 updateKeys isDown key keys =
   case key of
-    " "          -> { keys | space = isDown }
-    "ArrowUp"    -> { keys | up    = isDown }
-    "ArrowLeft"  -> { keys | left  = isDown }
-    "ArrowDown"  -> { keys | down  = isDown }
-    "ArrowRight" -> { keys | right = isDown }
-    "Enter"      -> { keys | enter = isDown }
-    "1"          -> { keys | one   = isDown }
-    "2"          -> { keys | two   = isDown }
-    "3"          -> { keys | three = isDown }
-    "4"          -> { keys | four  = isDown }
-    "5"          -> { keys | five  = isDown }
-    "r"          -> { keys | one   = isDown }
-    "g"          -> { keys | two   = isDown }
-    "b"          -> { keys | three = isDown }
-    "y"          -> { keys | four  = isDown }
-    "s"          -> { keys | five  = isDown }
-    "Escape"     -> { keys | esc   = isDown }
+    " "          -> { keys | space     = isDown }
+    "ArrowUp"    -> { keys | up        = isDown }
+    "ArrowLeft"  -> { keys | left      = isDown }
+    "ArrowDown"  -> { keys | down      = isDown }
+    "ArrowRight" -> { keys | right     = isDown }
+    "Enter"      -> { keys | enter     = isDown }
+    "1"          -> { keys | one       = isDown }
+    "2"          -> { keys | two       = isDown }
+    "3"          -> { keys | three     = isDown }
+    "4"          -> { keys | four      = isDown }
+    "5"          -> { keys | five      = isDown }
+    "r"          -> { keys | one       = isDown }
+    "g"          -> { keys | two       = isDown }
+    "b"          -> { keys | three     = isDown }
+    "y"          -> { keys | four      = isDown }
+    "s"          -> { keys | five      = isDown }
+    "R"          -> { keys | one       = isDown }
+    "G"          -> { keys | two       = isDown }
+    "B"          -> { keys | three     = isDown }
+    "Y"          -> { keys | four      = isDown }
+    "S"          -> { keys | five      = isDown }
+    "Escape"     -> { keys | esc       = isDown }
+    "Backspace"  -> { keys | backspace = isDown }
     _            -> keys
 
 
@@ -493,7 +544,8 @@ port inputPort : (Json.Encode.Value -> msg) -> Sub msg
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
-    [ Time.every 1000 Tick
+    [ Time.every 60000 Ping
+    , Time.every 1000 Tick
     , inputPort GetJSON
     , Browser.Events.onKeyUp (Json.Decode.map (KeyChanged False) (Json.Decode.field "key" Json.Decode.string))
     , Browser.Events.onKeyDown (Json.Decode.map (KeyChanged True) (Json.Decode.field "key" Json.Decode.string))
@@ -530,25 +582,24 @@ drawMessage message =
       (div [ class "chat__line" ] [ em [ class "chat__line--system" ] [ text message.msg ] ])
 
 
-drawAll : Int -> (List ( List Int )) -> List Robot -> List Goal -> List ( List (Html Msg) )
+drawAll : Int -> Board.Grid Int -> List Robot -> List Goal -> List ( List (Html Msg) )
 drawAll rowi board robots goals =
-  case board of
-    [] -> []
-    
-    a::b ->
-      drawRow rowi 0 a robots goals :: drawAll (rowi + 1) b robots goals
+  if rowi < 16 then
+    drawRow rowi 0 board robots goals :: drawAll (rowi + 1) board robots goals
+  else
+    []
 
-drawRow : Int -> Int -> (List Int) -> List Robot -> List Goal -> List (Html Msg)
-drawRow rowi colj rows robots goals =
-  case rows of
-    [] -> []
-  
-    a::b ->
-      drawSquare rowi colj a robots goals :: drawRow rowi (colj + 1) b robots goals
+drawRow : Int -> Int -> Board.Grid Int -> List Robot -> List Goal -> List (Html Msg)
+drawRow rowi colj board robots goals =
+  if colj < 16 then
+    drawSquare rowi colj board robots goals :: drawRow rowi (colj+1) board robots goals
+  else
+    []
 
-drawSquare : Int -> Int -> Int -> List Robot -> List Goal -> Html Msg
-drawSquare rowi colj val robots goals =
+drawSquare : Int -> Int -> Board.Grid Int -> List Robot -> List Goal -> Html Msg
+drawSquare rowi colj board robots goals =
   let
+    val = Board.get (colj, rowi) board
     robotSquares = List.map .pos robots
     matchedRobot = 
       case (List.head (List.filter (Robot.matchRobot rowi colj) robots)) of
@@ -563,21 +614,21 @@ drawSquare rowi colj val robots goals =
           ""
         Just matchedGoalObj ->
           (.filename (Goal.toString matchedGoalObj.symbol))
-
   in
     case val of
-      99 ->
+      Nothing ->
         div [ class "square square--block" ]
          [
            div [ class ("goal "++matchedGoal) ] []
          , div [ class ("robot robot--"++matchedRobot) ] []
         ]
-      n -> 
+      Just n -> 
         div [ class ("square square--" ++ String.fromInt n) ]
          [
            div [ class ("goal "++matchedGoal) ] []
          , div [ class ("robot robot--"++matchedRobot) ] []
          ]
+
 
 
 
@@ -674,6 +725,7 @@ view model =
         [
           div [ class "scores" ] 
             (h2 [] [ text "Scoreboard" ] :: ((List.reverse (List.sortBy .score model.users)) |> drawScores))
+        , div [ class "debug" ] [ text ( Debug.toString (Board.get (1, 1) model.boundaryBoard) ++ "   " ++ model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]          
         , div [ class "timer", onClick (IncrementScore model.user) ]
           [
             div [ class ("goal " ++ .filename (Goal.toString model.goal)) ] [ ]
@@ -703,12 +755,11 @@ view model =
             , div [ class ("controls__button controls__up" ++ (if model.keys.up then " active" else "")), onClick (AddMove Up) ] []
             , div [ class ("controls__button controls__right" ++ (if model.keys.right then " active" else "")), onClick (AddMove Right) ] []
             , div [ class ("controls__button controls__down" ++ (if model.keys.down then " active" else "")), onClick (AddMove Down) ] []
-            , div [ class ("controls__button controls__undo" ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick PopMove ] []
-            , div [ class ("controls__button controls__cancel" ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick ClearMoves ] []
+            , div [ class ("controls__button controls__undo" ++ (if model.keys.backspace then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick PopMove ] []
+            , div [ class ("controls__button controls__cancel" ++ (if model.keys.esc then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick ClearMoves ] []
             ]
-          , div [ ] [ text ( Color.toString (Board.get (1, 1) model.boundaryBoard) ++ "   " ++ model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]
            ]
-        , div [ class "game" ] (model.testboard |> drawBoard)
+        , div [ class "game" ] (model.boundaryBoard |> drawBoard)
         ]
       , div [ class "sidebar" ]
         [

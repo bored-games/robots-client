@@ -4676,7 +4676,9 @@ var author$project$Main$Keys = function (up) {
 									return function (four) {
 										return function (five) {
 											return function (esc) {
-												return {down: down, enter: enter, esc: esc, five: five, four: four, left: left, one: one, right: right, space: space, three: three, two: two, up: up};
+												return function (backspace) {
+													return {backspace: backspace, down: down, enter: enter, esc: esc, five: five, four: four, left: left, one: one, right: right, space: space, three: three, two: two, up: up};
+												};
 											};
 										};
 									};
@@ -4951,10 +4953,9 @@ var elm$json$Json$Decode$errorToStringHelp = F2(
 	});
 var elm$json$Json$Encode$string = _Json_wrap;
 var author$project$Main$outputPort = _Platform_outgoingPort('outputPort', elm$json$Json$Encode$string);
-var author$project$Color$Blue = {$: 'Blue'};
 var author$project$Main$testFill = F2(
 	function (x, y) {
-		return author$project$Color$Blue;
+		return 1;
 	});
 var elm$json$Json$Encode$int = _Json_wrap;
 var elm$json$Json$Encode$object = function (pairs) {
@@ -4988,43 +4989,43 @@ var author$project$User$encodeUser = function (user) {
 var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		author$project$Main$Model('Initialized model.')(
-			author$project$Main$Keys(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false))(
+			author$project$Main$Keys(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false))(
 			{color: '#6c6adc', score: 0, username: 'patty'})(_List_Nil)(_List_Nil)('')('')('')(
 			A2(author$project$Board$square, 16, author$project$Main$testFill))(
 			_List_fromArray(
 				[
 					_List_fromArray(
-					[9, 3, 9, 1, 5, 65, 1, 1, 3, 9, 33, 5, 1, 1, 1, 3]),
+					[217, 145, 147, 153, 145, 145, 145, 145, 145, 145, 145, 147, 153, 145, 145, 179]),
 					_List_fromArray(
-					[8, 0, 0, 0, 3, 8, 0, 0, 0, 0, 2, 9, 0, 0, 0, 6]),
+					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 54]),
 					_List_fromArray(
-					[8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 67]),
+					[200, 38, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 51]),
 					_List_fromArray(
-					[10, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 10]),
+					[238, 93, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
 					_List_fromArray(
-					[24, 1, 0, 0, 32, 4, 0, 0, 0, 6, 8, 0, 0, 0, 0, 2]),
+					[217, 129, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
 					_List_fromArray(
-					[12, 0, 0, 0, 2, 9, 0, 0, 0, 1, 128, 0, 0, 0, 0, 2]),
+					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
 					_List_fromArray(
-					[9, 0, 0, 6, 8, 0, 32, 4, 4, 64, 0, 2, 12, 0, 0, 2]),
+					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
 					_List_fromArray(
-					[8, 0, 4, 65, 128, 0, 2, 99, 99, 8, 0, 16, 1, 0, 0, 2]),
+					[200, 0, 0, 0, 0, 0, 0, 256, 257, 0, 0, 0, 0, 0, 0, 50]),
 					_List_fromArray(
-					[8, 0, 3, 8, 0, 0, 2, 99, 99, 8, 0, 0, 0, 0, 0, 2]),
+					[200, 0, 0, 0, 0, 0, 0, 258, 259, 0, 0, 0, 0, 0, 0, 54]),
 					_List_fromArray(
-					[8, 0, 0, 0, 2, 12, 16, 1, 1, 128, 32, 4, 0, 0, 0, 2]),
+					[204, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 51]),
 					_List_fromArray(
-					[8, 6, 8, 0, 16, 1, 0, 0, 0, 0, 2, 9, 0, 0, 0, 2]),
+					[201, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
 					_List_fromArray(
-					[8, 1, 128, 0, 4, 64, 0, 0, 0, 0, 4, 64, 2, 12, 0, 6]),
+					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
 					_List_fromArray(
-					[12, 0, 0, 0, 3, 8, 0, 0, 0, 0, 3, 8, 16, 1, 0, 3]),
+					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
 					_List_fromArray(
-					[9, 0, 0, 0, 0, 32, 4, 0, 0, 0, 0, 0, 6, 8, 0, 2]),
+					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
 					_List_fromArray(
-					[8, 0, 0, 0, 0, 2, 9, 0, 0, 0, 0, 0, 1, 128, 0, 2]),
+					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
 					_List_fromArray(
-					[12, 4, 4, 6, 12, 4, 4, 4, 4, 6, 12, 4, 4, 4, 4, 6])
+					[236, 100, 100, 102, 108, 100, 100, 100, 102, 108, 100, 100, 100, 100, 100, 118])
 				]))(author$project$Goal$RedMoon)(_List_Nil)(
 			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'none'})(60)(0)(_List_Nil)(elm$core$Maybe$Nothing)(_List_Nil),
 		author$project$Main$outputPort(
@@ -5050,6 +5051,9 @@ var author$project$Main$KeyChanged = F2(
 	function (a, b) {
 		return {$: 'KeyChanged', a: a, b: b};
 	});
+var author$project$Main$Ping = function (a) {
+	return {$: 'Ping', a: a};
+};
 var author$project$Main$Tick = function (a) {
 	return {$: 'Tick', a: a};
 };
@@ -5993,6 +5997,7 @@ var author$project$Main$subscriptions = function (model) {
 	return elm$core$Platform$Sub$batch(
 		_List_fromArray(
 			[
+				A2(elm$time$Time$every, 60000, author$project$Main$Ping),
 				A2(elm$time$Time$every, 1000, author$project$Main$Tick),
 				author$project$Main$inputPort(author$project$Main$GetJSON),
 				elm$browser$Browser$Events$onKeyUp(
@@ -6007,6 +6012,10 @@ var author$project$Main$subscriptions = function (model) {
 					A2(elm$json$Json$Decode$field, 'key', elm$json$Json$Decode$string)))
 			]));
 };
+var elm$json$Json$Decode$array = _Json_decodeArray;
+var elm$json$Json$Decode$int = _Json_decodeInt;
+var author$project$Board$decodeRow = elm$json$Json$Decode$array(elm$json$Json$Decode$int);
+var author$project$Board$decodeBoard = elm$json$Json$Decode$array(author$project$Board$decodeRow);
 var author$project$Chat$Chatline = F3(
 	function (user, msg, kind) {
 		return {kind: kind, msg: msg, user: user};
@@ -6015,7 +6024,6 @@ var author$project$User$User = F3(
 	function (username, color, score) {
 		return {color: color, score: score, username: username};
 	});
-var elm$json$Json$Decode$int = _Json_decodeInt;
 var elm$json$Json$Decode$map3 = _Json_map3;
 var author$project$User$decodeUser = A4(
 	elm$json$Json$Decode$map3,
@@ -6047,6 +6055,7 @@ var author$project$Chat$encodeChatline = F3(
 					elm$json$Json$Encode$int(kind))
 				]));
 	});
+var author$project$Color$Blue = {$: 'Blue'};
 var author$project$Color$Green = {$: 'Green'};
 var author$project$Color$Red = {$: 'Red'};
 var author$project$Color$Silver = {$: 'Silver'};
@@ -6137,6 +6146,9 @@ var author$project$Goal$decodeGoal = A4(
 	A2(elm$json$Json$Decode$field, 'symbol', author$project$Goal$decodeGoalSymbol),
 	A2(elm$json$Json$Decode$field, 'active', elm$json$Json$Decode$bool));
 var author$project$Goal$decodeGoalList = elm$json$Json$Decode$list(author$project$Goal$decodeGoal);
+var author$project$Main$GetBoard = function (a) {
+	return {$: 'GetBoard', a: a};
+};
 var author$project$Main$GetChat = function (a) {
 	return {$: 'GetChat', a: a};
 };
@@ -6161,6 +6173,15 @@ var author$project$Main$decodeJSON = A3(
 	author$project$Main$JSONMessage,
 	A2(elm$json$Json$Decode$field, 'code', elm$json$Json$Decode$int),
 	A2(elm$json$Json$Decode$field, 'content', elm$json$Json$Decode$value));
+var author$project$Main$popMove = function (oldQueue) {
+	if (!oldQueue.b) {
+		return _List_Nil;
+	} else {
+		var a = oldQueue.a;
+		var b = oldQueue.b;
+		return b;
+	}
+};
 var author$project$Main$Move = F2(
 	function (color, direction) {
 		return {color: color, direction: direction};
@@ -6274,10 +6295,34 @@ var author$project$Main$updateKeys = F3(
 				return _Utils_update(
 					keys,
 					{five: isDown});
+			case 'R':
+				return _Utils_update(
+					keys,
+					{one: isDown});
+			case 'G':
+				return _Utils_update(
+					keys,
+					{two: isDown});
+			case 'B':
+				return _Utils_update(
+					keys,
+					{three: isDown});
+			case 'Y':
+				return _Utils_update(
+					keys,
+					{four: isDown});
+			case 'S':
+				return _Utils_update(
+					keys,
+					{five: isDown});
 			case 'Escape':
 				return _Utils_update(
 					keys,
 					{esc: isDown});
+			case 'Backspace':
+				return _Utils_update(
+					keys,
+					{backspace: isDown});
 			default:
 				return keys;
 		}
@@ -6575,6 +6620,26 @@ var author$project$Main$update = F2(
 							model,
 							{currentTimer: model.currentTimer + 1}),
 						elm$core$Platform$Cmd$none);
+				case 'Ping':
+					var newTime = _n0.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{currentTimer: model.currentTimer + 1}),
+						author$project$Main$outputPort(
+							A2(
+								elm$json$Json$Encode$encode,
+								0,
+								elm$json$Json$Encode$object(
+									_List_fromArray(
+										[
+											_Utils_Tuple2(
+											'code',
+											elm$json$Json$Encode$int(1)),
+											_Utils_Tuple2(
+											'content',
+											elm$json$Json$Encode$string('ping'))
+										])))));
 				case 'GetJSON':
 					var json = _n0.a;
 					var _n1 = A2(elm$json$Json$Decode$decodeValue, author$project$Main$decodeJSON, json);
@@ -6583,9 +6648,11 @@ var author$project$Main$update = F2(
 						var content = _n1.a.content;
 						switch (code) {
 							case 100:
-								return _Utils_Tuple2(
-									A2(elm$core$Debug$log, 'TODO: Update board layout', model),
-									elm$core$Platform$Cmd$none);
+								var $temp$msg = author$project$Main$GetBoard(content),
+									$temp$model = model;
+								msg = $temp$msg;
+								model = $temp$model;
+								continue update;
 							case 101:
 								var $temp$msg = author$project$Main$GetRobotList(content),
 									$temp$model = model;
@@ -6628,11 +6695,28 @@ var author$project$Main$update = F2(
 								{users: _List_Nil}),
 							elm$core$Platform$Cmd$none);
 					}
+				case 'GetBoard':
+					var json = _n0.a;
+					var _n3 = A2(elm$json$Json$Decode$decodeValue, author$project$Board$decodeBoard, json);
+					if (_n3.$ === 'Ok') {
+						var board = _n3.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{boundaryBoard: board}),
+							elm$core$Platform$Cmd$none);
+					} else {
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{robots: _List_Nil}),
+							elm$core$Platform$Cmd$none);
+					}
 				case 'GetRobotList':
 					var json = _n0.a;
-					var _n3 = A2(elm$json$Json$Decode$decodeValue, author$project$Robot$decodeRobotsList, json);
-					if (_n3.$ === 'Ok') {
-						var robotList = _n3.a;
+					var _n4 = A2(elm$json$Json$Decode$decodeValue, author$project$Robot$decodeRobotsList, json);
+					if (_n4.$ === 'Ok') {
+						var robotList = _n4.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -6647,21 +6731,21 @@ var author$project$Main$update = F2(
 					}
 				case 'GetGoalList':
 					var json = _n0.a;
-					var _n4 = A2(elm$json$Json$Decode$decodeValue, author$project$Goal$decodeGoalList, json);
-					if (_n4.$ === 'Ok') {
-						var goalList = _n4.a;
+					var _n5 = A2(elm$json$Json$Decode$decodeValue, author$project$Goal$decodeGoalList, json);
+					if (_n5.$ === 'Ok') {
+						var goalList = _n5.a;
 						var activeGoal = function () {
-							var _n5 = elm$core$List$head(
+							var _n6 = elm$core$List$head(
 								A2(
 									elm$core$List$filter,
 									function ($) {
 										return $.active;
 									},
 									goalList));
-							if (_n5.$ === 'Nothing') {
+							if (_n6.$ === 'Nothing') {
 								return author$project$Goal$RedMoon;
 							} else {
-								var anyGoal = _n5.a;
+								var anyGoal = _n6.a;
 								return function ($) {
 									return $.symbol;
 								}(anyGoal);
@@ -6681,9 +6765,9 @@ var author$project$Main$update = F2(
 					}
 				case 'GetUsersList':
 					var json = _n0.a;
-					var _n6 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUsersList, json);
-					if (_n6.$ === 'Ok') {
-						var usersList = _n6.a;
+					var _n7 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUsersList, json);
+					if (_n7.$ === 'Ok') {
+						var usersList = _n7.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -6698,9 +6782,9 @@ var author$project$Main$update = F2(
 					}
 				case 'GetUser':
 					var json = _n0.a;
-					var _n7 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUser, json);
-					if (_n7.$ === 'Ok') {
-						var user = _n7.a;
+					var _n8 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUser, json);
+					if (_n8.$ === 'Ok') {
+						var user = _n8.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -6715,9 +6799,9 @@ var author$project$Main$update = F2(
 					}
 				case 'GetChat':
 					var json = _n0.a;
-					var _n8 = A2(elm$json$Json$Decode$decodeValue, author$project$Chat$decodeChatList, json);
-					if (_n8.$ === 'Ok') {
-						var chatList = _n8.a;
+					var _n9 = A2(elm$json$Json$Decode$decodeValue, author$project$Chat$decodeChatList, json);
+					if (_n9.$ === 'Ok') {
+						var chatList = _n9.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -6746,6 +6830,8 @@ var author$project$Main$update = F2(
 									return A3(author$project$Main$pushMove, author$project$Direction$Down, model.activeRobot, model.movesQueue);
 								case 'Escape':
 									return _List_Nil;
+								case 'Backspace':
+									return author$project$Main$popMove(model.movesQueue);
 								default:
 									return model.movesQueue;
 							}
@@ -6828,21 +6914,31 @@ var author$project$Main$update = F2(
 									return A2(author$project$Robot$getByColor, author$project$Color$Red, model.robots);
 								case 'r':
 									return A2(author$project$Robot$getByColor, author$project$Color$Red, model.robots);
+								case 'R':
+									return A2(author$project$Robot$getByColor, author$project$Color$Red, model.robots);
 								case '2':
 									return A2(author$project$Robot$getByColor, author$project$Color$Green, model.robots);
 								case 'g':
+									return A2(author$project$Robot$getByColor, author$project$Color$Green, model.robots);
+								case 'G':
 									return A2(author$project$Robot$getByColor, author$project$Color$Green, model.robots);
 								case '3':
 									return A2(author$project$Robot$getByColor, author$project$Color$Blue, model.robots);
 								case 'b':
 									return A2(author$project$Robot$getByColor, author$project$Color$Blue, model.robots);
+								case 'B':
+									return A2(author$project$Robot$getByColor, author$project$Color$Blue, model.robots);
 								case '4':
 									return A2(author$project$Robot$getByColor, author$project$Color$Yellow, model.robots);
 								case 'y':
 									return A2(author$project$Robot$getByColor, author$project$Color$Yellow, model.robots);
+								case 'Y':
+									return A2(author$project$Robot$getByColor, author$project$Color$Yellow, model.robots);
 								case '5':
 									return A2(author$project$Robot$getByColor, author$project$Color$Silver, model.robots);
 								case 's':
+									return A2(author$project$Robot$getByColor, author$project$Color$Silver, model.robots);
+								case 'S':
 									return A2(author$project$Robot$getByColor, author$project$Color$Silver, model.robots);
 								case 'Escape':
 									return elm$core$Maybe$Nothing;
@@ -6876,16 +6972,7 @@ var author$project$Main$update = F2(
 							{movesQueue: newQueue}),
 						elm$core$Platform$Cmd$none);
 				case 'PopMove':
-					var moves = function () {
-						var _n11 = model.movesQueue;
-						if (!_n11.b) {
-							return _List_Nil;
-						} else {
-							var a = _n11.a;
-							var b = _n11.b;
-							return b;
-						}
-					}();
+					var moves = author$project$Main$popMove(model.movesQueue);
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -6964,29 +7051,6 @@ var author$project$Board$get = F2(
 				val);
 		}
 	});
-var author$project$Color$toString = function (color) {
-	if (color.$ === 'Nothing') {
-		return 'unknown-color';
-	} else {
-		switch (color.a.$) {
-			case 'Red':
-				var _n1 = color.a;
-				return 'red';
-			case 'Green':
-				var _n2 = color.a;
-				return 'green';
-			case 'Blue':
-				var _n3 = color.a;
-				return 'blue';
-			case 'Yellow':
-				var _n4 = color.a;
-				return 'yellow';
-			default:
-				var _n5 = color.a;
-				return 'silver';
-		}
-	}
-};
 var author$project$Goal$toString = function (goal) {
 	switch (goal.$) {
 		case 'RedMoon':
@@ -7042,6 +7106,29 @@ var author$project$Main$SetMessage = function (a) {
 var author$project$Main$ToggleEmoticons = {$: 'ToggleEmoticons'};
 var author$project$Main$TogglePollOptions = {$: 'TogglePollOptions'};
 var author$project$Main$ToggleSettings = {$: 'ToggleSettings'};
+var author$project$Color$toString = function (color) {
+	if (color.$ === 'Nothing') {
+		return 'unknown-color';
+	} else {
+		switch (color.a.$) {
+			case 'Red':
+				var _n1 = color.a;
+				return 'red';
+			case 'Green':
+				var _n2 = color.a;
+				return 'green';
+			case 'Blue':
+				var _n3 = color.a;
+				return 'blue';
+			case 'Yellow':
+				var _n4 = color.a;
+				return 'yellow';
+			default:
+				var _n5 = color.a;
+				return 'silver';
+		}
+	}
+};
 var author$project$Goal$matchGoal = F3(
 	function (rowi, colj, record) {
 		return _Utils_eq(
@@ -7064,7 +7151,11 @@ var elm$html$Html$Attributes$stringProperty = F2(
 	});
 var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var author$project$Main$drawSquare = F5(
-	function (rowi, colj, val, robots, goals) {
+	function (rowi, colj, board, robots, goals) {
+		var val = A2(
+			author$project$Board$get,
+			_Utils_Tuple2(colj, rowi),
+			board);
 		var robotSquares = A2(
 			elm$core$List$map,
 			function ($) {
@@ -7104,7 +7195,7 @@ var author$project$Main$drawSquare = F5(
 					author$project$Goal$toString(matchedGoalObj.symbol));
 			}
 		}();
-		if (val === 99) {
+		if (val.$ === 'Nothing') {
 			return A2(
 				elm$html$Html$div,
 				_List_fromArray(
@@ -7129,7 +7220,7 @@ var author$project$Main$drawSquare = F5(
 						_List_Nil)
 					]));
 		} else {
-			var n = val;
+			var n = val.a;
 			return A2(
 				elm$html$Html$div,
 				_List_fromArray(
@@ -7157,30 +7248,18 @@ var author$project$Main$drawSquare = F5(
 		}
 	});
 var author$project$Main$drawRow = F5(
-	function (rowi, colj, rows, robots, goals) {
-		if (!rows.b) {
-			return _List_Nil;
-		} else {
-			var a = rows.a;
-			var b = rows.b;
-			return A2(
-				elm$core$List$cons,
-				A5(author$project$Main$drawSquare, rowi, colj, a, robots, goals),
-				A5(author$project$Main$drawRow, rowi, colj + 1, b, robots, goals));
-		}
+	function (rowi, colj, board, robots, goals) {
+		return (colj < 16) ? A2(
+			elm$core$List$cons,
+			A5(author$project$Main$drawSquare, rowi, colj, board, robots, goals),
+			A5(author$project$Main$drawRow, rowi, colj + 1, board, robots, goals)) : _List_Nil;
 	});
 var author$project$Main$drawAll = F4(
 	function (rowi, board, robots, goals) {
-		if (!board.b) {
-			return _List_Nil;
-		} else {
-			var a = board.a;
-			var b = board.b;
-			return A2(
-				elm$core$List$cons,
-				A5(author$project$Main$drawRow, rowi, 0, a, robots, goals),
-				A4(author$project$Main$drawAll, rowi + 1, b, robots, goals));
-		}
+		return (rowi < 16) ? A2(
+			elm$core$List$cons,
+			A5(author$project$Main$drawRow, rowi, 0, board, robots, goals),
+			A4(author$project$Main$drawAll, rowi + 1, board, robots, goals)) : _List_Nil;
 	});
 var author$project$Main$InsertEmoticon = function (a) {
 	return {$: 'InsertEmoticon', a: a};
@@ -7680,6 +7759,7 @@ var author$project$Robot$getColor = function (robot) {
 			}(r));
 	}
 };
+var elm$core$Debug$toString = _Debug_toString;
 var elm$core$List$append = F2(
 	function (xs, ys) {
 		if (!ys.b) {
@@ -7760,6 +7840,22 @@ var author$project$Main$view = function (model) {
 											return $.score;
 										},
 										model.users))))),
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('debug')
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text(
+								elm$core$Debug$toString(
+									A2(
+										author$project$Board$get,
+										_Utils_Tuple2(1, 1),
+										model.boundaryBoard)) + ('   ' + (model.debugString + ('   ' + author$project$Main$printMoveList(
+									elm$core$List$reverse(model.movesQueue))))))
+							])),
 						A2(
 						elm$html$Html$div,
 						_List_fromArray(
@@ -7969,7 +8065,7 @@ var author$project$Main$view = function (model) {
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class(
-												'controls__button controls__undo' + (elm$core$List$isEmpty(model.movesQueue) ? ' inactive' : '')),
+												'controls__button controls__undo' + ((model.keys.backspace ? ' active' : '') + (elm$core$List$isEmpty(model.movesQueue) ? ' inactive' : ''))),
 												elm$html$Html$Events$onClick(author$project$Main$PopMove)
 											]),
 										_List_Nil),
@@ -7978,23 +8074,10 @@ var author$project$Main$view = function (model) {
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class(
-												'controls__button controls__cancel' + (elm$core$List$isEmpty(model.movesQueue) ? ' inactive' : '')),
+												'controls__button controls__cancel' + ((model.keys.esc ? ' active' : '') + (elm$core$List$isEmpty(model.movesQueue) ? ' inactive' : ''))),
 												elm$html$Html$Events$onClick(author$project$Main$ClearMoves)
 											]),
 										_List_Nil)
-									])),
-								A2(
-								elm$html$Html$div,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										author$project$Color$toString(
-											A2(
-												author$project$Board$get,
-												_Utils_Tuple2(1, 1),
-												model.boundaryBoard)) + ('   ' + (model.debugString + ('   ' + author$project$Main$printMoveList(
-											elm$core$List$reverse(model.movesQueue))))))
 									]))
 							])),
 						A2(
@@ -8003,7 +8086,7 @@ var author$project$Main$view = function (model) {
 							[
 								elm$html$Html$Attributes$class('game')
 							]),
-						drawBoard(model.testboard))
+						drawBoard(model.boundaryBoard))
 					])),
 				A2(
 				elm$html$Html$div,

@@ -85,6 +85,16 @@ mapWithCoordinate f grid =
     (\y -> Array.indexedMap (\x -> f (Coordinate.toCoordinate x y)))
     grid
 
+{-| JSON decoder for JSON arrays of arrays to a Grid -}
+decodeBoard : Json.Decode.Decoder (Grid Int)
+decodeBoard =
+  Json.Decode.array decodeRow
+
+decodeRow : Json.Decode.Decoder (Array Int)
+decodeRow =
+  Json.Decode.array Json.Decode.int
+
+
 {-| JSON decoder for Direction -}
 decodeDirection : Json.Decode.Decoder Direction
 decodeDirection =
