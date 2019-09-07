@@ -7,6 +7,7 @@ import Color exposing (..)
 import Robot exposing (Robot)
 import Goal exposing (GoalSymbol(..), Goal)
 import User exposing (User)
+import Chat exposing (Chatline)
 
 import Browser
 import Browser.Events
@@ -98,22 +99,22 @@ init _ =
     "" -- `nameInProgress`
     "" -- `colorInProgress`
     (Board.square 16 (testFill) )                    -- boundaryBoard
-    [ [ 7,  8,  7,  2, 15, 17,  2,  2,  8,  7, 16, 15,  2,  2,  2,  8],
-      [ 5,  1,  1,  1,  8,  5,  1,  1,  1,  1,  3,  7,  1,  1,  1,  9],
-      [ 5,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  4, 26],
-      [14,  6,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  8, 14],
-      [22,  2,  1,  1, 13,  4,  1,  1,  1,  9,  5,  1,  1,  1,  1,  3],
-      [ 6,  1,  1,  1,  3,  7,  1,  1,  1,  2, 11,  1,  1,  1,  1,  3],
-      [ 7,  1,  1,  9,  5,  1, 13,  4,  4, 10,  1,  3,  6,  1,  1,  3],
-      [ 5,  1,  4, 17, 11,  1,  3,  0,  0,  5,  1, 12,  2,  1,  1,  3],
-      [ 5,  1,  8,  5,  1,  1,  3,  0,  0,  5,  1,  1,  1,  1,  1,  3],
-      [ 5,  1,  1,  1,  3,  6, 12,  2,  2, 11, 13,  4,  1,  1,  1,  3],
-      [ 5,  9,  5,  1, 12,  2,  1,  1,  1,  1,  3,  7,  1,  1,  1,  3],
-      [ 5,  2, 11,  1,  4, 10,  1,  1,  1,  1,  4, 10,  3,  6,  1,  9],
-      [ 6,  1,  1,  1,  8,  5,  1,  1,  1,  1,  8,  5, 12,  2,  1,  8],
-      [ 7,  1,  1,  1,  1, 13,  4,  1,  1,  1,  1,  1,  9,  5,  1,  3],
-      [ 5,  1,  1,  1,  1,  3,  7,  1,  1,  1,  1,  1,  2, 11,  1,  3],
-      [ 6,  4,  4,  9,  6,  4,  4,  4,  4,  9,  6,  4,  4,  4,  4,  9] ]      -- board
+    [ [ 9,  3,  9,  1,  5, 65,  1,  1,  3,  9, 33,  5,  1,  1,  1,  3],
+      [ 8,  0,  0,  0,  3,  8,  0,  0,  0,  0,  2,  9,  0,  0,  0,  6],
+      [ 8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  4, 67],
+      [10, 12,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  3, 10],
+      [24,  1,  0,  0, 32,  4,  0,  0,  0,  6,  8,  0,  0,  0,  0,  2],
+      [12,  0,  0,  0,  2,  9,  0,  0,  0,  1,128,  0,  0,  0,  0,  2],
+      [ 9,  0,  0,  6,  8,  0, 32,  4,  4, 64,  0,  2, 12,  0,  0,  2],
+      [ 8,  0,  4, 65,128,  0,  2, 99, 99,  8,  0, 16,  1,  0,  0,  2],
+      [ 8,  0,  3,  8,  0,  0,  2, 99, 99,  8,  0,  0,  0,  0,  0,  2],
+      [ 8,  0,  0,  0,  2, 12, 16,  1,  1,128, 32,  4,  0,  0,  0,  2],
+      [ 8,  6,  8,  0, 16,  1,  0,  0,  0,  0,  2,  9,  0,  0,  0,  2],
+      [ 8,  1,128,  0,  4, 64,  0,  0,  0,  0,  4, 64,  2, 12,  0,  6],
+      [12,  0,  0,  0,  3,  8,  0,  0,  0,  0,  3,  8, 16,  1,  0,  3],
+      [ 9,  0,  0,  0,  0, 32,  4,  0,  0,  0,  0,  0,  6,  8,  0,  2],
+      [ 8,  0,  0,  0,  0,  2,  9,  0,  0,  0,  0,  0,  1,128,  0,  2],
+      [12,  4,  4,  6, 12,  4,  4,  4,  4,  6, 12,  4,  4,  4,  4,  6] ]      -- board
     RedMoon                                                                   -- goalSymbol
     [ ]
     { settings = "none",
@@ -210,7 +211,7 @@ update msg model =
                           0
                         ( Json.Encode.object
                         [ ( "code", Json.Encode.int 202),
-                          ( "content", encodeChatline model.user newmsg 0 ) ] ) ) )
+                          ( "content", Chat.encodeChatline model.user newmsg 0 ) ] ) ) )
 
     NewGame -> -- TODO!
       ( { model
@@ -335,21 +336,21 @@ update msg model =
           ( { model | goalList = []}, Cmd.none )
 
     GetUsersList json ->
-      case (Json.Decode.decodeValue decodeUsersList json) of
+      case (Json.Decode.decodeValue User.decodeUsersList json) of
         Ok usersList ->
           ( { model | users = usersList}, Cmd.none )
         Err _ ->
           ( { model | users = []}, Cmd.none )
 
     GetUser json ->
-      case (Json.Decode.decodeValue decodeUser json) of
+      case (Json.Decode.decodeValue User.decodeUser json) of
         Ok user ->
           ( { model | user = user}, Cmd.none )
         Err _ ->
           ( { model | users = []}, Cmd.none )
 
     GetChat json ->
-      case (Json.Decode.decodeValue decodeChatList json) of
+      case (Json.Decode.decodeValue Chat.decodeChatList json) of
         Ok chatList ->
           ( { model | chat = chatList}, Cmd.none )
         Err _ ->
@@ -565,7 +566,7 @@ drawSquare rowi colj val robots goals =
 
   in
     case val of
-      0 ->
+      99 ->
         div [ class "square square--block" ]
          [
            div [ class ("goal "++matchedGoal) ] []

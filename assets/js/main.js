@@ -4949,6 +4949,13 @@ var elm$json$Json$Decode$errorToStringHelp = F2(
 			}
 		}
 	});
+var elm$json$Json$Encode$string = _Json_wrap;
+var author$project$Main$outputPort = _Platform_outgoingPort('outputPort', elm$json$Json$Encode$string);
+var author$project$Color$Blue = {$: 'Blue'};
+var author$project$Main$testFill = F2(
+	function (x, y) {
+		return author$project$Color$Blue;
+	});
 var elm$json$Json$Encode$int = _Json_wrap;
 var elm$json$Json$Encode$object = function (pairs) {
 	return _Json_wrap(
@@ -4963,8 +4970,7 @@ var elm$json$Json$Encode$object = function (pairs) {
 			_Json_emptyObject(_Utils_Tuple0),
 			pairs));
 };
-var elm$json$Json$Encode$string = _Json_wrap;
-var author$project$Main$encodeUser = function (user) {
+var author$project$User$encodeUser = function (user) {
 	return elm$json$Json$Encode$object(
 		_List_fromArray(
 			[
@@ -4979,12 +4985,6 @@ var author$project$Main$encodeUser = function (user) {
 				elm$json$Json$Encode$int(user.score))
 			]));
 };
-var author$project$Main$outputPort = _Platform_outgoingPort('outputPort', elm$json$Json$Encode$string);
-var author$project$Color$Blue = {$: 'Blue'};
-var author$project$Main$testFill = F2(
-	function (x, y) {
-		return author$project$Color$Blue;
-	});
 var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		author$project$Main$Model('Initialized model.')(
@@ -4994,37 +4994,37 @@ var author$project$Main$init = function (_n0) {
 			_List_fromArray(
 				[
 					_List_fromArray(
-					[7, 8, 7, 2, 15, 17, 2, 2, 8, 7, 16, 15, 2, 2, 2, 8]),
+					[9, 3, 9, 1, 5, 65, 1, 1, 3, 9, 33, 5, 1, 1, 1, 3]),
 					_List_fromArray(
-					[5, 1, 1, 1, 8, 5, 1, 1, 1, 1, 3, 7, 1, 1, 1, 9]),
+					[8, 0, 0, 0, 3, 8, 0, 0, 0, 0, 2, 9, 0, 0, 0, 6]),
 					_List_fromArray(
-					[5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 26]),
+					[8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 67]),
 					_List_fromArray(
-					[14, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 14]),
+					[10, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 10]),
 					_List_fromArray(
-					[22, 2, 1, 1, 13, 4, 1, 1, 1, 9, 5, 1, 1, 1, 1, 3]),
+					[24, 1, 0, 0, 32, 4, 0, 0, 0, 6, 8, 0, 0, 0, 0, 2]),
 					_List_fromArray(
-					[6, 1, 1, 1, 3, 7, 1, 1, 1, 2, 11, 1, 1, 1, 1, 3]),
+					[12, 0, 0, 0, 2, 9, 0, 0, 0, 1, 128, 0, 0, 0, 0, 2]),
 					_List_fromArray(
-					[7, 1, 1, 9, 5, 1, 13, 4, 4, 10, 1, 3, 6, 1, 1, 3]),
+					[9, 0, 0, 6, 8, 0, 32, 4, 4, 64, 0, 2, 12, 0, 0, 2]),
 					_List_fromArray(
-					[5, 1, 4, 17, 11, 1, 3, 0, 0, 5, 1, 12, 2, 1, 1, 3]),
+					[8, 0, 4, 65, 128, 0, 2, 99, 99, 8, 0, 16, 1, 0, 0, 2]),
 					_List_fromArray(
-					[5, 1, 8, 5, 1, 1, 3, 0, 0, 5, 1, 1, 1, 1, 1, 3]),
+					[8, 0, 3, 8, 0, 0, 2, 99, 99, 8, 0, 0, 0, 0, 0, 2]),
 					_List_fromArray(
-					[5, 1, 1, 1, 3, 6, 12, 2, 2, 11, 13, 4, 1, 1, 1, 3]),
+					[8, 0, 0, 0, 2, 12, 16, 1, 1, 128, 32, 4, 0, 0, 0, 2]),
 					_List_fromArray(
-					[5, 9, 5, 1, 12, 2, 1, 1, 1, 1, 3, 7, 1, 1, 1, 3]),
+					[8, 6, 8, 0, 16, 1, 0, 0, 0, 0, 2, 9, 0, 0, 0, 2]),
 					_List_fromArray(
-					[5, 2, 11, 1, 4, 10, 1, 1, 1, 1, 4, 10, 3, 6, 1, 9]),
+					[8, 1, 128, 0, 4, 64, 0, 0, 0, 0, 4, 64, 2, 12, 0, 6]),
 					_List_fromArray(
-					[6, 1, 1, 1, 8, 5, 1, 1, 1, 1, 8, 5, 12, 2, 1, 8]),
+					[12, 0, 0, 0, 3, 8, 0, 0, 0, 0, 3, 8, 16, 1, 0, 3]),
 					_List_fromArray(
-					[7, 1, 1, 1, 1, 13, 4, 1, 1, 1, 1, 1, 9, 5, 1, 3]),
+					[9, 0, 0, 0, 0, 32, 4, 0, 0, 0, 0, 0, 6, 8, 0, 2]),
 					_List_fromArray(
-					[5, 1, 1, 1, 1, 3, 7, 1, 1, 1, 1, 1, 2, 11, 1, 3]),
+					[8, 0, 0, 0, 0, 2, 9, 0, 0, 0, 0, 0, 1, 128, 0, 2]),
 					_List_fromArray(
-					[6, 4, 4, 9, 6, 4, 4, 4, 4, 9, 6, 4, 4, 4, 4, 9])
+					[12, 4, 4, 6, 12, 4, 4, 4, 4, 6, 12, 4, 4, 4, 4, 6])
 				]))(author$project$Goal$RedMoon)(_List_Nil)(
 			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'none'})(60)(0)(_List_Nil)(elm$core$Maybe$Nothing)(_List_Nil),
 		author$project$Main$outputPort(
@@ -5039,7 +5039,7 @@ var author$project$Main$init = function (_n0) {
 							elm$json$Json$Encode$int(200)),
 							_Utils_Tuple2(
 							'content',
-							author$project$Main$encodeUser(
+							author$project$User$encodeUser(
 								{color: '#6c6adc', score: 0, username: 'patty'}))
 						])))));
 };
@@ -6007,6 +6007,46 @@ var author$project$Main$subscriptions = function (model) {
 					A2(elm$json$Json$Decode$field, 'key', elm$json$Json$Decode$string)))
 			]));
 };
+var author$project$Chat$Chatline = F3(
+	function (user, msg, kind) {
+		return {kind: kind, msg: msg, user: user};
+	});
+var author$project$User$User = F3(
+	function (username, color, score) {
+		return {color: color, score: score, username: username};
+	});
+var elm$json$Json$Decode$int = _Json_decodeInt;
+var elm$json$Json$Decode$map3 = _Json_map3;
+var author$project$User$decodeUser = A4(
+	elm$json$Json$Decode$map3,
+	author$project$User$User,
+	A2(elm$json$Json$Decode$field, 'username', elm$json$Json$Decode$string),
+	A2(elm$json$Json$Decode$field, 'color', elm$json$Json$Decode$string),
+	A2(elm$json$Json$Decode$field, 'score', elm$json$Json$Decode$int));
+var author$project$Chat$decodeChatline = A4(
+	elm$json$Json$Decode$map3,
+	author$project$Chat$Chatline,
+	A2(elm$json$Json$Decode$field, 'user', author$project$User$decodeUser),
+	A2(elm$json$Json$Decode$field, 'msg', elm$json$Json$Decode$string),
+	A2(elm$json$Json$Decode$field, 'kind', elm$json$Json$Decode$int));
+var elm$json$Json$Decode$list = _Json_decodeList;
+var author$project$Chat$decodeChatList = elm$json$Json$Decode$list(author$project$Chat$decodeChatline);
+var author$project$Chat$encodeChatline = F3(
+	function (user, msg, kind) {
+		return elm$json$Json$Encode$object(
+			_List_fromArray(
+				[
+					_Utils_Tuple2(
+					'user',
+					author$project$User$encodeUser(user)),
+					_Utils_Tuple2(
+					'msg',
+					elm$json$Json$Encode$string(msg)),
+					_Utils_Tuple2(
+					'kind',
+					elm$json$Json$Encode$int(kind))
+				]));
+	});
 var author$project$Color$Green = {$: 'Green'};
 var author$project$Color$Red = {$: 'Red'};
 var author$project$Color$Silver = {$: 'Silver'};
@@ -6083,8 +6123,6 @@ var author$project$Goal$decodeGoalSymbol = A2(
 	},
 	elm$json$Json$Decode$string);
 var elm$json$Json$Decode$bool = _Json_decodeBool;
-var elm$json$Json$Decode$int = _Json_decodeInt;
-var elm$json$Json$Decode$map3 = _Json_map3;
 var author$project$Goal$decodeGoal = A4(
 	elm$json$Json$Decode$map3,
 	author$project$Goal$Goal,
@@ -6098,7 +6136,6 @@ var author$project$Goal$decodeGoal = A4(
 			A2(elm$json$Json$Decode$field, 'y', elm$json$Json$Decode$int))),
 	A2(elm$json$Json$Decode$field, 'symbol', author$project$Goal$decodeGoalSymbol),
 	A2(elm$json$Json$Decode$field, 'active', elm$json$Json$Decode$bool));
-var elm$json$Json$Decode$list = _Json_decodeList;
 var author$project$Goal$decodeGoalList = elm$json$Json$Decode$list(author$project$Goal$decodeGoal);
 var author$project$Main$GetChat = function (a) {
 	return {$: 'GetChat', a: a};
@@ -6115,27 +6152,6 @@ var author$project$Main$GetUser = function (a) {
 var author$project$Main$GetUsersList = function (a) {
 	return {$: 'GetUsersList', a: a};
 };
-var author$project$Main$Chatline = F3(
-	function (user, msg, kind) {
-		return {kind: kind, msg: msg, user: user};
-	});
-var author$project$Main$User = F3(
-	function (username, color, score) {
-		return {color: color, score: score, username: username};
-	});
-var author$project$Main$decodeUser = A4(
-	elm$json$Json$Decode$map3,
-	author$project$Main$User,
-	A2(elm$json$Json$Decode$field, 'username', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'color', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'score', elm$json$Json$Decode$int));
-var author$project$Main$decodeChatline = A4(
-	elm$json$Json$Decode$map3,
-	author$project$Main$Chatline,
-	A2(elm$json$Json$Decode$field, 'user', author$project$Main$decodeUser),
-	A2(elm$json$Json$Decode$field, 'msg', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'kind', elm$json$Json$Decode$int));
-var author$project$Main$decodeChatList = elm$json$Json$Decode$list(author$project$Main$decodeChatline);
 var author$project$Main$JSONMessage = F2(
 	function (code, content) {
 		return {code: code, content: content};
@@ -6145,23 +6161,6 @@ var author$project$Main$decodeJSON = A3(
 	author$project$Main$JSONMessage,
 	A2(elm$json$Json$Decode$field, 'code', elm$json$Json$Decode$int),
 	A2(elm$json$Json$Decode$field, 'content', elm$json$Json$Decode$value));
-var author$project$Main$decodeUsersList = elm$json$Json$Decode$list(author$project$Main$decodeUser);
-var author$project$Main$encodeChatline = F3(
-	function (user, msg, kind) {
-		return elm$json$Json$Encode$object(
-			_List_fromArray(
-				[
-					_Utils_Tuple2(
-					'user',
-					author$project$Main$encodeUser(user)),
-					_Utils_Tuple2(
-					'msg',
-					elm$json$Json$Encode$string(msg)),
-					_Utils_Tuple2(
-					'kind',
-					elm$json$Json$Encode$int(kind))
-				]));
-	});
 var author$project$Main$Move = F2(
 	function (color, direction) {
 		return {color: color, direction: direction};
@@ -6368,6 +6367,7 @@ var author$project$Robot$getByColor = F2(
 		return elm$core$List$head(
 			A2(elm$core$List$filter, matchRobotByColor, robots));
 	});
+var author$project$User$decodeUsersList = elm$json$Json$Decode$list(author$project$User$decodeUser);
 var elm$core$Debug$log = _Debug_log;
 var elm$core$Platform$Cmd$batch = _Platform_batch;
 var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
@@ -6436,7 +6436,7 @@ var author$project$Main$update = F2(
 											elm$json$Json$Encode$int(201)),
 											_Utils_Tuple2(
 											'content',
-											author$project$Main$encodeUser(newUser))
+											author$project$User$encodeUser(newUser))
 										])))));
 				case 'SetMessage':
 					var message = _n0.a;
@@ -6467,7 +6467,7 @@ var author$project$Main$update = F2(
 											elm$json$Json$Encode$int(202)),
 											_Utils_Tuple2(
 											'content',
-											A3(author$project$Main$encodeChatline, model.user, newmsg, 0))
+											A3(author$project$Chat$encodeChatline, model.user, newmsg, 0))
 										])))));
 				case 'NewGame':
 					return _Utils_Tuple2(
@@ -6681,7 +6681,7 @@ var author$project$Main$update = F2(
 					}
 				case 'GetUsersList':
 					var json = _n0.a;
-					var _n6 = A2(elm$json$Json$Decode$decodeValue, author$project$Main$decodeUsersList, json);
+					var _n6 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUsersList, json);
 					if (_n6.$ === 'Ok') {
 						var usersList = _n6.a;
 						return _Utils_Tuple2(
@@ -6698,7 +6698,7 @@ var author$project$Main$update = F2(
 					}
 				case 'GetUser':
 					var json = _n0.a;
-					var _n7 = A2(elm$json$Json$Decode$decodeValue, author$project$Main$decodeUser, json);
+					var _n7 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUser, json);
 					if (_n7.$ === 'Ok') {
 						var user = _n7.a;
 						return _Utils_Tuple2(
@@ -6715,7 +6715,7 @@ var author$project$Main$update = F2(
 					}
 				case 'GetChat':
 					var json = _n0.a;
-					var _n8 = A2(elm$json$Json$Decode$decodeValue, author$project$Main$decodeChatList, json);
+					var _n8 = A2(elm$json$Json$Decode$decodeValue, author$project$Chat$decodeChatList, json);
 					if (_n8.$ === 'Ok') {
 						var chatList = _n8.a;
 						return _Utils_Tuple2(
@@ -7104,7 +7104,7 @@ var author$project$Main$drawSquare = F5(
 					author$project$Goal$toString(matchedGoalObj.symbol));
 			}
 		}();
-		if (!val) {
+		if (val === 99) {
 			return A2(
 				elm$html$Html$div,
 				_List_fromArray(

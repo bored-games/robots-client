@@ -334,33 +334,33 @@ textarea, input[type="text"], select {
   content: '';
 }
 
-.square--1 { background-image: url('../static/images/game/empty.png'); }
+.square--0 { background-image: url('../static/images/game/s-0.png'); }
+.square--1 { background-image: url('../static/images/game/s-1.png'); }
 .square--2 { background-image: url('../static/images/game/s-2.png'); }
 .square--3 { background-image: url('../static/images/game/s-3.png'); }
 .square--4 { background-image: url('../static/images/game/s-4.png'); }
 .square--5 { background-image: url('../static/images/game/s-5.png'); }
 .square--6 { background-image: url('../static/images/game/s-6.png'); }
-.square--7 { background-image: url('../static/images/game/s-7.png'); }
 .square--8 { background-image: url('../static/images/game/s-8.png'); }
 .square--9 { background-image: url('../static/images/game/s-9.png'); }
 .square--10 { background-image: url('../static/images/game/s-10.png'); }
-.square--11 { background-image: url('../static/images/game/s-11.png'); }
 .square--12 { background-image: url('../static/images/game/s-12.png'); }
-.square--13 { background-image: url('../static/images/game/s-13.png'); }
-.square--14 { background-image: url('../static/images/game/s-14.png'); }
-.square--15 { background-image: url('../static/images/game/s-15.png'); }
 .square--16 { background-image: url('../static/images/game/s-16.png'); }
-.square--17 { background-image: url('../static/images/game/s-17.png'); }
-.square--18 { background-image: url('../static/images/game/s-18.png'); }
-.square--19 { background-image: url('../static/images/game/s-19.png'); }
 .square--20 { background-image: url('../static/images/game/s-20.png'); }
-.square--21 { background-image: url('../static/images/game/s-21.png'); }
-.square--22 { background-image: url('../static/images/game/s-22.png'); }
-.square--23 { background-image: url('../static/images/game/s-23.png'); }
 .square--24 { background-image: url('../static/images/game/s-24.png'); }
-.square--25 { background-image: url('../static/images/game/s-25.png'); }
-.square--26 { background-image: url('../static/images/game/s-26.png'); }
-.square--27 { background-image: url('../static/images/game/s-27.png'); }
+.square--28 { background-image: url('../static/images/game/s-28.png'); }
+.square--32 { background-image: url('../static/images/game/s-32.png'); }
+.square--33 { background-image: url('../static/images/game/s-33.png'); }
+.square--40 { background-image: url('../static/images/game/s-40.png'); }
+.square--41 { background-image: url('../static/images/game/s-41.png'); }
+.square--64 { background-image: url('../static/images/game/s-64.png'); }
+.square--65 { background-image: url('../static/images/game/s-65.png'); }
+.square--66 { background-image: url('../static/images/game/s-66.png'); }
+.square--67 { background-image: url('../static/images/game/s-67.png'); }
+.square--128 { background-image: url('../static/images/game/s-128.png'); }
+.square--130 { background-image: url('../static/images/game/s-130.png'); }
+.square--132 { background-image: url('../static/images/game/s-132.png'); }
+.square--134 { background-image: url('../static/images/game/s-134.png'); }
 
 .square--block {
   background: #7a776d;
