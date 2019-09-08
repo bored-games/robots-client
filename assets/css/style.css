@@ -236,6 +236,7 @@ textarea, input[type="text"], select {
   background-size: 90%;
   cursor: pointer;
   border-radius: 4px;
+  transition: .1s linear all;
 }
 
 .controls__button {
@@ -335,32 +336,36 @@ textarea, input[type="text"], select {
 }
 
 .square--0 { background-image: url('../static/images/game/s-0.png'); }
-.square--1, .square--93, .square--129, .square--145 { background-image: url('../static/images/game/s-1.png'); }
-.square--2, .square--50 { background-image: url('../static/images/game/s-2.png'); }
-.square--3, .square--51, .square--147, .square--179 { background-image: url('../static/images/game/s-3.png'); }
-.square--4, .square--100 { background-image: url('../static/images/game/s-4.png'); }
-.square--5 { background-image: url('../static/images/game/s-5.png'); }
+.square--1, .square--17, .square--93, .square--129, .square--145 { background-image: url('../static/images/game/s-1.png'); }
+.square--2, .square--18, .square--34, .square--50 { background-image: url('../static/images/game/s-2.png'); }
+.square--3, .square--19, .square--51, .square--147, .square--179 { background-image: url('../static/images/game/s-3.png'); }
+.square--4, .square--36, .square--68, .square--100 { background-image: url('../static/images/game/s-4.png'); }
+.square--5, .square--117, .square--133, .square--149, .square--165, .square--181, .square--149, .square--197, .square--213, .square--229, .square--245 { background-image: url('../static/images/game/s-5.png'); }
 .square--6, .square--38, .square--54, .square--102, .square--118 { background-image: url('../static/images/game/s-6.png'); }
-.square--8, .square--72, .square--200 { background-image: url('../static/images/game/s-8.png'); }
-.square--9, .square--153, .square--201, .square--217 { background-image: url('../static/images/game/s-9.png'); }
+.square--8, .square--72, .square--136, .square--200 { background-image: url('../static/images/game/s-8.png'); }
+.square--9, .square--137, .square--153, .square--201, .square--217 { background-image: url('../static/images/game/s-9.png'); }
 .square--10 { background-image: url('../static/images/game/s-10.png'); }
-.square--12, .square--204, .square--108, .square--236 { background-image: url('../static/images/game/s-12.png'); }
+.square--12, .square--76, .square--108, .square--204, .square--236 { background-image: url('../static/images/game/s-12.png'); }
 .square--16 { background-image: url('../static/images/game/s-16.png'); }
 .square--20 { background-image: url('../static/images/game/s-20.png'); }
 .square--24 { background-image: url('../static/images/game/s-24.png'); }
 .square--28 { background-image: url('../static/images/game/s-28.png'); }
 .square--32 { background-image: url('../static/images/game/s-32.png'); }
-.square--33 { background-image: url('../static/images/game/s-33.png'); }
+.square--33, .square--49, .square--161, .square--177 { background-image: url('../static/images/game/s-33.png'); }
 .square--40 { background-image: url('../static/images/game/s-40.png'); }
 .square--41 { background-image: url('../static/images/game/s-41.png'); }
+.square--48 { background-image: url('../static/images/game/s-48.png'); }
 .square--64 { background-image: url('../static/images/game/s-64.png'); }
-.square--65 { background-image: url('../static/images/game/s-65.png'); }
+.square--65, .square--209 { background-image: url('../static/images/game/s-65.png'); }
 .square--66 { background-image: url('../static/images/game/s-66.png'); }
 .square--67 { background-image: url('../static/images/game/s-67.png'); }
+.square--96 { background-image: url('../static/images/game/s-96.png'); }
 .square--128 { background-image: url('../static/images/game/s-128.png'); }
 .square--130 { background-image: url('../static/images/game/s-130.png'); }
-.square--132 { background-image: url('../static/images/game/s-132.png'); }
+.square--132, .square--228 { background-image: url('../static/images/game/s-132.png'); }
 .square--134 { background-image: url('../static/images/game/s-134.png'); }
+.square--144 { background-image: url('../static/images/game/s-144.png'); }
+.square--172 { background-image: url('../static/images/game/s-172.png'); }
 
 .square--block {
   background: #7a776d;

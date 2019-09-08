@@ -7488,6 +7488,66 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$text('/poll reset_scores ')
+			])),
+		A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('poll__command')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('/poll reset_board ')
+			])),
+		A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('poll__command')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('/poll new_game ')
+			])),
+		A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('poll__command')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('/poll poll_time ')
+			])),
+		A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('poll__command')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('/poll countdown_time ')
+			])),
+		A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('poll__command')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('/poll puzzles_before_new_board ')
+			])),
+		A2(
+		elm$html$Html$div,
+		_List_fromArray(
+			[
+				elm$html$Html$Attributes$class('poll__command')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text('/poll min_moves ')
 			]))
 	]);
 var elm$html$Html$Attributes$title = elm$html$Html$Attributes$stringProperty('title');
@@ -7810,6 +7870,18 @@ var author$project$Main$onEnter = function (msg) {
 	};
 	var decoder = A2(elm$json$Json$Decode$andThen, filterKey, elm$html$Html$Events$keyCode);
 	return A2(elm$html$Html$Events$custom, 'keydown', decoder);
+};
+var author$project$Main$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var author$project$Main$onKey = function (tagger) {
+	return A2(
+		elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			elm$json$Json$Decode$map,
+			author$project$Main$alwaysStop,
+			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
 };
 var author$project$Move$directionToString = function (dir) {
 	switch (dir.$) {
@@ -8365,8 +8437,8 @@ var author$project$Main$view = function (model) {
 								_List_fromArray(
 									[
 										elm$html$Html$Attributes$class('message__box'),
-										elm$html$Html$Events$onInput(author$project$Main$SetMessage),
 										author$project$Main$onEnter(author$project$Main$SendMessage),
+										author$project$Main$onKey(author$project$Main$SetMessage),
 										elm$html$Html$Attributes$placeholder('Send a message'),
 										elm$html$Html$Attributes$value(model.messageInProgress),
 										elm$html$Html$Attributes$maxlength(255)

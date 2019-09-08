@@ -677,6 +677,12 @@ drawPollOptions =
   , div [ class "poll__command" ] [ text ( "/poll kick " ) ]
   , div [ class "poll__command" ] [ text ( "/poll set_score " ) ]
   , div [ class "poll__command" ] [ text ( "/poll reset_scores " ) ]
+  , div [ class "poll__command" ] [ text ( "/poll reset_board " ) ]
+  , div [ class "poll__command" ] [ text ( "/poll new_game " ) ]
+  , div [ class "poll__command" ] [ text ( "/poll poll_time " ) ]
+  , div [ class "poll__command" ] [ text ( "/poll countdown_time " ) ]
+  , div [ class "poll__command" ] [ text ( "/poll puzzles_before_new_board " ) ]
+  , div [ class "poll__command" ] [ text ( "/poll min_moves " ) ]
   ]
 
 parseEmoticonHtml : String -> List (Html Msg)
@@ -713,6 +719,7 @@ onEnter msg =
   
   in 
     Html.Events.custom "keydown" decoder
+
 
 view : Model -> Html Msg
 view model =
@@ -780,7 +787,7 @@ view model =
         , div [ class "sidebar__settings", style "display" model.toggleStates.settings ] (drawSettings model)
         , div [ class "sidebar__polloptions", style "display" model.toggleStates.pollOptions ] (drawPollOptions)
         , div [ class "message"]
-          [ textarea [ class "message__box", onInput SetMessage, onEnter SendMessage, placeholder "Send a message", value model.messageInProgress, Html.Attributes.maxlength 255 ] []
+          [ textarea [ class "message__box", onEnter SendMessage, onInput SetMessage, placeholder "Send a message", value model.messageInProgress, Html.Attributes.maxlength 255 ] []
           , div [ class "sidebar__emoticons", style "display" model.toggleStates.emoticons ] (drawEmoticons)
           , div [ class "message__actions" ]
             [
