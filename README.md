@@ -79,18 +79,18 @@ A browser-based Ricochet Robots client written in Elm, to be paired with a backe
 Administration is performed through the use of `/poll <option> [param1, param2]` and `/set <option> [param1, param2]` commands entered through chat. A poll must succeed with more Yes votes than No votes to change settings. Only an **owner** can unilaterally change settings with `/set`. Available option/parameters:
 
  * `owner <UID>` : Grant owner status to user
- * `user <UID>` : Remove owner status from user
+ * `demote <UID>` : Remove owner status from user
  * `mute <UID>` : Set mute status for user (no chat or polls)
- * `loud <UID>` : Remove mute status from user
+ * `unmute <UID>` : Remove mute status from user
  * `kick <UID>` : Kick user from game.
- * `set_score <UID> <int>` : Set score of user to integer value.
+ * `set_score <UID> <# points>` : Set score of user to integer value.
  * `reset_scores` : Immediately reset all scores to 0.
  * `reset_board` : Immediately reset board, robots, and goal.
  * `new_game` : Immediately choose new goal.
- * `poll_time <seconds>` : Time before poll expires. Default is 120 seconds. Minimum is 30 seconds.
- * `countdown_time <seconds>` : Time to find better solutions. Default is 60 seconds.
- * `puzzles_before_new_board <int>` : Number of puzzles before a new board is generated. Default is 10.
- * `min_moves <int>` : A single-robot solution below this number will not increment the scoreboard. Default is 0.
+ * `poll_time <# sec>` : Time before poll expires. Default is 120 seconds. Minimum is 30 seconds.
+ * `countdown_time <# sec>` : Time to find better solutions. Default is 60 seconds.
+ * `puzzles_before_new_board <# puzzles>` : Number of puzzles before a new board is generated. Default is 10.
+ * `min_moves <# moves>` : A single-robot solution below this number will not increment the scoreboard. Default is 0.
 
 
 ## Build

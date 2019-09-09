@@ -7400,6 +7400,7 @@ var author$project$Main$drawMessage = function (message) {
 	}
 };
 var elm$html$Html$h2 = _VirtualDom_node('h2');
+var elm$html$Html$Attributes$title = elm$html$Html$Attributes$stringProperty('title');
 var author$project$Main$drawPollOptions = _List_fromArray(
 	[
 		A2(
@@ -7413,144 +7414,266 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__info')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('Coming soon.')
+				elm$html$Html$text('Use /poll <command> or /set <command> to change settings. UIDs can be found by hovering over usernames in the scoreboard.')
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Give \'owner\' status to user. Owners can use \'/set\' to instantly change settings.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll owner ')
+				elm$html$Html$text('owner '),
+				A2(
+				elm$html$Html$span,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('red')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('UID')
+					]))
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Remove \'owner\' status from user.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll user ')
+				elm$html$Html$text('demote '),
+				A2(
+				elm$html$Html$span,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('red')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('UID')
+					]))
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Mute user. Muted users cannot chat or create polls.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll mute ')
+				elm$html$Html$text('mute '),
+				A2(
+				elm$html$Html$span,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('red')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('UID')
+					]))
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Unmute user.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll loud ')
+				elm$html$Html$text('unmute '),
+				A2(
+				elm$html$Html$span,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('red')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('UID')
+					]))
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Kick user from the game.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll kick ')
+				elm$html$Html$text('kick '),
+				A2(
+				elm$html$Html$span,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('red')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('UID')
+					]))
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Set score of user to some number.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll set_score ')
+				elm$html$Html$text('set_score '),
+				A2(
+				elm$html$Html$span,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('red')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('UID ')
+					])),
+				A2(
+				elm$html$Html$span,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('blue')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('int')
+					]))
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Reset all scores to 0.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll reset_scores ')
+				elm$html$Html$text('reset_scores')
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Reset board walls, goals, and robot positions.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll reset_board ')
+				elm$html$Html$text('reset_board')
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Reset goal position.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll new_game ')
+				elm$html$Html$text('new_game')
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Set time limit for polls in seconds. Must be at least 30.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll poll_time ')
+				elm$html$Html$text('poll_time '),
+				A2(
+				elm$html$Html$span,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('blue')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('int')
+					]))
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Set time limit for finding new solutions. Must be at least 0.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll countdown_time ')
+				elm$html$Html$text('countdown_time '),
+				A2(
+				elm$html$Html$span,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('blue')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('int')
+					]))
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Set number of puzzles before a new board is shuffled.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll puzzles_before_new_board ')
+				elm$html$Html$text('puzzles_before_new_board '),
+				A2(
+				elm$html$Html$span,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('blue')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('int')
+					]))
 			])),
 		A2(
 		elm$html$Html$div,
 		_List_fromArray(
 			[
-				elm$html$Html$Attributes$class('poll__command')
+				elm$html$Html$Attributes$class('poll__command'),
+				elm$html$Html$Attributes$title('Single-robot solutions below this number will not add to score. Must be at least 0.')
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('/poll min_moves ')
+				elm$html$Html$text('min_moves '),
+				A2(
+				elm$html$Html$span,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('blue')
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('int')
+					]))
 			]))
 	]);
-var elm$html$Html$Attributes$title = elm$html$Html$Attributes$stringProperty('title');
 var author$project$Main$drawScore = function (user) {
 	return A2(
 		elm$html$Html$div,
@@ -7565,7 +7688,8 @@ var author$project$Main$drawScore = function (user) {
 				_List_fromArray(
 					[
 						elm$html$Html$Attributes$class('score__username'),
-						A2(elm$html$Html$Attributes$style, 'color', user.color)
+						A2(elm$html$Html$Attributes$style, 'color', user.color),
+						elm$html$Html$Attributes$title('UID: TODO!')
 					]),
 				A2(
 					elm$core$List$cons,
@@ -7870,18 +7994,6 @@ var author$project$Main$onEnter = function (msg) {
 	};
 	var decoder = A2(elm$json$Json$Decode$andThen, filterKey, elm$html$Html$Events$keyCode);
 	return A2(elm$html$Html$Events$custom, 'keydown', decoder);
-};
-var author$project$Main$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var author$project$Main$onKey = function (tagger) {
-	return A2(
-		elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			elm$json$Json$Decode$map,
-			author$project$Main$alwaysStop,
-			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
 };
 var author$project$Move$directionToString = function (dir) {
 	switch (dir.$) {
@@ -8438,7 +8550,7 @@ var author$project$Main$view = function (model) {
 									[
 										elm$html$Html$Attributes$class('message__box'),
 										author$project$Main$onEnter(author$project$Main$SendMessage),
-										author$project$Main$onKey(author$project$Main$SetMessage),
+										elm$html$Html$Events$onInput(author$project$Main$SetMessage),
 										elm$html$Html$Attributes$placeholder('Send a message'),
 										elm$html$Html$Attributes$value(model.messageInProgress),
 										elm$html$Html$Attributes$maxlength(255)

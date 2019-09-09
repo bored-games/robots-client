@@ -562,7 +562,7 @@ formatTimer seconds =
 drawScore : User -> Html Msg
 drawScore user =
   div [ class "score" ] 
-  [ div [ class "score__username", style "color" user.color ]
+  [ div [ class "score__username", style "color" user.color, title "UID: TODO!" ]
     ((text user.username) ::
     (if user.owner then span [ class "owner", title "Owner" ] [] else span [] []) ::
     (if user.muted then span [ class "muted", title "Muted" ] [] else span [] []) ::
@@ -669,20 +669,20 @@ drawSettings model =
 drawPollOptions : List (Html Msg)
 drawPollOptions =
   [ h2 [ ] [ text "Poll Commands" ]
-  , div [ class "poll__command" ] [ text ( "Coming soon." ) ]
-  , div [ class "poll__command" ] [ text ( "/poll owner " ) ]
-  , div [ class "poll__command" ] [ text ( "/poll user " ) ]
-  , div [ class "poll__command" ] [ text ( "/poll mute " ) ]
-  , div [ class "poll__command" ] [ text ( "/poll loud " ) ]
-  , div [ class "poll__command" ] [ text ( "/poll kick " ) ]
-  , div [ class "poll__command" ] [ text ( "/poll set_score " ) ]
-  , div [ class "poll__command" ] [ text ( "/poll reset_scores " ) ]
-  , div [ class "poll__command" ] [ text ( "/poll reset_board " ) ]
-  , div [ class "poll__command" ] [ text ( "/poll new_game " ) ]
-  , div [ class "poll__command" ] [ text ( "/poll poll_time " ) ]
-  , div [ class "poll__command" ] [ text ( "/poll countdown_time " ) ]
-  , div [ class "poll__command" ] [ text ( "/poll puzzles_before_new_board " ) ]
-  , div [ class "poll__command" ] [ text ( "/poll min_moves " ) ]
+  , div [ class "poll__info" ] [ text ( "Use /poll <command> or /set <command> to change settings. UIDs can be found by hovering over usernames in the scoreboard." ) ]
+  , div [ class "poll__command", title "Give 'owner' status to user. Owners can use '/set' to instantly change settings." ] [ text "owner ", span [ class "red" ] [ text "UID" ] ]
+  , div [ class "poll__command", title "Remove 'owner' status from user." ] [ text "demote ", span [ class "red" ] [ text "UID" ] ]
+  , div [ class "poll__command", title "Mute user. Muted users cannot chat or create polls." ] [ text "mute ", span [ class "red" ] [ text "UID" ] ]
+  , div [ class "poll__command", title "Unmute user." ] [ text "unmute ", span [ class "red" ] [ text "UID" ] ]
+  , div [ class "poll__command", title "Kick user from the game." ] [ text "kick ", span [ class "red" ] [ text "UID" ] ]
+  , div [ class "poll__command", title "Set score of user to some number." ] [ text "set_score ", span [ class "red" ] [ text "UID " ], span [ class "blue" ] [ text "int" ] ]
+  , div [ class "poll__command", title "Reset all scores to 0." ] [ text "reset_scores" ]
+  , div [ class "poll__command", title "Reset board walls, goals, and robot positions." ] [ text "reset_board" ]
+  , div [ class "poll__command", title "Reset goal position." ] [ text "new_game" ]
+  , div [ class "poll__command", title "Set time limit for polls in seconds. Must be at least 30." ] [ text "poll_time ", span [ class "blue" ] [ text "int" ] ]
+  , div [ class "poll__command", title "Set time limit for finding new solutions. Must be at least 0."] [ text "countdown_time ", span [ class "blue" ] [ text "int" ] ]
+  , div [ class "poll__command", title "Set number of puzzles before a new board is shuffled." ] [ text "puzzles_before_new_board ", span [ class "blue" ] [ text "int" ] ]
+  , div [ class "poll__command", title "Single-robot solutions below this number will not add to score. Must be at least 0." ] [ text "min_moves ", span [ class "blue" ] [ text "int" ] ]
   ]
 
 parseEmoticonHtml : String -> List (Html Msg)

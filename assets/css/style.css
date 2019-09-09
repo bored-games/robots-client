@@ -144,17 +144,31 @@ textarea, input[type="text"], select {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);
   background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
+}
+
+.poll__info {
+  color: #777;
+  font-size: 0.75rem;
+  padding: 0 0 0.5rem;
 }
 
 .poll__command {
   color: #999;
   font-family: Monospace;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   background: rgba(0, 0, 0, .5);
-  padding: 0.25rem;
-  margin: 0 .25rem;
+  padding: 0.125rem 0.25rem;
+  margin: 0.125rem .25rem 0.125rem 0;
+  border-radius: 4px;
+}
+
+.poll__command .red {
+  color: #ce5555;
+}
+
+.poll__command .blue {
+  color: #5588ce;
 }
 
 .sidebar__settings {
