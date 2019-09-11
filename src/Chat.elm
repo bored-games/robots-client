@@ -26,8 +26,3 @@ decodeChatline =
     (Json.Decode.field "msg" Json.Decode.string)
     (Json.Decode.field "kind" Json.Decode.int)
 
-{-| Json decoder for list of Chatline objects -}
-decodeChatList : Json.Decode.Decoder (List Chatline)
-decodeChatList =
-  Json.Decode.list decodeChatline
-

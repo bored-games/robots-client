@@ -6004,7 +6004,7 @@ var author$project$Main$subscriptions = function (model) {
 	return elm$core$Platform$Sub$batch(
 		_List_fromArray(
 			[
-				A2(elm$time$Time$every, 60000, author$project$Main$Ping),
+				A2(elm$time$Time$every, 50000, author$project$Main$Ping),
 				A2(elm$time$Time$every, 1000, author$project$Main$Tick),
 				author$project$Main$inputPort(author$project$Main$GetJSON),
 				elm$browser$Browser$Events$onKeyUp(
@@ -6048,8 +6048,6 @@ var author$project$Chat$decodeChatline = A4(
 	A2(elm$json$Json$Decode$field, 'user', author$project$User$decodeUser),
 	A2(elm$json$Json$Decode$field, 'msg', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'kind', elm$json$Json$Decode$int));
-var elm$json$Json$Decode$list = _Json_decodeList;
-var author$project$Chat$decodeChatList = elm$json$Json$Decode$list(author$project$Chat$decodeChatline);
 var author$project$Chat$encodeChatline = F3(
 	function (user, msg, kind) {
 		return elm$json$Json$Encode$object(
@@ -6151,7 +6149,11 @@ var author$project$Goal$decodeGoal = A4(
 			A2(elm$json$Json$Decode$field, 'y', elm$json$Json$Decode$int))),
 	A2(elm$json$Json$Decode$field, 'symbol', author$project$Goal$decodeGoalSymbol),
 	A2(elm$json$Json$Decode$field, 'active', elm$json$Json$Decode$bool));
+var elm$json$Json$Decode$list = _Json_decodeList;
 var author$project$Goal$decodeGoalList = elm$json$Json$Decode$list(author$project$Goal$decodeGoal);
+var author$project$Main$ConnectToServer = function (a) {
+	return {$: 'ConnectToServer', a: a};
+};
 var author$project$Main$GetBoard = function (a) {
 	return {$: 'GetBoard', a: a};
 };
@@ -6657,6 +6659,12 @@ var author$project$Main$update = F2(
 						var code = _n1.a.code;
 						var content = _n1.a.content;
 						switch (code) {
+							case 0:
+								var $temp$msg = author$project$Main$ConnectToServer(content),
+									$temp$model = model;
+								msg = $temp$msg;
+								model = $temp$model;
+								continue update;
 							case 100:
 								var $temp$msg = author$project$Main$GetBoard(content),
 									$temp$model = model;
@@ -6807,15 +6815,36 @@ var author$project$Main$update = F2(
 								{users: _List_Nil}),
 							elm$core$Platform$Cmd$none);
 					}
+				case 'ConnectToServer':
+					var json = _n0.a;
+					return _Utils_Tuple2(
+						model,
+						author$project$Main$outputPort(
+							A2(
+								elm$json$Json$Encode$encode,
+								0,
+								elm$json$Json$Encode$object(
+									_List_fromArray(
+										[
+											_Utils_Tuple2(
+											'code',
+											elm$json$Json$Encode$int(200)),
+											_Utils_Tuple2(
+											'content',
+											author$project$User$encodeUser(
+												{color: '#6c6adc', muted: false, owner: true, score: 0, username: 'patty'}))
+										])))));
 				case 'GetChat':
 					var json = _n0.a;
-					var _n9 = A2(elm$json$Json$Decode$decodeValue, author$project$Chat$decodeChatList, json);
+					var _n9 = A2(elm$json$Json$Decode$decodeValue, author$project$Chat$decodeChatline, json);
 					if (_n9.$ === 'Ok') {
-						var chatList = _n9.a;
+						var chatline = _n9.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{chat: chatList}),
+								{
+									chat: A2(elm$core$List$cons, chatline, model.chat)
+								}),
 							elm$core$Platform$Cmd$none);
 					} else {
 						return _Utils_Tuple2(
@@ -8123,10 +8152,7 @@ var author$project$Main$view = function (model) {
 		return A2(elm$core$List$map, author$project$Main$drawScore, users);
 	};
 	var drawChat = function (chat) {
-		return A2(
-			elm$core$List$map,
-			author$project$Main$drawMessage,
-			elm$core$List$reverse(chat));
+		return A2(elm$core$List$map, author$project$Main$drawMessage, chat);
 	};
 	var drawBoard = function (board) {
 		return elm$core$List$concat(

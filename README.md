@@ -2,23 +2,22 @@
 A browser-based Ricochet Robots client written in Elm, to be paired with a backend written in Elixir. Includes chat, scorekeeping, and democratically-driven game management!
 
 ## Frontend Model (not finalized, documentation WIP)
-  * **keys** : `Keys`. List of active keyboard input
+  * **keys** : `Keys`. List of booleans representing active keyboard input
   * **user** : `User`. Information about the current user.
-  * **users** : `List User`. Information about all users, including scores.
-  * **chat** : `List Chatline`. A list of lines of text/usernames.
+  * **users** : `List` of `User`s. Information about all users, including scores.
+  * **chat** : `List` of `Chatline`s. A list of lines of text/usernames.
   * **messageInProgress** : `String`. Current chat input text.
   * **nameInProgress** : `String`. Current name-change input text.
   * **colorInProgress** : `String`. Current color-change input selection.
-  * **boundaryBoard** : `Grid.Grid Color`. TODO.
-  * **testboard** : `List ( List Int )`. TODO.
-  * **goal** : `GoalSymbol`. Active goal.
-  * **goalList** : `List Goal`. List of all goals.
-  * **toggleStates** : `{settings: String, pollOptions: String, emoticons: String, countdown: String}`. States for all toggle-able UI elements.
+  * **boundaryBoard** : `Grid` of `Int`s. 16-by-16 array of arrays of integers, where the value determines how to print the board.
+  * **goal** : `GoalSymbol`. Active goal symbol.
+  * **goalList** : `List` of `Goal`s. List of all goals, including their symbols and positions.
+  * **toggleStates** : `{`settings: `String`, activePoll: `String`, pollOptions: `String`, emoticons: `String`, countdown: `String}`. States for all toggle-able UI elements.
   * **countdown** : `Int`. 60s countdown timer that begins when one solution has been found.
   * **currentTimer** : `Int`. Count-up timer that restarts for each puzzle.
-  * **robots** : `List Robot`. List of robots including color (ID), position, and legal (unblocked) moves.
+  * **robots** : `List` of `Robot`s. List of robots including color (ID), position, and legal (unblocked) moves.
   * **activeRobot** : `Maybe Robot`. Current selected robot for UI purposes.
-  * **movesQueue** : `List Move`. Current stack of moves.
+  * **movesQueue** : `List` of `Move`s. Current stack of moves.
 
 ## JSON Codes
 

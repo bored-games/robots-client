@@ -139,7 +139,7 @@ init _ =
     []                                                                       -- robots
     Nothing                                                                  -- activeRobot
     []                                                                       -- movesQueue
-  ,  outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", User.encodeUser { username = "patty", color = "#6c6adc", score = 0, owner = True, muted = False }) ] ) ) -- initialize user?
+  , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", User.encodeUser { username = "patty", color = "#6c6adc", score = 0, owner = True, muted = False }) ] ) ) -- initialize user?
   )
 
 
@@ -162,13 +162,14 @@ type Msg
   | DisplayCountdown String
   | Tick Time.Posix
   | Ping Time.Posix
-  | GetJSON Json.Encode.Value      -- Parse incoming JSON
-  | GetBoard Json.Encode.Value     -- 100
-  | GetRobotList Json.Encode.Value -- 101
-  | GetGoalList Json.Encode.Value  -- 102
-  | GetUsersList Json.Encode.Value -- 200
-  | GetUser Json.Encode.Value      -- 201
-  | GetChat Json.Encode.Value      -- 202
+  | GetJSON Json.Encode.Value              -- Parse incoming JSON
+  | ConnectToServer Json.Encode.Value      -- 000
+  | GetBoard Json.Encode.Value             -- 100
+  | GetRobotList Json.Encode.Value         -- 101
+  | GetGoalList Json.Encode.Value          -- 102
+  | GetUsersList Json.Encode.Value         -- 200
+  | GetUser Json.Encode.Value              -- 201
+  | GetChat Json.Encode.Value              -- 202
   | KeyChanged Bool String
   | SetActiveRobot Color
   | AddMove Direction
@@ -316,6 +317,8 @@ update msg model =
       case (Json.Decode.decodeValue decodeJSON json) of
         Ok {code, content} ->
           case code of
+            0   ->
+              update (ConnectToServer content) model
             100 ->
               update (GetBoard content) model
             101 ->
@@ -379,11 +382,26 @@ update msg model =
           ( { model | user = user}, Cmd.none )
         Err _ ->
           ( { model | users = []}, Cmd.none )
+          
+    ConnectToServer json ->
+      ( model,
+        outputPort
+          ( Json.Encode.encode
+            0
+            ( Json.Encode.object
+              [ ("code", Json.Encode.int 200)
+              , ("content", User.encodeUser
+                            { username = "patty"
+                            , color = "#6c6adc"
+                            , score = 0
+                            , owner = True
+                            , muted = False }) ] ))
+        )
 
     GetChat json ->
-      case (Json.Decode.decodeValue Chat.decodeChatList json) of
-        Ok chatList ->
-          ( { model | chat = chatList}, Cmd.none )
+      case (Json.Decode.decodeValue Chat.decodeChatline json) of
+        Ok chatline ->
+          ( { model | chat = chatline::model.chat}, Cmd.none )
         Err _ ->
           ( { model | chat = [] }, Cmd.none )
 
@@ -540,7 +558,7 @@ port inputPort : (Json.Encode.Value -> msg) -> Sub msg
 subscriptions : Model -> Sub Msg
 subscriptions model =
   Sub.batch
-    [ Time.every 60000 Ping
+    [ Time.every 50000 Ping
     , Time.every 1000 Tick
     , inputPort GetJSON
     , Browser.Events.onKeyUp (Json.Decode.map (KeyChanged False) (Json.Decode.field "key" Json.Decode.string))
@@ -725,7 +743,7 @@ view : Model -> Html Msg
 view model =
   let
     drawChat chat =
-      (List.reverse chat) |> List.map drawMessage
+      List.map drawMessage chat
     drawScores users =
       users |> List.map drawScore
     drawBoard board =

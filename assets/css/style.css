@@ -117,13 +117,18 @@ textarea, input[type="text"], select {
   background: linear-gradient(to bottom, #1d4150 0, #1d4650 40%, #1d5045 100%);
   color: #fff;
   border-radius: 2px;
-  padding: 0.75rem 0.75rem;
+  padding: 0.7rem 0.75rem;
   border: 0;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, .6);
   cursor: pointer;
   box-shadow: 0 0 4px rgba(0, 0, 0, .6), 0 0 8px rgba(0, 0, 0, .4);
   margin-left: 0.25rem;
   align-self: center;
+  transition: .1s linear all;
+}
+
+.submit:hover {
+  background-size: 300% 300%;
 }
 
 
@@ -176,13 +181,19 @@ textarea, input[type="text"], select {
   padding: 0.75rem 0.5rem;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
+  justify-content: flex-end;
 }
 
 .sidebar__settings input, .sidebar__settings select {
-  margin: 0 .25rem;
+  margin: 0 .25rem 0.5rem;
   flex: 1 1 auto;
+}
+
+.sidebar__settings input[type="submit"] {
+  padding: 0.6rem 0.5rem;
+  flex: 0 0 auto;
+  align-content: flex-end;
 }
 
 .sidebar__settings h2, .sidebar__polloptions h2 {
@@ -300,7 +311,7 @@ textarea, input[type="text"], select {
   text-shadow: 1px 1px 0 rgba(0, 0, 0, .5);
   padding: .5rem 1.0rem;
   font-family: Monospace;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 
 .debug:before {
@@ -443,11 +454,11 @@ textarea, input[type="text"], select {
 
 .timer {
   flex: 0 0 auto;
-  padding: 0.75rem;
+  padding: 0.75rem 0.25rem 0.75rem 0.25rem;
   display: flex;
   flex-wrap: wrap;
   font-family: Monospace;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
   color: #858585;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, .8);
@@ -491,8 +502,8 @@ textarea, input[type="text"], select {
 
 .icon {
   flex: 0 0 auto;
-  height: 1.5rem;
-  width: 1.5rem;
+  height: 1.35rem;
+  width: 1.35rem;
   margin: 0 0.5rem;
   background: currentColor;
   mask-size: 100% 100%;
