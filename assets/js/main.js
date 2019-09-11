@@ -4700,17 +4700,15 @@ var author$project$Main$Model = function (debugString) {
 						return function (nameInProgress) {
 							return function (colorInProgress) {
 								return function (boundaryBoard) {
-									return function (testboard) {
-										return function (goal) {
-											return function (goalList) {
-												return function (toggleStates) {
-													return function (countdown) {
-														return function (currentTimer) {
-															return function (robots) {
-																return function (activeRobot) {
-																	return function (movesQueue) {
-																		return {activeRobot: activeRobot, boundaryBoard: boundaryBoard, chat: chat, colorInProgress: colorInProgress, countdown: countdown, currentTimer: currentTimer, debugString: debugString, goal: goal, goalList: goalList, keys: keys, messageInProgress: messageInProgress, movesQueue: movesQueue, nameInProgress: nameInProgress, robots: robots, testboard: testboard, toggleStates: toggleStates, user: user, users: users};
-																	};
+									return function (goal) {
+										return function (goalList) {
+											return function (toggleStates) {
+												return function (countdown) {
+													return function (currentTimer) {
+														return function (robots) {
+															return function (activeRobot) {
+																return function (movesQueue) {
+																	return {activeRobot: activeRobot, boundaryBoard: boundaryBoard, chat: chat, colorInProgress: colorInProgress, countdown: countdown, currentTimer: currentTimer, debugString: debugString, goal: goal, goalList: goalList, keys: keys, messageInProgress: messageInProgress, movesQueue: movesQueue, nameInProgress: nameInProgress, robots: robots, toggleStates: toggleStates, user: user, users: users};
 																};
 															};
 														};
@@ -4957,7 +4955,6 @@ var author$project$Main$testFill = F2(
 	function (x, y) {
 		return 1;
 	});
-var elm$json$Json$Encode$bool = _Json_wrap;
 var elm$json$Json$Encode$int = _Json_wrap;
 var elm$json$Json$Encode$object = function (pairs) {
 	return _Json_wrap(
@@ -4972,68 +4969,12 @@ var elm$json$Json$Encode$object = function (pairs) {
 			_Json_emptyObject(_Utils_Tuple0),
 			pairs));
 };
-var author$project$User$encodeUser = function (user) {
-	return elm$json$Json$Encode$object(
-		_List_fromArray(
-			[
-				_Utils_Tuple2(
-				'username',
-				elm$json$Json$Encode$string(user.username)),
-				_Utils_Tuple2(
-				'color',
-				elm$json$Json$Encode$string(user.color)),
-				_Utils_Tuple2(
-				'score',
-				elm$json$Json$Encode$int(user.score)),
-				_Utils_Tuple2(
-				'owner',
-				elm$json$Json$Encode$bool(user.owner)),
-				_Utils_Tuple2(
-				'muted',
-				elm$json$Json$Encode$bool(user.muted))
-			]));
-};
 var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		author$project$Main$Model('Initialized model.')(
 			author$project$Main$Keys(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false))(
 			{color: '#6c6adc', muted: false, owner: true, score: 0, username: 'patty'})(_List_Nil)(_List_Nil)('')('')('')(
-			A2(author$project$Board$square, 16, author$project$Main$testFill))(
-			_List_fromArray(
-				[
-					_List_fromArray(
-					[217, 145, 147, 153, 145, 145, 145, 145, 145, 145, 145, 147, 153, 145, 145, 179]),
-					_List_fromArray(
-					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 54]),
-					_List_fromArray(
-					[200, 38, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 51]),
-					_List_fromArray(
-					[238, 93, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
-					_List_fromArray(
-					[217, 129, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
-					_List_fromArray(
-					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
-					_List_fromArray(
-					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
-					_List_fromArray(
-					[200, 0, 0, 0, 0, 0, 0, 256, 257, 0, 0, 0, 0, 0, 0, 50]),
-					_List_fromArray(
-					[200, 0, 0, 0, 0, 0, 0, 258, 259, 0, 0, 0, 0, 0, 0, 54]),
-					_List_fromArray(
-					[204, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 51]),
-					_List_fromArray(
-					[201, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
-					_List_fromArray(
-					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
-					_List_fromArray(
-					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
-					_List_fromArray(
-					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
-					_List_fromArray(
-					[200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50]),
-					_List_fromArray(
-					[236, 100, 100, 102, 108, 100, 100, 100, 102, 108, 100, 100, 100, 100, 100, 118])
-				]))(author$project$Goal$RedMoon)(_List_Nil)(
+			A2(author$project$Board$square, 16, author$project$Main$testFill))(author$project$Goal$RedMoon)(_List_Nil)(
 			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'none'})(60)(0)(_List_Nil)(elm$core$Maybe$Nothing)(_List_Nil),
 		author$project$Main$outputPort(
 			A2(
@@ -5047,8 +4988,7 @@ var author$project$Main$init = function (_n0) {
 							elm$json$Json$Encode$int(200)),
 							_Utils_Tuple2(
 							'content',
-							author$project$User$encodeUser(
-								{color: '#6c6adc', muted: false, owner: true, score: 0, username: 'patty'}))
+							elm$json$Json$Encode$string(''))
 						])))));
 };
 var author$project$Main$GetJSON = function (a) {
@@ -6048,6 +5988,28 @@ var author$project$Chat$decodeChatline = A4(
 	A2(elm$json$Json$Decode$field, 'user', author$project$User$decodeUser),
 	A2(elm$json$Json$Decode$field, 'msg', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'kind', elm$json$Json$Decode$int));
+var elm$json$Json$Encode$bool = _Json_wrap;
+var author$project$User$encodeUser = function (user) {
+	return elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'username',
+				elm$json$Json$Encode$string(user.username)),
+				_Utils_Tuple2(
+				'color',
+				elm$json$Json$Encode$string(user.color)),
+				_Utils_Tuple2(
+				'score',
+				elm$json$Json$Encode$int(user.score)),
+				_Utils_Tuple2(
+				'owner',
+				elm$json$Json$Encode$bool(user.owner)),
+				_Utils_Tuple2(
+				'muted',
+				elm$json$Json$Encode$bool(user.muted))
+			]));
+};
 var author$project$Chat$encodeChatline = F3(
 	function (user, msg, kind) {
 		return elm$json$Json$Encode$object(
@@ -6721,13 +6683,13 @@ var author$project$Main$update = F2(
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{boundaryBoard: board}),
+								{boundaryBoard: board, debugString: 'New board success'}),
 							elm$core$Platform$Cmd$none);
 					} else {
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{robots: _List_Nil}),
+								{debugString: 'Critical error getting new board'}),
 							elm$core$Platform$Cmd$none);
 					}
 				case 'GetRobotList':
@@ -6744,7 +6706,7 @@ var author$project$Main$update = F2(
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{robots: _List_Nil}),
+								{debugString: 'Critical error getting new robots', robots: _List_Nil}),
 							elm$core$Platform$Cmd$none);
 					}
 				case 'GetGoalList':
@@ -6778,7 +6740,7 @@ var author$project$Main$update = F2(
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{goalList: _List_Nil}),
+								{debugString: 'Critical error getting new goals', goalList: _List_Nil}),
 							elm$core$Platform$Cmd$none);
 					}
 				case 'GetUsersList':
@@ -6831,8 +6793,7 @@ var author$project$Main$update = F2(
 											elm$json$Json$Encode$int(200)),
 											_Utils_Tuple2(
 											'content',
-											author$project$User$encodeUser(
-												{color: '#6c6adc', muted: false, owner: true, score: 0, username: 'patty'}))
+											elm$json$Json$Encode$string(''))
 										])))));
 				case 'GetChat':
 					var json = _n0.a;
@@ -7026,6 +6987,61 @@ var author$project$Main$update = F2(
 			}
 		}
 	});
+var author$project$Goal$toString = function (goal) {
+	switch (goal.$) {
+		case 'RedMoon':
+			return {filename: 'red-moon', plaintext: 'Red Moon'};
+		case 'GreenMoon':
+			return {filename: 'green-moon', plaintext: 'Green Moon'};
+		case 'BlueMoon':
+			return {filename: 'blue-moon', plaintext: 'Blue Moon'};
+		case 'YellowMoon':
+			return {filename: 'yellow-moon', plaintext: 'Yellow Moon'};
+		case 'RedPlanet':
+			return {filename: 'red-planet', plaintext: 'Red Planet'};
+		case 'GreenPlanet':
+			return {filename: 'green-planet', plaintext: 'Green Planet'};
+		case 'BluePlanet':
+			return {filename: 'blue-planet', plaintext: 'Blue Planet'};
+		case 'YellowPlanet':
+			return {filename: 'yellow-planet', plaintext: 'Yellow Planet'};
+		case 'GreenCross':
+			return {filename: 'red-cross', plaintext: 'Green Cross'};
+		case 'RedCross':
+			return {filename: 'green-cross', plaintext: 'Red Cross'};
+		case 'BlueCross':
+			return {filename: 'blue-cross', plaintext: 'Blue Cross'};
+		case 'YellowCross':
+			return {filename: 'yellow-cross', plaintext: 'Yellow Cross'};
+		case 'RedGear':
+			return {filename: 'red-gear', plaintext: 'Red Gear'};
+		case 'GreenGear':
+			return {filename: 'green-gear', plaintext: 'Green Gear'};
+		case 'BlueGear':
+			return {filename: 'blue-gear', plaintext: 'Blue Gear'};
+		default:
+			return {filename: 'yellow-gear', plaintext: 'Yellow Gear'};
+	}
+};
+var author$project$Main$AddMove = function (a) {
+	return {$: 'AddMove', a: a};
+};
+var author$project$Main$ClearMoves = {$: 'ClearMoves'};
+var author$project$Main$IncrementScore = function (a) {
+	return {$: 'IncrementScore', a: a};
+};
+var author$project$Main$NewGame = {$: 'NewGame'};
+var author$project$Main$PopMove = {$: 'PopMove'};
+var author$project$Main$SendMessage = {$: 'SendMessage'};
+var author$project$Main$SetActiveRobot = function (a) {
+	return {$: 'SetActiveRobot', a: a};
+};
+var author$project$Main$SetMessage = function (a) {
+	return {$: 'SetMessage', a: a};
+};
+var author$project$Main$ToggleEmoticons = {$: 'ToggleEmoticons'};
+var author$project$Main$TogglePollOptions = {$: 'TogglePollOptions'};
+var author$project$Main$ToggleSettings = {$: 'ToggleSettings'};
 var author$project$Coordinate$toColumn = elm$core$Tuple$first;
 var elm$core$Tuple$second = function (_n0) {
 	var y = _n0.b;
@@ -7090,61 +7106,6 @@ var author$project$Board$get = F2(
 				val);
 		}
 	});
-var author$project$Goal$toString = function (goal) {
-	switch (goal.$) {
-		case 'RedMoon':
-			return {filename: 'red-moon', plaintext: 'Red Moon'};
-		case 'GreenMoon':
-			return {filename: 'green-moon', plaintext: 'Green Moon'};
-		case 'BlueMoon':
-			return {filename: 'blue-moon', plaintext: 'Blue Moon'};
-		case 'YellowMoon':
-			return {filename: 'yellow-moon', plaintext: 'Yellow Moon'};
-		case 'RedPlanet':
-			return {filename: 'red-planet', plaintext: 'Red Planet'};
-		case 'GreenPlanet':
-			return {filename: 'green-planet', plaintext: 'Green Planet'};
-		case 'BluePlanet':
-			return {filename: 'blue-planet', plaintext: 'Blue Planet'};
-		case 'YellowPlanet':
-			return {filename: 'yellow-planet', plaintext: 'Yellow Planet'};
-		case 'GreenCross':
-			return {filename: 'red-cross', plaintext: 'Green Cross'};
-		case 'RedCross':
-			return {filename: 'green-cross', plaintext: 'Red Cross'};
-		case 'BlueCross':
-			return {filename: 'blue-cross', plaintext: 'Blue Cross'};
-		case 'YellowCross':
-			return {filename: 'yellow-cross', plaintext: 'Yellow Cross'};
-		case 'RedGear':
-			return {filename: 'red-gear', plaintext: 'Red Gear'};
-		case 'GreenGear':
-			return {filename: 'green-gear', plaintext: 'Green Gear'};
-		case 'BlueGear':
-			return {filename: 'blue-gear', plaintext: 'Blue Gear'};
-		default:
-			return {filename: 'yellow-gear', plaintext: 'Yellow Gear'};
-	}
-};
-var author$project$Main$AddMove = function (a) {
-	return {$: 'AddMove', a: a};
-};
-var author$project$Main$ClearMoves = {$: 'ClearMoves'};
-var author$project$Main$IncrementScore = function (a) {
-	return {$: 'IncrementScore', a: a};
-};
-var author$project$Main$NewGame = {$: 'NewGame'};
-var author$project$Main$PopMove = {$: 'PopMove'};
-var author$project$Main$SendMessage = {$: 'SendMessage'};
-var author$project$Main$SetActiveRobot = function (a) {
-	return {$: 'SetActiveRobot', a: a};
-};
-var author$project$Main$SetMessage = function (a) {
-	return {$: 'SetMessage', a: a};
-};
-var author$project$Main$ToggleEmoticons = {$: 'ToggleEmoticons'};
-var author$project$Main$TogglePollOptions = {$: 'TogglePollOptions'};
-var author$project$Main$ToggleSettings = {$: 'ToggleSettings'};
 var author$project$Color$toString = function (color) {
 	if (color.$ === 'Nothing') {
 		return 'unknown-color';
@@ -8119,7 +8080,6 @@ var author$project$Robot$getColor = function (robot) {
 			}(r));
 	}
 };
-var elm$core$Debug$toString = _Debug_toString;
 var elm$core$List$append = F2(
 	function (xs, ys) {
 		if (!ys.b) {
@@ -8206,12 +8166,8 @@ var author$project$Main$view = function (model) {
 						_List_fromArray(
 							[
 								elm$html$Html$text(
-								elm$core$Debug$toString(
-									A2(
-										author$project$Board$get,
-										_Utils_Tuple2(1, 1),
-										model.boundaryBoard)) + ('   ' + (model.debugString + ('   ' + author$project$Main$printMoveList(
-									elm$core$List$reverse(model.movesQueue))))))
+								model.debugString + ('   ' + author$project$Main$printMoveList(
+									elm$core$List$reverse(model.movesQueue))))
 							])),
 						A2(
 						elm$html$Html$div,

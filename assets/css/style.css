@@ -369,30 +369,32 @@ textarea, input[type="text"], select {
 .square--6, .square--38, .square--54, .square--102, .square--118 { background-image: url('../static/images/game/s-6.png'); }
 .square--8, .square--72, .square--136, .square--200 { background-image: url('../static/images/game/s-8.png'); }
 .square--9, .square--137, .square--153, .square--201, .square--217 { background-image: url('../static/images/game/s-9.png'); }
-.square--10 { background-image: url('../static/images/game/s-10.png'); }
+.square--10, .square--122, .square--126, .square--186, .square--218, .square--234, .square--238 { background-image: url('../static/images/game/s-10.png'); }
 .square--12, .square--76, .square--108, .square--204, .square--236 { background-image: url('../static/images/game/s-12.png'); }
 .square--16 { background-image: url('../static/images/game/s-16.png'); }
-.square--20 { background-image: url('../static/images/game/s-20.png'); }
-.square--24 { background-image: url('../static/images/game/s-24.png'); }
+.square--20, .square--116 { background-image: url('../static/images/game/s-20.png'); }
+.square--24, .square--152, .square--216, .square--220 { background-image: url('../static/images/game/s-24.png'); }
 .square--28 { background-image: url('../static/images/game/s-28.png'); }
 .square--32 { background-image: url('../static/images/game/s-32.png'); }
-.square--33, .square--49, .square--161, .square--177 { background-image: url('../static/images/game/s-33.png'); }
-.square--40 { background-image: url('../static/images/game/s-40.png'); }
+.square--33, .square--49, .square--161, .square--177, .square--185 { background-image: url('../static/images/game/s-33.png'); }
+.square--40, .square--104, .square--232 { background-image: url('../static/images/game/s-40.png'); }
 .square--41 { background-image: url('../static/images/game/s-41.png'); }
 .square--48 { background-image: url('../static/images/game/s-48.png'); }
 .square--64 { background-image: url('../static/images/game/s-64.png'); }
-.square--65, .square--209 { background-image: url('../static/images/game/s-65.png'); }
-.square--66 { background-image: url('../static/images/game/s-66.png'); }
+.square--65, .square--81, .square--193, .square--209 { background-image: url('../static/images/game/s-65.png'); }
+.square--66, .square--82, .square--98, .square--114 { background-image: url('../static/images/game/s-66.png'); }
 .square--67 { background-image: url('../static/images/game/s-67.png'); }
+.square--80 { background-image: url('../static/images/game/s-80.png'); }
 .square--96 { background-image: url('../static/images/game/s-96.png'); }
 .square--128 { background-image: url('../static/images/game/s-128.png'); }
-.square--130 { background-image: url('../static/images/game/s-130.png'); }
+.square--130, .square--178 { background-image: url('../static/images/game/s-130.png'); }
 .square--132, .square--228 { background-image: url('../static/images/game/s-132.png'); }
 .square--134 { background-image: url('../static/images/game/s-134.png'); }
 .square--144 { background-image: url('../static/images/game/s-144.png'); }
+.square--160 { background-image: url('../static/images/game/s-160.png'); }
 .square--172 { background-image: url('../static/images/game/s-172.png'); }
 
-.square--block {
+.square--256, .square--257, .square--258, .square--259 {
   background: #7a776d;
 }
 

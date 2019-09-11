@@ -51,7 +51,6 @@ type alias Model =
   , nameInProgress : String
   , colorInProgress : String
   , boundaryBoard : Board.Grid Int
-  , testboard : List ( List Int )
   , goal : GoalSymbol
   , goalList : List Goal
   , toggleStates : { settings: String, pollOptions: String, emoticons: String, countdown: String }
@@ -96,22 +95,6 @@ init _ =
     "" -- `nameInProgress`
     "" -- `colorInProgress`
     (Board.square 16 (testFill) )                    -- boundaryBoard
-    [ [217,145,147,153,145,145,145,145,145,145,145,147,153,145,145,179],
-      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,54],
-      [200,38,72,0,0,0,0,0,0,0,0,0,0,0,0,51],
-      [238,93,128,0,0,0,0,0,0,0,0,0,0,0,0,50],
-      [217,129,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
-      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
-      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
-      [200,0,0,0,0,0,0,256,257,0,0,0,0,0,0,50],
-      [200,0,0,0,0,0,0,258,259,0,0,0,0,0,0,54],
-      [204,0,0,0,0,0,0,0,0,0,0,0,0,0,0,51],
-      [201,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
-      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
-      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
-      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
-      [200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,50],
-      [236,100,100,102,108,100,100,100,102,108,100,100,100,100,100,118] ]
 -- [ [ 9,  3,  9,  1,  5, 65,  1,  1,  3,  9, 33,  5,  1,  1,  1,  3],
 --       [ 8,  0,  0,  0,  3,  8,  0,  0,  0,  0,  2,  9,  0,  0,  0,  6],
 --       [ 8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  4, 67],
@@ -139,7 +122,8 @@ init _ =
     []                                                                       -- robots
     Nothing                                                                  -- activeRobot
     []                                                                       -- movesQueue
-  , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", User.encodeUser { username = "patty", color = "#6c6adc", score = 0, owner = True, muted = False }) ] ) ) -- initialize user?
+  , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", Json.Encode.string "") ] ) ) -- request userinfo
+ -- , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", User.encodeUser { username = "patty", color = "#6c6adc", score = 0, owner = True, muted = False }) ] ) ) -- initialize user?
   )
 
 
@@ -340,16 +324,16 @@ update msg model =
     GetBoard json ->
       case (Json.Decode.decodeValue Board.decodeBoard json) of
         Ok board ->
-          ( { model | boundaryBoard = board}, Cmd.none )
+          ( { model | boundaryBoard = board, debugString = "New board success"}, Cmd.none )
         Err _ ->
-          ( { model | robots = []}, Cmd.none )
+          ( { model | debugString = "Critical error getting new board"}, Cmd.none )
 
     GetRobotList json ->
       case (Json.Decode.decodeValue Robot.decodeRobotsList json) of
         Ok robotList ->
           ( { model | robots = robotList}, Cmd.none )
         Err _ ->
-          ( { model | robots = []}, Cmd.none )
+          ( { model | robots = [], debugString = "Critical error getting new robots"}, Cmd.none )
           
     GetGoalList json ->
       case (Json.Decode.decodeValue Goal.decodeGoalList json) of
@@ -367,7 +351,7 @@ update msg model =
                 , goal = activeGoal
               }, Cmd.none )
         Err _ ->
-          ( { model | goalList = []}, Cmd.none )
+          ( { model | goalList = [], debugString = "Critical error getting new goals"}, Cmd.none )
 
     GetUsersList json ->
       case (Json.Decode.decodeValue User.decodeUsersList json) of
@@ -390,12 +374,7 @@ update msg model =
             0
             ( Json.Encode.object
               [ ("code", Json.Encode.int 200)
-              , ("content", User.encodeUser
-                            { username = "patty"
-                            , color = "#6c6adc"
-                            , score = 0
-                            , owner = True
-                            , muted = False }) ] ))
+              , ("content", Json.Encode.string "") ] ))
         )
 
     GetChat json ->
@@ -757,7 +736,7 @@ view model =
           div [ class "scores" ] 
             (h2 [] [ text "Scoreboard" ] :: ((List.reverse (List.sortBy .score model.users)) |> drawScores))
         , div [ class "debug" ]
-          [ text ( Debug.toString (Board.get (1, 1) model.boundaryBoard) ++ "   " ++ model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]          
+          [ text ( model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]          
         , div [ class "sidebar__goal" ] [ div [ class ("goal " ++ .filename (Goal.toString model.goal)) ] [ ] ]
         , div [ class "timer", onClick (IncrementScore model.user) ]
           [ div [ class "timer__countdown" ]
