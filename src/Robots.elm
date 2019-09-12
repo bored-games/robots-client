@@ -122,9 +122,7 @@ init _ =
     []                                                                       -- robots
     Nothing                                                                  -- activeRobot
     []                                                                       -- movesQueue
-  , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("action", Json.Encode.string "create_user"), ("content", Json.Encode.string "") ] ) ) -- request userinfo
- -- , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("action", Json.Encode.string "create_user"), ("content", User.encodeUser { username = "patty", color = "#6c6adc", score = 0, owner = True, muted = False }) ] ) ) -- initialize user?
-  )
+  , Cmd.none )
 
 
 
@@ -319,7 +317,7 @@ update msg model =
               ((Debug.log "Error: missing code in JSON message" model), Cmd.none ) -- Error: missing code
 
         Err _ ->
-          ( { model | users = []}, Cmd.none )
+          ( { model | debugString = ("Bad JSON!")}, Cmd.none )
 
     GetBoard json ->
       case (Json.Decode.decodeValue Board.decodeBoard json) of

@@ -4726,23 +4726,27 @@ var author$project$Main$Model = function (debugString) {
 		};
 	};
 };
-var elm$core$Maybe$Just = function (a) {
-	return {$: 'Just', a: a};
-};
-var elm$core$Maybe$Nothing = {$: 'Nothing'};
-var elm$core$Result$Err = function (a) {
-	return {$: 'Err', a: a};
-};
-var elm$core$Result$Ok = function (a) {
-	return {$: 'Ok', a: a};
-};
+var author$project$Main$testFill = F2(
+	function (x, y) {
+		return 1;
+	});
 var elm$core$Basics$True = {$: 'True'};
+var elm$core$Maybe$Nothing = {$: 'Nothing'};
 var elm$core$Result$isOk = function (result) {
 	if (result.$ === 'Ok') {
 		return true;
 	} else {
 		return false;
 	}
+};
+var elm$core$Maybe$Just = function (a) {
+	return {$: 'Just', a: a};
+};
+var elm$core$Result$Err = function (a) {
+	return {$: 'Err', a: a};
+};
+var elm$core$Result$Ok = function (a) {
+	return {$: 'Ok', a: a};
 };
 var elm$json$Json$Decode$Failure = F2(
 	function (a, b) {
@@ -4949,26 +4953,8 @@ var elm$json$Json$Decode$errorToStringHelp = F2(
 			}
 		}
 	});
-var elm$json$Json$Encode$string = _Json_wrap;
-var author$project$Main$outputPort = _Platform_outgoingPort('outputPort', elm$json$Json$Encode$string);
-var author$project$Main$testFill = F2(
-	function (x, y) {
-		return 1;
-	});
-var elm$json$Json$Encode$int = _Json_wrap;
-var elm$json$Json$Encode$object = function (pairs) {
-	return _Json_wrap(
-		A3(
-			elm$core$List$foldl,
-			F2(
-				function (_n0, obj) {
-					var k = _n0.a;
-					var v = _n0.b;
-					return A3(_Json_addField, k, v, obj);
-				}),
-			_Json_emptyObject(_Utils_Tuple0),
-			pairs));
-};
+var elm$core$Platform$Cmd$batch = _Platform_batch;
+var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
 var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		author$project$Main$Model('Initialized model.')(
@@ -4976,20 +4962,7 @@ var author$project$Main$init = function (_n0) {
 			{color: '#6c6adc', muted: false, owner: true, score: 0, username: 'patty'})(_List_Nil)(_List_Nil)('')('')('')(
 			A2(author$project$Board$square, 16, author$project$Main$testFill))(author$project$Goal$RedMoon)(_List_Nil)(
 			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'none'})(60)(0)(_List_Nil)(elm$core$Maybe$Nothing)(_List_Nil),
-		author$project$Main$outputPort(
-			A2(
-				elm$json$Json$Encode$encode,
-				0,
-				elm$json$Json$Encode$object(
-					_List_fromArray(
-						[
-							_Utils_Tuple2(
-							'code',
-							elm$json$Json$Encode$int(200)),
-							_Utils_Tuple2(
-							'content',
-							elm$json$Json$Encode$string(''))
-						])))));
+		elm$core$Platform$Cmd$none);
 };
 var author$project$Main$GetJSON = function (a) {
 	return {$: 'GetJSON', a: a};
@@ -5989,6 +5962,21 @@ var author$project$Chat$decodeChatline = A4(
 	A2(elm$json$Json$Decode$field, 'msg', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'kind', elm$json$Json$Decode$int));
 var elm$json$Json$Encode$bool = _Json_wrap;
+var elm$json$Json$Encode$int = _Json_wrap;
+var elm$json$Json$Encode$object = function (pairs) {
+	return _Json_wrap(
+		A3(
+			elm$core$List$foldl,
+			F2(
+				function (_n0, obj) {
+					var k = _n0.a;
+					var v = _n0.b;
+					return A3(_Json_addField, k, v, obj);
+				}),
+			_Json_emptyObject(_Utils_Tuple0),
+			pairs));
+};
+var elm$json$Json$Encode$string = _Json_wrap;
 var author$project$User$encodeUser = function (user) {
 	return elm$json$Json$Encode$object(
 		_List_fromArray(
@@ -6135,14 +6123,15 @@ var author$project$Main$GetUsersList = function (a) {
 	return {$: 'GetUsersList', a: a};
 };
 var author$project$Main$JSONMessage = F2(
-	function (code, content) {
-		return {code: code, content: content};
+	function (action, content) {
+		return {action: action, content: content};
 	});
 var author$project$Main$decodeJSON = A3(
 	elm$json$Json$Decode$map2,
 	author$project$Main$JSONMessage,
-	A2(elm$json$Json$Decode$field, 'code', elm$json$Json$Decode$int),
+	A2(elm$json$Json$Decode$field, 'action', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'content', elm$json$Json$Decode$value));
+var author$project$Main$outputPort = _Platform_outgoingPort('outputPort', elm$json$Json$Encode$string);
 var author$project$Main$popMove = function (oldQueue) {
 	if (!oldQueue.b) {
 		return _List_Nil;
@@ -6388,8 +6377,6 @@ var author$project$Robot$getByColor = F2(
 	});
 var author$project$User$decodeUsersList = elm$json$Json$Decode$list(author$project$User$decodeUser);
 var elm$core$Debug$log = _Debug_log;
-var elm$core$Platform$Cmd$batch = _Platform_batch;
-var elm$core$Platform$Cmd$none = elm$core$Platform$Cmd$batch(_List_Nil);
 var elm$core$String$trim = _String_trim;
 var elm$json$Json$Decode$decodeValue = _Json_run;
 var author$project$Main$update = F2(
@@ -6451,8 +6438,8 @@ var author$project$Main$update = F2(
 									_List_fromArray(
 										[
 											_Utils_Tuple2(
-											'code',
-											elm$json$Json$Encode$int(201)),
+											'action',
+											elm$json$Json$Encode$string('update_user')),
 											_Utils_Tuple2(
 											'content',
 											author$project$User$encodeUser(newUser))
@@ -6482,8 +6469,8 @@ var author$project$Main$update = F2(
 									_List_fromArray(
 										[
 											_Utils_Tuple2(
-											'code',
-											elm$json$Json$Encode$int(202)),
+											'action',
+											elm$json$Json$Encode$string('update_chat')),
 											_Utils_Tuple2(
 											'content',
 											A3(author$project$Chat$encodeChatline, model.user, newmsg, 0))
@@ -6501,8 +6488,8 @@ var author$project$Main$update = F2(
 									_List_fromArray(
 										[
 											_Utils_Tuple2(
-											'code',
-											elm$json$Json$Encode$int(100)),
+											'action',
+											elm$json$Json$Encode$string('new_game')),
 											_Utils_Tuple2(
 											'content',
 											elm$json$Json$Encode$string(''))
@@ -6608,8 +6595,8 @@ var author$project$Main$update = F2(
 									_List_fromArray(
 										[
 											_Utils_Tuple2(
-											'code',
-											elm$json$Json$Encode$int(1)),
+											'action',
+											elm$json$Json$Encode$string('ping')),
 											_Utils_Tuple2(
 											'content',
 											elm$json$Json$Encode$string('ping'))
@@ -6618,46 +6605,46 @@ var author$project$Main$update = F2(
 					var json = _n0.a;
 					var _n1 = A2(elm$json$Json$Decode$decodeValue, author$project$Main$decodeJSON, json);
 					if (_n1.$ === 'Ok') {
-						var code = _n1.a.code;
+						var action = _n1.a.action;
 						var content = _n1.a.content;
-						switch (code) {
-							case 0:
+						switch (action) {
+							case 'connect_to_server':
 								var $temp$msg = author$project$Main$ConnectToServer(content),
 									$temp$model = model;
 								msg = $temp$msg;
 								model = $temp$model;
 								continue update;
-							case 100:
+							case 'update_board':
 								var $temp$msg = author$project$Main$GetBoard(content),
 									$temp$model = model;
 								msg = $temp$msg;
 								model = $temp$model;
 								continue update;
-							case 101:
+							case 'update_robots':
 								var $temp$msg = author$project$Main$GetRobotList(content),
 									$temp$model = model;
 								msg = $temp$msg;
 								model = $temp$model;
 								continue update;
-							case 102:
+							case 'update_goals':
 								var $temp$msg = author$project$Main$GetGoalList(content),
 									$temp$model = model;
 								msg = $temp$msg;
 								model = $temp$model;
 								continue update;
-							case 200:
+							case 'update_scoreboard':
 								var $temp$msg = author$project$Main$GetUsersList(content),
 									$temp$model = model;
 								msg = $temp$msg;
 								model = $temp$model;
 								continue update;
-							case 201:
+							case 'update_user':
 								var $temp$msg = author$project$Main$GetUser(content),
 									$temp$model = model;
 								msg = $temp$msg;
 								model = $temp$model;
 								continue update;
-							case 202:
+							case 'update_chat':
 								var $temp$msg = author$project$Main$GetChat(content),
 									$temp$model = model;
 								msg = $temp$msg;
@@ -6672,7 +6659,7 @@ var author$project$Main$update = F2(
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{users: _List_Nil}),
+								{debugString: 'Bad JSON!'}),
 							elm$core$Platform$Cmd$none);
 					}
 				case 'GetBoard':
@@ -6789,8 +6776,8 @@ var author$project$Main$update = F2(
 									_List_fromArray(
 										[
 											_Utils_Tuple2(
-											'code',
-											elm$json$Json$Encode$int(200)),
+											'action',
+											elm$json$Json$Encode$string('create_user')),
 											_Utils_Tuple2(
 											'content',
 											elm$json$Json$Encode$string(''))

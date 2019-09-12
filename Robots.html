@@ -180,7 +180,7 @@
 
       });
       
-      app.ports.inputPort.send( {"code": 000, "content": "welcome!"} );
+      app.ports.inputPort.send( {"action": "connect_to_server", "content": "welcome!"} );
 
     }
 
@@ -211,9 +211,7 @@
     
 
 
-
-
-
+/*
   function submit(event) {
       event.preventDefault()
       const input = document.getElementById("message")
@@ -226,7 +224,7 @@
         })
       )
     }
-
+*/
 
 
     window.onload = function() {
@@ -238,7 +236,7 @@
       app.ports.inputPort.send( robots() );
       app.ports.inputPort.send( board );
 
-      document.getElementById("button").addEventListener("click", (event) => submit(event));
+  //    document.getElementById("button").addEventListener("click", (event) => submit(event));
     }
 
 
