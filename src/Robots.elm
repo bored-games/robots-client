@@ -36,7 +36,7 @@ main =
 -- MODEL
 
 type alias JSONMessage = 
-  { code : Int 
+  { action : String 
   , content : Json.Encode.Value
   }
 
@@ -122,8 +122,8 @@ init _ =
     []                                                                       -- robots
     Nothing                                                                  -- activeRobot
     []                                                                       -- movesQueue
-  , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", Json.Encode.string "") ] ) ) -- request userinfo
- -- , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 200), ("content", User.encodeUser { username = "patty", color = "#6c6adc", score = 0, owner = True, muted = False }) ] ) ) -- initialize user?
+  , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("action", Json.Encode.string "create_user"), ("content", Json.Encode.string "") ] ) ) -- request userinfo
+ -- , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("action", Json.Encode.string "create_user"), ("content", User.encodeUser { username = "patty", color = "#6c6adc", score = 0, owner = True, muted = False }) ] ) ) -- initialize user?
   )
 
 
@@ -192,7 +192,7 @@ update msg model =
        , nameInProgress = ""
        , toggleStates = newToggleStates
       }
-      , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("code", Json.Encode.int 201), ("content", User.encodeUser newUser) ] ) ) )
+      , outputPort (Json.Encode.encode 0 (Json.Encode.object [ ("action", Json.Encode.string "update_user"), ("content", User.encodeUser newUser) ] ) ) )
 
     SetMessage message ->
       ( { model | messageInProgress = message }
@@ -210,7 +210,7 @@ update msg model =
           , outputPort (Json.Encode.encode
                           0
                         ( Json.Encode.object
-                        [ ( "code", Json.Encode.int 202),
+                        [ ( "action", Json.Encode.string "update_chat"),
                           ( "content", Chat.encodeChatline model.user newmsg 0 ) ] ) ) )
 
     NewGame -> -- TODO!
@@ -221,7 +221,7 @@ update msg model =
         , outputPort (Json.Encode.encode
                         0
                       ( Json.Encode.object
-                      [ ( "code", Json.Encode.int 100),
+                      [ ( "action", Json.Encode.string "new_game"),
                         ( "content", Json.Encode.string "" ) ] ) ) )
 
     NewGoal newGoal ->
@@ -293,27 +293,27 @@ update msg model =
         , outputPort (Json.Encode.encode
                         0
                       ( Json.Encode.object
-                      [ ( "code", Json.Encode.int 1),
+                      [ ( "action", Json.Encode.string "ping"),
                         ( "content", Json.Encode.string "ping" ) ] ) )
       )
 
     GetJSON json ->
       case (Json.Decode.decodeValue decodeJSON json) of
-        Ok {code, content} ->
-          case code of
-            0   ->
+        Ok {action, content} ->
+          case action of
+            "connect_to_server"   ->
               update (ConnectToServer content) model
-            100 ->
+            "update_board" ->
               update (GetBoard content) model
-            101 ->
+            "update_robots" ->
               update (GetRobotList content) model
-            102 ->
+            "update_goals" ->
               update (GetGoalList content) model
-            200 ->
+            "update_scoreboard" ->
               update (GetUsersList content) model
-            201 ->
+            "update_user" ->
               update (GetUser content) model
-            202 ->
+            "update_chat" ->
               update (GetChat content) model
             _ ->
               ((Debug.log "Error: missing code in JSON message" model), Cmd.none ) -- Error: missing code
@@ -373,7 +373,7 @@ update msg model =
           ( Json.Encode.encode
             0
             ( Json.Encode.object
-              [ ("code", Json.Encode.int 200)
+              [ ("action", Json.Encode.string "create_user")
               , ("content", Json.Encode.string "") ] ))
         )
 
@@ -525,7 +525,7 @@ decodeJSON : Json.Decode.Decoder JSONMessage
 decodeJSON =
   Json.Decode.map2
     JSONMessage
-    (Json.Decode.field "code" Json.Decode.int)
+    (Json.Decode.field "action" Json.Decode.string)
     (Json.Decode.field "content" Json.Decode.value)
 
 

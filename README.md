@@ -1,4 +1,4 @@
-# :robot: Rickety Robots :robot:
+# :robot: Rickety Robots Client :robot:
 A browser-based Ricochet Robots client written in Elm, to be paired with a backend written in Elixir. Includes chat, scorekeeping, and democratically-driven game management!
 
 ## Frontend Model (not finalized, documentation WIP)
@@ -22,19 +22,20 @@ A browser-based Ricochet Robots client written in Elm, to be paired with a backe
 ## JSON Codes
 
 ### Backend -> Frontend
+  * `000` `connect_to_server` : Server has connected.
   * `001`: Tick...?
   ---
-  * `100`: Reset `board` layout
-  * `101`: Update `robots` positions and legal moves
-  * `102`: Reset `goalList` positions
+  * `100` `update_board`: Reset `board` layout
+  * `101` `update_robots`: Update `robots` positions and legal moves
+  * `102` `update_goals`: Reset `goalList` positions
   * `103`: Update new goal
   * `104`: Switch to countdown (solution found)
   * `105`: Switch to clock (new game)
   * `106`: Send set of legal moves
   ---
-  * `200`: Update `users`
-  * `201`: Update `user`
-  * `202`: Update `chat`
+  * `200` `update_scoreboard`: Update `users`
+  * `201` `update_user`: Update `user`
+  * `202` `update_chat`: Update `chat`
   * `202`: 
   * `203`: 
 
@@ -49,9 +50,9 @@ A browser-based Ricochet Robots client written in Elm, to be paired with a backe
   * `104`: Reset goal
   * `105`: Submit move
   ---
-  * `200`: Add user
-  * `201`: Update user
-  * `202`: Send (user) message
+  * `200` `create_user`: Add user
+  * `201` `update_user`: Update user
+  * `202` `update_chat`: Send (user) message
   * `203`: Send (system) message
   * `204`: Set score of user
   * `205`: 
