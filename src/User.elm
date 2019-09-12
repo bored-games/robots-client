@@ -7,8 +7,8 @@ type alias User =
   { username : String
   , color : String
   , score : Int
-  , owner : Bool
-  , muted : Bool
+  , is_admin : Bool
+  , is_muted : Bool
   }
 
   
@@ -17,8 +17,8 @@ encodeUser user =
   Json.Encode.object [ ("username", Json.Encode.string user.username),
                        ("color", Json.Encode.string user.color),
                        ("score", Json.Encode.int user.score),
-                       ("owner", Json.Encode.bool user.owner),
-                       ("muted", Json.Encode.bool user.muted) ]
+                       ("is_admin", Json.Encode.bool user.is_admin),
+                       ("is_muted", Json.Encode.bool user.is_muted) ]
 
 decodeUser : Json.Decode.Decoder User
 decodeUser =
@@ -27,8 +27,8 @@ decodeUser =
     (Json.Decode.field "username" Json.Decode.string)
     (Json.Decode.field "color" Json.Decode.string)
     (Json.Decode.field "score" Json.Decode.int)
-    (Json.Decode.field "owner" Json.Decode.bool)
-    (Json.Decode.field "muted" Json.Decode.bool)
+    (Json.Decode.field "is_admin" Json.Decode.bool)
+    (Json.Decode.field "is_muted" Json.Decode.bool)
   
 decodeUsersList : Json.Decode.Decoder (List User)
 decodeUsersList =

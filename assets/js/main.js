@@ -4959,7 +4959,7 @@ var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		author$project$Main$Model('Initialized model.')(
 			author$project$Main$Keys(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false))(
-			{color: '#6c6adc', muted: false, owner: true, score: 0, username: 'patty'})(_List_Nil)(_List_Nil)('')('')('')(
+			{color: '#6c6adc', is_admin: true, is_muted: false, score: 0, username: 'patty'})(_List_Nil)(_List_Nil)('')('')('')(
 			A2(author$project$Board$square, 16, author$project$Main$testFill))(author$project$Goal$RedMoon)(_List_Nil)(
 			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'none'})(60)(0)(_List_Nil)(elm$core$Maybe$Nothing)(_List_Nil),
 		elm$core$Platform$Cmd$none);
@@ -5941,8 +5941,8 @@ var author$project$Chat$Chatline = F3(
 		return {kind: kind, msg: msg, user: user};
 	});
 var author$project$User$User = F5(
-	function (username, color, score, owner, muted) {
-		return {color: color, muted: muted, owner: owner, score: score, username: username};
+	function (username, color, score, is_admin, is_muted) {
+		return {color: color, is_admin: is_admin, is_muted: is_muted, score: score, username: username};
 	});
 var elm$json$Json$Decode$bool = _Json_decodeBool;
 var elm$json$Json$Decode$map5 = _Json_map5;
@@ -5952,8 +5952,8 @@ var author$project$User$decodeUser = A6(
 	A2(elm$json$Json$Decode$field, 'username', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'color', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'score', elm$json$Json$Decode$int),
-	A2(elm$json$Json$Decode$field, 'owner', elm$json$Json$Decode$bool),
-	A2(elm$json$Json$Decode$field, 'muted', elm$json$Json$Decode$bool));
+	A2(elm$json$Json$Decode$field, 'is_admin', elm$json$Json$Decode$bool),
+	A2(elm$json$Json$Decode$field, 'is_muted', elm$json$Json$Decode$bool));
 var elm$json$Json$Decode$map3 = _Json_map3;
 var author$project$Chat$decodeChatline = A4(
 	elm$json$Json$Decode$map3,
@@ -5991,11 +5991,11 @@ var author$project$User$encodeUser = function (user) {
 				'score',
 				elm$json$Json$Encode$int(user.score)),
 				_Utils_Tuple2(
-				'owner',
-				elm$json$Json$Encode$bool(user.owner)),
+				'is_admin',
+				elm$json$Json$Encode$bool(user.is_admin)),
 				_Utils_Tuple2(
-				'muted',
-				elm$json$Json$Encode$bool(user.muted))
+				'is_muted',
+				elm$json$Json$Encode$bool(user.is_muted))
 			]));
 };
 var author$project$Chat$encodeChatline = F3(
@@ -6652,14 +6652,16 @@ var author$project$Main$update = F2(
 								continue update;
 							default:
 								return _Utils_Tuple2(
-									A2(elm$core$Debug$log, 'Error: missing code in JSON message', model),
+									A2(elm$core$Debug$log, 'Error: unknown code in JSON message', model),
 									elm$core$Platform$Cmd$none);
 						}
 					} else {
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{debugString: 'Bad JSON!'}),
+								{
+									debugString: 'Bad JSON: ' + A2(elm$json$Json$Encode$encode, 0, json)
+								}),
 							elm$core$Platform$Cmd$none);
 					}
 				case 'GetBoard':
@@ -6744,7 +6746,7 @@ var author$project$Main$update = F2(
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{users: _List_Nil}),
+								{debugString: 'Error parsing userlist JSON'}),
 							elm$core$Platform$Cmd$none);
 					}
 				case 'GetUser':
@@ -6761,7 +6763,7 @@ var author$project$Main$update = F2(
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{users: _List_Nil}),
+								{debugString: 'Error parsing user JSON'}),
 							elm$core$Platform$Cmd$none);
 					}
 				case 'ConnectToServer':
@@ -6798,7 +6800,7 @@ var author$project$Main$update = F2(
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{chat: _List_Nil}),
+								{debugString: 'Error parsing chat JSON'}),
 							elm$core$Platform$Cmd$none);
 					}
 				case 'KeyChanged':
@@ -7673,7 +7675,7 @@ var author$project$Main$drawScore = function (user) {
 					elm$html$Html$text(user.username),
 					A2(
 						elm$core$List$cons,
-						user.owner ? A2(
+						user.is_admin ? A2(
 							elm$html$Html$span,
 							_List_fromArray(
 								[
@@ -7683,7 +7685,7 @@ var author$project$Main$drawScore = function (user) {
 							_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
 						A2(
 							elm$core$List$cons,
-							user.muted ? A2(
+							user.is_muted ? A2(
 								elm$html$Html$span,
 								_List_fromArray(
 									[
@@ -8153,8 +8155,8 @@ var author$project$Main$view = function (model) {
 						_List_fromArray(
 							[
 								elm$html$Html$text(
-								model.debugString + ('   ' + author$project$Main$printMoveList(
-									elm$core$List$reverse(model.movesQueue))))
+								model.user.username + (model.debugString + ('   ' + author$project$Main$printMoveList(
+									elm$core$List$reverse(model.movesQueue)))))
 							])),
 						A2(
 						elm$html$Html$div,

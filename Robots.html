@@ -43,7 +43,7 @@
     return arr1[Math.floor(Math.random()*arr1.length)] + arr2[Math.floor(Math.random()*arr2.length)]+ arr3[Math.floor(Math.random()*arr3.length)];
   }
 
-  
+/*  
   var board = {
       "code": 100,
       "content":
@@ -65,13 +65,15 @@
         236,100,100,100,100,100,102,108,100,100,100,100,100,102,108,118] 
       ]
     }
+    */
 
-  
+  /*
   var user = {
       "code": 201,
       "content": []
     };
-
+*/
+/*
   var users = {
     "code": 200,
     "content": [
@@ -80,8 +82,9 @@
     , { "username": "pete", color:"#5eb7e0", score:50, owner:false, muted:true }
     , { "username": "arlo", color:"#e05e9b", score:8, owner:false, muted:false }
     ]};
-
+*/
   
+/*
   function robots() {
     return {
     "code": 101,
@@ -93,7 +96,9 @@
     , { "pos": { x: randInt(), y: randInt() }, color: "silver", moves: ["up", "down", "left", "right"] }
     ]};
   }
-  
+  */
+ 
+  /*  
   var goals = {
     "code": 102,
     "content": [
@@ -115,7 +120,8 @@
     , { "pos": { x:  6, y: 14}, symbol: "YellowGear", "active": false}
     ]};
   goals.content[randInt()].active = true
-
+*/
+/*
   var chat = {
     "code": 202,
     "content": [
@@ -127,6 +133,7 @@
         "kind": 0 },
         ]
   };
+  */
 
   var socket;
   var app = Elm.Main.init({node:document.getElementById('elm-node')});
@@ -231,10 +238,10 @@
       // const websocketClass = new robotsWebsocketHandler();
       setupSocket();
       
-      app.ports.inputPort.send( goals );
-      app.ports.inputPort.send( chat );
-      app.ports.inputPort.send( robots() );
-      app.ports.inputPort.send( board );
+ //     app.ports.inputPort.send( goals );
+ //     app.ports.inputPort.send( chat );
+ //    app.ports.inputPort.send( robots() );
+  //    app.ports.inputPort.send( board );
 
   //    document.getElementById("button").addEventListener("click", (event) => submit(event));
     }

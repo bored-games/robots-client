@@ -88,7 +88,7 @@ init _ =
   (Model
     "Initialized model."
     (Keys False False False False False False False False False False False False False)
-    { username = "patty", color = "#6c6adc", score = 0, owner = True, muted = False }
+    { username = "patty", color = "#6c6adc", score = 0, is_admin = True, is_muted = False }
     [ ] -- `users` (and scores)
     [ ] -- `chat`
     "" -- `messageInProgress`
@@ -314,10 +314,10 @@ update msg model =
             "update_chat" ->
               update (GetChat content) model
             _ ->
-              ((Debug.log "Error: missing code in JSON message" model), Cmd.none ) -- Error: missing code
+              ((Debug.log "Error: unknown code in JSON message" model), Cmd.none ) -- Error: missing code
 
         Err _ ->
-          ( { model | debugString = ("Bad JSON!")}, Cmd.none )
+          ( { model | debugString = ("Bad JSON: " ++ (Json.Encode.encode 0 json))}, Cmd.none )
 
     GetBoard json ->
       case (Json.Decode.decodeValue Board.decodeBoard json) of
@@ -356,14 +356,14 @@ update msg model =
         Ok usersList ->
           ( { model | users = usersList}, Cmd.none )
         Err _ ->
-          ( { model | users = []}, Cmd.none )
+          ( { model | debugString = "Error parsing userlist JSON"}, Cmd.none )
 
     GetUser json ->
       case (Json.Decode.decodeValue User.decodeUser json) of
         Ok user ->
           ( { model | user = user}, Cmd.none )
         Err _ ->
-          ( { model | users = []}, Cmd.none )
+          ( { model | debugString = "Error parsing user JSON"}, Cmd.none )
           
     ConnectToServer json ->
       ( model,
@@ -380,7 +380,7 @@ update msg model =
         Ok chatline ->
           ( { model | chat = chatline::model.chat}, Cmd.none )
         Err _ ->
-          ( { model | chat = [] }, Cmd.none )
+          ( { model | debugString = "Error parsing chat JSON"}, Cmd.none )
 
     KeyChanged isDown key ->
       let
@@ -559,8 +559,8 @@ drawScore user =
   div [ class "score" ] 
   [ div [ class "score__username", style "color" user.color, title "UID: TODO!" ]
     ((text user.username) ::
-    (if user.owner then span [ class "owner", title "Owner" ] [] else span [] []) ::
-    (if user.muted then span [ class "muted", title "Muted" ] [] else span [] []) ::
+    (if user.is_admin then span [ class "owner", title "Owner" ] [] else span [] []) ::
+    (if user.is_muted then span [ class "muted", title "Muted" ] [] else span [] []) ::
     [])
   , text (String.fromInt user.score)
   ]
@@ -734,7 +734,7 @@ view model =
           div [ class "scores" ] 
             (h2 [] [ text "Scoreboard" ] :: ((List.reverse (List.sortBy .score model.users)) |> drawScores))
         , div [ class "debug" ]
-          [ text ( model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]          
+          [ text (  model.user.username ++ model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]          
         , div [ class "sidebar__goal" ] [ div [ class ("goal " ++ .filename (Goal.toString model.goal)) ] [ ] ]
         , div [ class "timer", onClick (IncrementScore model.user) ]
           [ div [ class "timer__countdown" ]
