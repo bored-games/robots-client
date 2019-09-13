@@ -433,7 +433,7 @@ textarea, input[type="text"], select {
   margin-right: 0.5rem;
 }
 
-.muted, .owner {
+.muted, .owner, .self {
   height: 1.0rem;
   width: 1.0rem;
   display: inline-block;
@@ -443,11 +443,12 @@ textarea, input[type="text"], select {
   mask-position: center center;
   mask-repeat: no-repeat;
   background-color: #666;
-  margin-top: -2px;
+  margin-top: -3px;
 }
 
 .muted { mask-image: url('../static/images/icons/mute.png'); }
 .owner { mask-image: url('../static/images/icons/owner.png'); }
+.self { background: #ac9d1a; mask-image: url('../static/images/icons/star.png'); }
 
 .sidebar__goal {
   border-bottom: 1px solid #333;

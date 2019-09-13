@@ -7653,51 +7653,62 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 					]))
 			]))
 	]);
-var author$project$Main$drawScore = function (user) {
-	return A2(
-		elm$html$Html$div,
-		_List_fromArray(
-			[
-				elm$html$Html$Attributes$class('score')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				elm$html$Html$div,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('score__username'),
-						A2(elm$html$Html$Attributes$style, 'color', user.color),
-						elm$html$Html$Attributes$title('UID: TODO!')
-					]),
-				A2(
-					elm$core$List$cons,
-					elm$html$Html$text(user.username),
+var author$project$Main$drawScore = F2(
+	function (is_self, user) {
+		return A2(
+			elm$html$Html$div,
+			_List_fromArray(
+				[
+					elm$html$Html$Attributes$class('score')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					elm$html$Html$div,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$class('score__username'),
+							A2(elm$html$Html$Attributes$style, 'color', user.color),
+							elm$html$Html$Attributes$title('UID: TODO!')
+						]),
 					A2(
 						elm$core$List$cons,
-						user.is_admin ? A2(
-							elm$html$Html$span,
-							_List_fromArray(
-								[
-									elm$html$Html$Attributes$class('owner'),
-									elm$html$Html$Attributes$title('Owner')
-								]),
-							_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
+						elm$html$Html$text(user.username),
 						A2(
 							elm$core$List$cons,
-							user.is_muted ? A2(
+							_Utils_eq(is_self, user.username) ? A2(
 								elm$html$Html$span,
 								_List_fromArray(
 									[
-										elm$html$Html$Attributes$class('muted'),
-										elm$html$Html$Attributes$title('Muted')
+										elm$html$Html$Attributes$class('self'),
+										elm$html$Html$Attributes$title('This is you!')
 									]),
 								_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
-							_List_Nil)))),
-				elm$html$Html$text(
-				elm$core$String$fromInt(user.score))
-			]));
-};
+							A2(
+								elm$core$List$cons,
+								user.is_admin ? A2(
+									elm$html$Html$span,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$class('owner'),
+											elm$html$Html$Attributes$title('Owner')
+										]),
+									_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
+								A2(
+									elm$core$List$cons,
+									user.is_muted ? A2(
+										elm$html$Html$span,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('muted'),
+												elm$html$Html$Attributes$title('Muted')
+											]),
+										_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
+									_List_Nil))))),
+					elm$html$Html$text(
+					elm$core$String$fromInt(user.score))
+				]));
+	});
 var author$project$Main$SetColor = function (a) {
 	return {$: 'SetColor', a: a};
 };
@@ -8098,7 +8109,10 @@ var elm$html$Html$Attributes$maxlength = function (n) {
 };
 var author$project$Main$view = function (model) {
 	var drawScores = function (users) {
-		return A2(elm$core$List$map, author$project$Main$drawScore, users);
+		return A2(
+			elm$core$List$map,
+			author$project$Main$drawScore(model.user.username),
+			users);
 	};
 	var drawChat = function (chat) {
 		return A2(elm$core$List$map, author$project$Main$drawMessage, chat);
@@ -8155,8 +8169,8 @@ var author$project$Main$view = function (model) {
 						_List_fromArray(
 							[
 								elm$html$Html$text(
-								model.user.username + (model.debugString + ('   ' + author$project$Main$printMoveList(
-									elm$core$List$reverse(model.movesQueue)))))
+								model.debugString + ('   ' + author$project$Main$printMoveList(
+									elm$core$List$reverse(model.movesQueue))))
 							])),
 						A2(
 						elm$html$Html$div,

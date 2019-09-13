@@ -554,11 +554,12 @@ formatTimer seconds =
   in
     (if hrs > 0 then (String.fromInt hrs ++ ":" ) else "") ++ String.fromInt min ++ ":" ++ (if sec < 10 then "0" else "") ++ (String.fromInt sec)
 
-drawScore : User -> Html Msg
-drawScore user =
+drawScore : String -> User -> Html Msg
+drawScore is_self user =
   div [ class "score" ] 
   [ div [ class "score__username", style "color" user.color, title "UID: TODO!" ]
     ((text user.username) ::
+    (if is_self == user.username then span [ class "self", title "This is you!" ] [] else span [] []) ::
     (if user.is_admin then span [ class "owner", title "Owner" ] [] else span [] []) ::
     (if user.is_muted then span [ class "muted", title "Muted" ] [] else span [] []) ::
     [])
@@ -722,7 +723,7 @@ view model =
     drawChat chat =
       List.map drawMessage chat
     drawScores users =
-      users |> List.map drawScore
+      List.map (drawScore model.user.username) users
     drawBoard board =
       List.concat ( drawAll 0 board model.robots model.goalList )
 
@@ -734,7 +735,7 @@ view model =
           div [ class "scores" ] 
             (h2 [] [ text "Scoreboard" ] :: ((List.reverse (List.sortBy .score model.users)) |> drawScores))
         , div [ class "debug" ]
-          [ text (  model.user.username ++ model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]          
+          [ text (  model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]          
         , div [ class "sidebar__goal" ] [ div [ class ("goal " ++ .filename (Goal.toString model.goal)) ] [ ] ]
         , div [ class "timer", onClick (IncrementScore model.user) ]
           [ div [ class "timer__countdown" ]
