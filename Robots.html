@@ -8,16 +8,6 @@
 </head>
 <body>
   <main id="elm-node"></main>
-  <div id="main"></div>
-  <br>
-  <form>
-    <input id="message" type="text">
-    <br>
-    <br>
-    <input type="submit" value="send" id="button">
-  </form>
-
-
 
   <script type="text/javascript">
     
@@ -140,7 +130,6 @@
 
   function setupSocket() {
     socket = new WebSocket("ws://localhost:4000/ws/robots123")
-    // heard a message from Elm
 
     socket.onclose = function() {
       alert("Connection to the server has been lost.");
@@ -190,14 +179,16 @@
       app.ports.inputPort.send( {"action": "connect_to_server", "content": "welcome!"} );
 
     }
-
+/*
     socket.addEventListener("message", (event) => {
       const pTag = document.createElement("p")
       pTag.innerHTML = event.data
 
       document.getElementById("main").append(pTag)
     })
+*/
 
+    // reconnect on socket close?
     socket.addEventListener("close", () => {
       this.setupSocket()
     })
@@ -210,12 +201,8 @@
       app.ports.inputPort.send( newJSON );
     })
 
-
-
   }
 
-
-    
 
 
 /*

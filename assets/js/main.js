@@ -4705,10 +4705,12 @@ var author$project$Main$Model = function (debugString) {
 											return function (toggleStates) {
 												return function (countdown) {
 													return function (currentTimer) {
-														return function (robots) {
-															return function (activeRobot) {
-																return function (movesQueue) {
-																	return {activeRobot: activeRobot, boundaryBoard: boundaryBoard, chat: chat, colorInProgress: colorInProgress, countdown: countdown, currentTimer: currentTimer, debugString: debugString, goal: goal, goalList: goalList, keys: keys, messageInProgress: messageInProgress, movesQueue: movesQueue, nameInProgress: nameInProgress, robots: robots, toggleStates: toggleStates, user: user, users: users};
+														return function (solutionFound) {
+															return function (robots) {
+																return function (activeRobot) {
+																	return function (movesQueue) {
+																		return {activeRobot: activeRobot, boundaryBoard: boundaryBoard, chat: chat, colorInProgress: colorInProgress, countdown: countdown, currentTimer: currentTimer, debugString: debugString, goal: goal, goalList: goalList, keys: keys, messageInProgress: messageInProgress, movesQueue: movesQueue, nameInProgress: nameInProgress, robots: robots, solutionFound: solutionFound, toggleStates: toggleStates, user: user, users: users};
+																	};
 																};
 															};
 														};
@@ -4961,7 +4963,7 @@ var author$project$Main$init = function (_n0) {
 			author$project$Main$Keys(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false))(
 			{color: '#6c6adc', is_admin: true, is_muted: false, score: 0, username: 'patty'})(_List_Nil)(_List_Nil)('')('')('')(
 			A2(author$project$Board$square, 16, author$project$Main$testFill))(author$project$Goal$RedMoon)(_List_Nil)(
-			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'none'})(60)(0)(_List_Nil)(elm$core$Maybe$Nothing)(_List_Nil),
+			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'none'})(60)(0)(false)(_List_Nil)(elm$core$Maybe$Nothing)(_List_Nil),
 		elm$core$Platform$Cmd$none);
 };
 var author$project$Main$GetJSON = function (a) {
@@ -6122,6 +6124,12 @@ var author$project$Main$GetUser = function (a) {
 var author$project$Main$GetUsersList = function (a) {
 	return {$: 'GetUsersList', a: a};
 };
+var author$project$Main$SwitchToCountdown = function (a) {
+	return {$: 'SwitchToCountdown', a: a};
+};
+var author$project$Main$SwitchToTimer = function (a) {
+	return {$: 'SwitchToTimer', a: a};
+};
 var author$project$Main$JSONMessage = F2(
 	function (action, content) {
 		return {action: action, content: content};
@@ -6574,12 +6582,67 @@ var author$project$Main$update = F2(
 							model,
 							{toggleStates: newToggleStates}),
 						elm$core$Platform$Cmd$none);
+				case 'SwitchToCountdown':
+					var json = _n0.a;
+					var _n1 = A2(elm$json$Json$Decode$decodeValue, elm$json$Json$Decode$int, json);
+					if (_n1.$ === 'Ok') {
+						var time = _n1.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{countdown: time, solutionFound: true}),
+							elm$core$Platform$Cmd$none);
+					} else {
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{debugString: 'Countdown time error'}),
+							elm$core$Platform$Cmd$none);
+					}
+				case 'SwitchToTimer':
+					var json = _n0.a;
+					var _n2 = A2(
+						elm$json$Json$Decode$decodeValue,
+						A2(elm$json$Json$Decode$field, 'timer', elm$json$Json$Decode$int),
+						json);
+					if (_n2.$ === 'Ok') {
+						var time = _n2.a;
+						var _n3 = A2(
+							elm$json$Json$Decode$decodeValue,
+							A2(elm$json$Json$Decode$field, 'countdown', elm$json$Json$Decode$int),
+							json);
+						if (_n3.$ === 'Ok') {
+							var countdown = _n3.a;
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{countdown: countdown, currentTimer: time, solutionFound: false}),
+								elm$core$Platform$Cmd$none);
+						} else {
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{debugString: 'Countdown time error'}),
+								elm$core$Platform$Cmd$none);
+						}
+					} else {
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{debugString: 'Timer time error'}),
+							elm$core$Platform$Cmd$none);
+					}
 				case 'Tick':
 					var newTime = _n0.a;
+					var currentTimerDisplay = model.currentTimer + 1;
+					var countdownDisplay = model.solutionFound ? (model.countdown - 1) : model.countdown;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{currentTimer: model.currentTimer + 1}),
+							{
+								countdown: A2(elm$core$Basics$max, 0, countdownDisplay),
+								currentTimer: currentTimerDisplay
+							}),
 						elm$core$Platform$Cmd$none);
 				case 'Ping':
 					var newTime = _n0.a;
@@ -6603,10 +6666,10 @@ var author$project$Main$update = F2(
 										])))));
 				case 'GetJSON':
 					var json = _n0.a;
-					var _n1 = A2(elm$json$Json$Decode$decodeValue, author$project$Main$decodeJSON, json);
-					if (_n1.$ === 'Ok') {
-						var action = _n1.a.action;
-						var content = _n1.a.content;
+					var _n4 = A2(elm$json$Json$Decode$decodeValue, author$project$Main$decodeJSON, json);
+					if (_n4.$ === 'Ok') {
+						var action = _n4.a.action;
+						var content = _n4.a.content;
 						switch (action) {
 							case 'connect_to_server':
 								var $temp$msg = author$project$Main$ConnectToServer(content),
@@ -6650,6 +6713,18 @@ var author$project$Main$update = F2(
 								msg = $temp$msg;
 								model = $temp$model;
 								continue update;
+							case 'switch_to_countdown':
+								var $temp$msg = author$project$Main$SwitchToCountdown(content),
+									$temp$model = model;
+								msg = $temp$msg;
+								model = $temp$model;
+								continue update;
+							case 'switch_to_timer':
+								var $temp$msg = author$project$Main$SwitchToTimer(content),
+									$temp$model = model;
+								msg = $temp$msg;
+								model = $temp$model;
+								continue update;
 							default:
 								return _Utils_Tuple2(
 									A2(elm$core$Debug$log, 'Error: unknown code in JSON message', model),
@@ -6666,9 +6741,9 @@ var author$project$Main$update = F2(
 					}
 				case 'GetBoard':
 					var json = _n0.a;
-					var _n3 = A2(elm$json$Json$Decode$decodeValue, author$project$Board$decodeBoard, json);
-					if (_n3.$ === 'Ok') {
-						var board = _n3.a;
+					var _n6 = A2(elm$json$Json$Decode$decodeValue, author$project$Board$decodeBoard, json);
+					if (_n6.$ === 'Ok') {
+						var board = _n6.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -6683,9 +6758,9 @@ var author$project$Main$update = F2(
 					}
 				case 'GetRobotList':
 					var json = _n0.a;
-					var _n4 = A2(elm$json$Json$Decode$decodeValue, author$project$Robot$decodeRobotsList, json);
-					if (_n4.$ === 'Ok') {
-						var robotList = _n4.a;
+					var _n7 = A2(elm$json$Json$Decode$decodeValue, author$project$Robot$decodeRobotsList, json);
+					if (_n7.$ === 'Ok') {
+						var robotList = _n7.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -6700,21 +6775,21 @@ var author$project$Main$update = F2(
 					}
 				case 'GetGoalList':
 					var json = _n0.a;
-					var _n5 = A2(elm$json$Json$Decode$decodeValue, author$project$Goal$decodeGoalList, json);
-					if (_n5.$ === 'Ok') {
-						var goalList = _n5.a;
+					var _n8 = A2(elm$json$Json$Decode$decodeValue, author$project$Goal$decodeGoalList, json);
+					if (_n8.$ === 'Ok') {
+						var goalList = _n8.a;
 						var activeGoal = function () {
-							var _n6 = elm$core$List$head(
+							var _n9 = elm$core$List$head(
 								A2(
 									elm$core$List$filter,
 									function ($) {
 										return $.active;
 									},
 									goalList));
-							if (_n6.$ === 'Nothing') {
+							if (_n9.$ === 'Nothing') {
 								return author$project$Goal$RedMoon;
 							} else {
-								var anyGoal = _n6.a;
+								var anyGoal = _n9.a;
 								return function ($) {
 									return $.symbol;
 								}(anyGoal);
@@ -6734,9 +6809,9 @@ var author$project$Main$update = F2(
 					}
 				case 'GetUsersList':
 					var json = _n0.a;
-					var _n7 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUsersList, json);
-					if (_n7.$ === 'Ok') {
-						var usersList = _n7.a;
+					var _n10 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUsersList, json);
+					if (_n10.$ === 'Ok') {
+						var usersList = _n10.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -6751,9 +6826,9 @@ var author$project$Main$update = F2(
 					}
 				case 'GetUser':
 					var json = _n0.a;
-					var _n8 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUser, json);
-					if (_n8.$ === 'Ok') {
-						var user = _n8.a;
+					var _n11 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUser, json);
+					if (_n11.$ === 'Ok') {
+						var user = _n11.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -6786,9 +6861,9 @@ var author$project$Main$update = F2(
 										])))));
 				case 'GetChat':
 					var json = _n0.a;
-					var _n9 = A2(elm$json$Json$Decode$decodeValue, author$project$Chat$decodeChatline, json);
-					if (_n9.$ === 'Ok') {
-						var chatline = _n9.a;
+					var _n12 = A2(elm$json$Json$Decode$decodeValue, author$project$Chat$decodeChatline, json);
+					if (_n12.$ === 'Ok') {
+						var chatline = _n12.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -7379,7 +7454,14 @@ var author$project$Main$drawMessage = function (message) {
 	}
 };
 var elm$html$Html$h2 = _VirtualDom_node('h2');
-var elm$html$Html$Attributes$title = elm$html$Html$Attributes$stringProperty('title');
+var elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var elm$html$Html$Attributes$attribute = elm$virtual_dom$VirtualDom$attribute;
 var author$project$Main$drawPollOptions = _List_fromArray(
 	[
 		A2(
@@ -7404,7 +7486,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Give \'owner\' status to user. Owners can use \'/set\' to instantly change settings.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Give \'owner\' status to user. Owners can use \'/set\' to instantly change settings.')
 			]),
 		_List_fromArray(
 			[
@@ -7425,7 +7508,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Remove \'owner\' status from user.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Remove \'owner\' status from user.')
 			]),
 		_List_fromArray(
 			[
@@ -7446,7 +7530,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Mute user. Muted users cannot chat or create polls.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Mute user. Muted users cannot chat or create polls.')
 			]),
 		_List_fromArray(
 			[
@@ -7467,7 +7552,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Unmute user.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Unmute user.')
 			]),
 		_List_fromArray(
 			[
@@ -7488,7 +7574,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Kick user from the game.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Kick user from the game.')
 			]),
 		_List_fromArray(
 			[
@@ -7509,7 +7596,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Set score of user to some number.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Set score of user to some number.')
 			]),
 		_List_fromArray(
 			[
@@ -7540,7 +7628,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Reset all scores to 0.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Reset all scores to 0.')
 			]),
 		_List_fromArray(
 			[
@@ -7551,7 +7640,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Reset board walls, goals, and robot positions.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Reset board walls, goals, and robot positions.')
 			]),
 		_List_fromArray(
 			[
@@ -7562,7 +7652,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Reset goal position.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Reset goal position.')
 			]),
 		_List_fromArray(
 			[
@@ -7573,7 +7664,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Set time limit for polls in seconds. Must be at least 30.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Set time limit for polls in seconds. Must be at least 30.')
 			]),
 		_List_fromArray(
 			[
@@ -7594,7 +7686,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Set time limit for finding new solutions. Must be at least 0.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Set time limit for finding new solutions. Must be at least 0.')
 			]),
 		_List_fromArray(
 			[
@@ -7615,7 +7708,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Set number of puzzles before a new board is shuffled.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Set number of puzzles before a new board is shuffled.')
 			]),
 		_List_fromArray(
 			[
@@ -7636,7 +7730,8 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 		_List_fromArray(
 			[
 				elm$html$Html$Attributes$class('poll__command'),
-				elm$html$Html$Attributes$title('Single-robot solutions below this number will not add to score. Must be at least 0.')
+				A2(elm$html$Html$Attributes$attribute, 'flow', 'left'),
+				A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Single-robot solutions below this number will not add to score. Must be at least 0.')
 			]),
 		_List_fromArray(
 			[
@@ -7668,12 +7763,21 @@ var author$project$Main$drawScore = F2(
 					_List_fromArray(
 						[
 							elm$html$Html$Attributes$class('score__username'),
-							A2(elm$html$Html$Attributes$style, 'color', user.color),
-							elm$html$Html$Attributes$title('UID: TODO!')
+							A2(elm$html$Html$Attributes$style, 'color', user.color)
 						]),
 					A2(
 						elm$core$List$cons,
-						elm$html$Html$text(user.username),
+						A2(
+							elm$html$Html$span,
+							_List_fromArray(
+								[
+									A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+									A2(elm$html$Html$Attributes$attribute, 'tooltip', 'UID: TODO!')
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text(user.username)
+								])),
 						A2(
 							elm$core$List$cons,
 							_Utils_eq(is_self, user.username) ? A2(
@@ -7681,7 +7785,8 @@ var author$project$Main$drawScore = F2(
 								_List_fromArray(
 									[
 										elm$html$Html$Attributes$class('self'),
-										elm$html$Html$Attributes$title('This is you!')
+										A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+										A2(elm$html$Html$Attributes$attribute, 'tooltip', 'This is you!')
 									]),
 								_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
 							A2(
@@ -7691,7 +7796,8 @@ var author$project$Main$drawScore = F2(
 									_List_fromArray(
 										[
 											elm$html$Html$Attributes$class('owner'),
-											elm$html$Html$Attributes$title('Owner')
+											A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+											A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Owner')
 										]),
 									_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
 								A2(
@@ -7701,7 +7807,8 @@ var author$project$Main$drawScore = F2(
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class('muted'),
-												elm$html$Html$Attributes$title('Muted')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Muted')
 											]),
 										_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
 									_List_Nil))))),
@@ -8206,7 +8313,8 @@ var author$project$Main$view = function (model) {
 								elm$html$Html$div,
 								_List_fromArray(
 									[
-										elm$html$Html$Attributes$class('timer__countdown')
+										elm$html$Html$Attributes$class(
+										'timer__countdown ' + (model.solutionFound ? 'active' : 'inactive'))
 									]),
 								_List_fromArray(
 									[
@@ -8223,7 +8331,8 @@ var author$project$Main$view = function (model) {
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class('icon icon--timer'),
-												elm$html$Html$Attributes$title('Countdown before best solution wins!')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'up'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Countdown before best solution wins!')
 											]),
 										_List_Nil)
 									])),
@@ -8231,7 +8340,8 @@ var author$project$Main$view = function (model) {
 								elm$html$Html$div,
 								_List_fromArray(
 									[
-										elm$html$Html$Attributes$class('timer__current-timer')
+										elm$html$Html$Attributes$class(
+										'timer__current-timer ' + (model.solutionFound ? 'inactive' : 'active'))
 									]),
 								_List_fromArray(
 									[
@@ -8248,7 +8358,8 @@ var author$project$Main$view = function (model) {
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class('icon icon--clock'),
-												elm$html$Html$Attributes$title('Time spent on current puzzle')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'up'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Time spent on current puzzle')
 											]),
 										_List_Nil)
 									])),
@@ -8275,7 +8386,8 @@ var author$project$Main$view = function (model) {
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class('icon icon--count'),
-												elm$html$Html$Attributes$title('Number of moves in current solution attempt')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'up'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Number of moves in current solution attempt')
 											]),
 										_List_Nil)
 									])),
@@ -8302,7 +8414,8 @@ var author$project$Main$view = function (model) {
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class('icon icon--robot'),
-												elm$html$Html$Attributes$title('Number of robots in current solution attempt')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'up'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Number of robots in current solution attempt')
 											]),
 										_List_Nil)
 									]))
@@ -8342,7 +8455,8 @@ var author$project$Main$view = function (model) {
 													elm$core$Maybe$Just(author$project$Color$Red)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
 												author$project$Main$SetActiveRobot(author$project$Color$Red)),
-												elm$html$Html$Attributes$title('Select red robot ([R] or [1])')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select red robot ([R] or [1])')
 											]),
 										_List_Nil),
 										A2(
@@ -8355,7 +8469,8 @@ var author$project$Main$view = function (model) {
 													elm$core$Maybe$Just(author$project$Color$Green)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
 												author$project$Main$SetActiveRobot(author$project$Color$Green)),
-												elm$html$Html$Attributes$title('Select red robot ([G] or [2])')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select red robot ([G] or [2])')
 											]),
 										_List_Nil),
 										A2(
@@ -8368,7 +8483,8 @@ var author$project$Main$view = function (model) {
 													elm$core$Maybe$Just(author$project$Color$Blue)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
 												author$project$Main$SetActiveRobot(author$project$Color$Blue)),
-												elm$html$Html$Attributes$title('Select red robot ([B] or [3])')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select red robot ([B] or [3])')
 											]),
 										_List_Nil),
 										A2(
@@ -8381,7 +8497,8 @@ var author$project$Main$view = function (model) {
 													elm$core$Maybe$Just(author$project$Color$Yellow)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
 												author$project$Main$SetActiveRobot(author$project$Color$Yellow)),
-												elm$html$Html$Attributes$title('Select red robot ([Y] or [4])')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select red robot ([Y] or [4])')
 											]),
 										_List_Nil),
 										A2(
@@ -8394,7 +8511,8 @@ var author$project$Main$view = function (model) {
 													elm$core$Maybe$Just(author$project$Color$Silver)) ? ' active' : '')),
 												elm$html$Html$Events$onClick(
 												author$project$Main$SetActiveRobot(author$project$Color$Silver)),
-												elm$html$Html$Attributes$title('Select red robot ([S] or [5])')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select red robot ([S] or [5])')
 											]),
 										_List_Nil)
 									])),
@@ -8407,69 +8525,123 @@ var author$project$Main$view = function (model) {
 								_List_fromArray(
 									[
 										A2(
-										elm$html$Html$div,
+										elm$html$Html$span,
 										_List_fromArray(
 											[
-												elm$html$Html$Attributes$class(
-												'controls__button controls__left' + ((_Utils_eq(model.activeRobot, elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.left ? ' active' : ''))),
-												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Move$Left)),
-												elm$html$Html$Attributes$title('Move current robot left')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Move current robot left')
 											]),
-										_List_Nil),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$div,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class(
+														'controls__button controls__left' + ((_Utils_eq(model.activeRobot, elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.left ? ' active' : ''))),
+														elm$html$Html$Events$onClick(
+														author$project$Main$AddMove(author$project$Move$Left))
+													]),
+												_List_Nil)
+											])),
 										A2(
-										elm$html$Html$div,
+										elm$html$Html$span,
 										_List_fromArray(
 											[
-												elm$html$Html$Attributes$class(
-												'controls__button controls__up' + ((_Utils_eq(model.activeRobot, elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.up ? ' active' : ''))),
-												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Move$Up)),
-												elm$html$Html$Attributes$title('Move current robot up')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Move current robot up')
 											]),
-										_List_Nil),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$div,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class(
+														'controls__button controls__up' + ((_Utils_eq(model.activeRobot, elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.up ? ' active' : ''))),
+														elm$html$Html$Events$onClick(
+														author$project$Main$AddMove(author$project$Move$Up))
+													]),
+												_List_Nil)
+											])),
 										A2(
-										elm$html$Html$div,
+										elm$html$Html$span,
 										_List_fromArray(
 											[
-												elm$html$Html$Attributes$class(
-												'controls__button controls__right' + ((_Utils_eq(model.activeRobot, elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.right ? ' active' : ''))),
-												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Move$Right)),
-												elm$html$Html$Attributes$title('Move current robot right')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Move current robot right')
 											]),
-										_List_Nil),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$div,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class(
+														'controls__button controls__right' + ((_Utils_eq(model.activeRobot, elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.right ? ' active' : ''))),
+														elm$html$Html$Events$onClick(
+														author$project$Main$AddMove(author$project$Move$Right))
+													]),
+												_List_Nil)
+											])),
 										A2(
-										elm$html$Html$div,
+										elm$html$Html$span,
 										_List_fromArray(
 											[
-												elm$html$Html$Attributes$class(
-												'controls__button controls__down' + ((_Utils_eq(model.activeRobot, elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.down ? ' active' : ''))),
-												elm$html$Html$Events$onClick(
-												author$project$Main$AddMove(author$project$Move$Down)),
-												elm$html$Html$Attributes$title('Move current robot down')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Move current robot down')
 											]),
-										_List_Nil),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$div,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class(
+														'controls__button controls__down' + ((_Utils_eq(model.activeRobot, elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.down ? ' active' : ''))),
+														elm$html$Html$Events$onClick(
+														author$project$Main$AddMove(author$project$Move$Down))
+													]),
+												_List_Nil)
+											])),
 										A2(
-										elm$html$Html$div,
+										elm$html$Html$span,
 										_List_fromArray(
 											[
-												elm$html$Html$Attributes$class(
-												'controls__button controls__undo' + ((model.keys.backspace ? ' active' : '') + (elm$core$List$isEmpty(model.movesQueue) ? ' inactive' : ''))),
-												elm$html$Html$Events$onClick(author$project$Main$PopMove),
-												elm$html$Html$Attributes$title('Undo last move')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Undo last move')
 											]),
-										_List_Nil),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$div,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class(
+														'controls__button controls__undo' + ((model.keys.backspace ? ' active' : '') + (elm$core$List$isEmpty(model.movesQueue) ? ' inactive' : ''))),
+														elm$html$Html$Events$onClick(author$project$Main$PopMove)
+													]),
+												_List_Nil)
+											])),
 										A2(
-										elm$html$Html$div,
+										elm$html$Html$span,
 										_List_fromArray(
 											[
-												elm$html$Html$Attributes$class(
-												'controls__button controls__cancel' + ((model.keys.esc ? ' active' : '') + (elm$core$List$isEmpty(model.movesQueue) ? ' inactive' : ''))),
-												elm$html$Html$Events$onClick(author$project$Main$ClearMoves),
-												elm$html$Html$Attributes$title('Clear current moves')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Clear current moves')
 											]),
-										_List_Nil)
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$div,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class(
+														'controls__button controls__cancel' + ((model.keys.esc ? ' active' : '') + (elm$core$List$isEmpty(model.movesQueue) ? ' inactive' : ''))),
+														elm$html$Html$Events$onClick(author$project$Main$ClearMoves)
+													]),
+												_List_Nil)
+											]))
 									]))
 							])),
 						A2(

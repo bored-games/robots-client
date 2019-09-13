@@ -12,7 +12,7 @@ import Chat exposing (Chatline)
 import Browser
 import Browser.Events
 import Html exposing (..)
-import Html.Attributes exposing (style, type_, title, placeholder, value, class)
+import Html.Attributes exposing (style, type_, attribute, placeholder, value, class)
 import Html.Events exposing (onInput, onSubmit, onClick)
 import Time
 import Tuple
@@ -56,6 +56,7 @@ type alias Model =
   , toggleStates : { settings: String, pollOptions: String, emoticons: String, countdown: String }
   , countdown : Int
   , currentTimer : Int
+  , solutionFound : Bool
   , robots : List Robot
   , activeRobot : Maybe Robot
  -- , legalMoves : List ( Move )
@@ -95,22 +96,6 @@ init _ =
     "" -- `nameInProgress`
     "" -- `colorInProgress`
     (Board.square 16 (testFill) )                    -- boundaryBoard
--- [ [ 9,  3,  9,  1,  5, 65,  1,  1,  3,  9, 33,  5,  1,  1,  1,  3],
---       [ 8,  0,  0,  0,  3,  8,  0,  0,  0,  0,  2,  9,  0,  0,  0,  6],
---       [ 8,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  4, 67],
---       [10, 12,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  3, 10],
---       [24,  1,  0,  0, 32,  4,  0,  0,  0,  6,  8,  0,  0,  0,  0,  2],
---       [12,  0,  0,  0,  2,  9,  0,  0,  0,  1,128,  0,  0,  0,  0,  2],
---       [ 9,  0,  0,  6,  8,  0, 32,  4,  4, 64,  0,  2, 12,  0,  0,  2],
---       [ 8,  0,  4, 65,128,  0,  2, 99, 99,  8,  0, 16,  1,  0,  0,  2],
---       [ 8,  0,  3,  8,  0,  0,  2, 99, 99,  8,  0,  0,  0,  0,  0,  2],
---       [ 8,  0,  0,  0,  2, 12, 16,  1,  1,128, 32,  4,  0,  0,  0,  2],
---       [ 8,  6,  8,  0, 16,  1,  0,  0,  0,  0,  2,  9,  0,  0,  0,  2],
---       [ 8,  1,128,  0,  4, 64,  0,  0,  0,  0,  4, 64,  2, 12,  0,  6],
---       [12,  0,  0,  0,  3,  8,  0,  0,  0,  0,  3,  8, 16,  1,  0,  3],
---       [ 9,  0,  0,  0,  0, 32,  4,  0,  0,  0,  0,  0,  6,  8,  0,  2],
---       [ 8,  0,  0,  0,  0,  2,  9,  0,  0,  0,  0,  0,  1,128,  0,  2],
---       [12,  4,  4,  6, 12,  4,  4,  4,  4,  6, 12,  4,  4,  4,  4,  6] ]      -- board
     RedMoon                                                                   -- goalSymbol
     [ ]
     { settings = "none",
@@ -119,6 +104,7 @@ init _ =
       countdown = "flex" }                                                   -- toggleStates
     60                                                                       -- countdown
     0                                                                        -- currentTimer
+    False -- solutionFound
     []                                                                       -- robots
     Nothing                                                                  -- activeRobot
     []                                                                       -- movesQueue
@@ -142,6 +128,8 @@ type Msg
   | ToggleEmoticons
   | InsertEmoticon String
   | DisplayCountdown String
+  | SwitchToCountdown Json.Encode.Value
+  | SwitchToTimer Json.Encode.Value
   | Tick Time.Posix
   | Ping Time.Posix
   | GetJSON Json.Encode.Value              -- Parse incoming JSON
@@ -276,15 +264,40 @@ update msg model =
     InsertEmoticon str ->
       ( { model | messageInProgress = (model.messageInProgress ++ " :" ++ str ++ ": ") }, Cmd.none )
 
+    {- ???????? -}
     DisplayCountdown status ->
       let
           oldToggleStates = model.toggleStates
           newToggleStates = { oldToggleStates | countdown = status }
       in
         ( { model | toggleStates = newToggleStates }, Cmd.none )
+        
+    {- TODO: make active timer the countdown timer. -}
+    SwitchToCountdown json ->
+      case (Json.Decode.decodeValue Json.Decode.int json) of
+        Ok time ->
+          ( { model | countdown = time, solutionFound = True }, Cmd.none )
+        Err _ ->
+          ( { model | debugString = "Countdown time error" }, Cmd.none )
+        
+    {- TODO: make active timer the countdown timer. -}
+    SwitchToTimer json ->
+      case (Json.Decode.decodeValue (Json.Decode.field "timer" Json.Decode.int) json) of
+        Ok time ->
+          case (Json.Decode.decodeValue (Json.Decode.field "countdown" Json.Decode.int) json) of
+            Ok countdown ->
+              ( { model | currentTimer = time, countdown = countdown, solutionFound = False }, Cmd.none )
+            Err _ ->
+              ( { model | debugString = "Countdown time error" }, Cmd.none )
+        Err _ ->
+          ( { model | debugString = "Timer time error" }, Cmd.none )
 
     Tick newTime ->
-      ( { model | currentTimer = (model.currentTimer + 1) }, Cmd.none )
+      let
+          countdownDisplay = if model.solutionFound then model.countdown-1 else model.countdown
+          currentTimerDisplay = model.currentTimer + 1
+      in
+          ( { model | currentTimer = currentTimerDisplay, countdown = (max 0 countdownDisplay) }, Cmd.none )
 
     Ping newTime ->
       ( { model | currentTimer = (model.currentTimer + 1) }
@@ -313,6 +326,10 @@ update msg model =
               update (GetUser content) model
             "update_chat" ->
               update (GetChat content) model
+            "switch_to_countdown" ->
+              update (SwitchToCountdown content) model
+            "switch_to_timer" ->
+              update (SwitchToTimer content) model
             _ ->
               ((Debug.log "Error: unknown code in JSON message" model), Cmd.none ) -- Error: missing code
 
@@ -557,11 +574,11 @@ formatTimer seconds =
 drawScore : String -> User -> Html Msg
 drawScore is_self user =
   div [ class "score" ] 
-  [ div [ class "score__username", style "color" user.color, title "UID: TODO!" ]
-    ((text user.username) ::
-    (if is_self == user.username then span [ class "self", title "This is you!" ] [] else span [] []) ::
-    (if user.is_admin then span [ class "owner", title "Owner" ] [] else span [] []) ::
-    (if user.is_muted then span [ class "muted", title "Muted" ] [] else span [] []) ::
+  [ div [ class "score__username", style "color" user.color  ]
+    ( span [ attribute "flow" "down", attribute "tooltip" "UID: TODO!" ] [ text user.username ] ::
+    (if is_self == user.username then span [ class "self", attribute "flow" "down", attribute "tooltip" "This is you!" ] [] else span [] []) ::
+    (if user.is_admin then span [ class "owner", attribute "flow" "down", attribute "tooltip" "Owner" ] [] else span [] []) ::
+    (if user.is_muted then span [ class "muted", attribute "flow" "down", attribute "tooltip" "Muted" ] [] else span [] []) ::
     [])
   , text (String.fromInt user.score)
   ]
@@ -666,19 +683,19 @@ drawPollOptions : List (Html Msg)
 drawPollOptions =
   [ h2 [ ] [ text "Poll Commands" ]
   , div [ class "poll__info" ] [ text ( "Use /poll <command> or /set <command> to change settings. UIDs can be found by hovering over usernames in the scoreboard." ) ]
-  , div [ class "poll__command", title "Give 'owner' status to user. Owners can use '/set' to instantly change settings." ] [ text "owner ", span [ class "red" ] [ text "UID" ] ]
-  , div [ class "poll__command", title "Remove 'owner' status from user." ] [ text "demote ", span [ class "red" ] [ text "UID" ] ]
-  , div [ class "poll__command", title "Mute user. Muted users cannot chat or create polls." ] [ text "mute ", span [ class "red" ] [ text "UID" ] ]
-  , div [ class "poll__command", title "Unmute user." ] [ text "unmute ", span [ class "red" ] [ text "UID" ] ]
-  , div [ class "poll__command", title "Kick user from the game." ] [ text "kick ", span [ class "red" ] [ text "UID" ] ]
-  , div [ class "poll__command", title "Set score of user to some number." ] [ text "set_score ", span [ class "red" ] [ text "UID " ], span [ class "blue" ] [ text "int" ] ]
-  , div [ class "poll__command", title "Reset all scores to 0." ] [ text "reset_scores" ]
-  , div [ class "poll__command", title "Reset board walls, goals, and robot positions." ] [ text "reset_board" ]
-  , div [ class "poll__command", title "Reset goal position." ] [ text "new_game" ]
-  , div [ class "poll__command", title "Set time limit for polls in seconds. Must be at least 30." ] [ text "poll_time ", span [ class "blue" ] [ text "int" ] ]
-  , div [ class "poll__command", title "Set time limit for finding new solutions. Must be at least 0."] [ text "countdown_time ", span [ class "blue" ] [ text "int" ] ]
-  , div [ class "poll__command", title "Set number of puzzles before a new board is shuffled." ] [ text "puzzles_before_new_board ", span [ class "blue" ] [ text "int" ] ]
-  , div [ class "poll__command", title "Single-robot solutions below this number will not add to score. Must be at least 0." ] [ text "min_moves ", span [ class "blue" ] [ text "int" ] ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Give 'owner' status to user. Owners can use '/set' to instantly change settings." ] [ text "owner ", span [ class "red" ] [ text "UID" ] ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Remove 'owner' status from user." ] [ text "demote ", span [ class "red" ] [ text "UID" ] ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Mute user. Muted users cannot chat or create polls." ] [ text "mute ", span [ class "red" ] [ text "UID" ] ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Unmute user." ] [ text "unmute ", span [ class "red" ] [ text "UID" ] ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Kick user from the game." ] [ text "kick ", span [ class "red" ] [ text "UID" ] ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Set score of user to some number." ] [ text "set_score ", span [ class "red" ] [ text "UID " ], span [ class "blue" ] [ text "int" ] ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Reset all scores to 0." ] [ text "reset_scores" ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Reset board walls, goals, and robot positions." ] [ text "reset_board" ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Reset goal position." ] [ text "new_game" ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Set time limit for polls in seconds. Must be at least 30." ] [ text "poll_time ", span [ class "blue" ] [ text "int" ] ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Set time limit for finding new solutions. Must be at least 0."] [ text "countdown_time ", span [ class "blue" ] [ text "int" ] ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Set number of puzzles before a new board is shuffled." ] [ text "puzzles_before_new_board ", span [ class "blue" ] [ text "int" ] ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Single-robot solutions below this number will not add to score. Must be at least 0." ] [ text "min_moves ", span [ class "blue" ] [ text "int" ] ]
   ]
 
 parseEmoticonHtml : String -> List (Html Msg)
@@ -738,40 +755,40 @@ view model =
           [ text (  model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]          
         , div [ class "sidebar__goal" ] [ div [ class ("goal " ++ .filename (Goal.toString model.goal)) ] [ ] ]
         , div [ class "timer", onClick (IncrementScore model.user) ]
-          [ div [ class "timer__countdown" ]
+          [ div [ class ("timer__countdown " ++ (if model.solutionFound then "active" else "inactive")) ]
             [ span [] [ text (formatTimer model.countdown) ]
-            , div [ class "icon icon--timer", title "Countdown before best solution wins!" ] []
+            , div [ class "icon icon--timer", attribute "flow" "up", attribute "tooltip" "Countdown before best solution wins!" ] []
             ]
-          , div [ class "timer__current-timer" ]
+          , div [ class ("timer__current-timer " ++ (if model.solutionFound then "inactive" else "active")) ]
             [ span [] [ text (formatTimer model.currentTimer) ]
-            , div [ class "icon icon--clock", title "Time spent on current puzzle" ] []
+            , div [ class "icon icon--clock", attribute "flow" "up", attribute "tooltip" "Time spent on current puzzle" ] []
             ]
           , div [ class ("counter__moves" ++ (if Move.countMoves model.movesQueue > 0 then " active" else "")) ]
             [ span [] [ text (String.fromInt (Move.countMoves model.movesQueue)) ]
-            , div [ class "icon icon--count", title "Number of moves in current solution attempt" ] []
+            , div [ class "icon icon--count", attribute "flow" "up", attribute "tooltip" "Number of moves in current solution attempt" ] []
             ]            
           , div [ class ("counter__robots" ++ (if Move.countRobots model.movesQueue > 0 then " active" else "")) ]
             [ span [] [ text (String.fromInt (Move.countRobots model.movesQueue)) ]
-            , div [ class "icon icon--robot", title "Number of robots in current solution attempt" ] []
+            , div [ class "icon icon--robot", attribute "flow" "up", attribute "tooltip" "Number of robots in current solution attempt" ] []
             ]
           ]
         ]
       , div [ class "main"] [
           div [ class "controls" ]
           [ div [ class "controls__robots" ]
-            [ div [ class ("controls__robot controls__red" ++ (if (Robot.getColor model.activeRobot == Just Red) then " active" else "")), onClick (SetActiveRobot Red), title "Select red robot ([R] or [1])"] []
-            , div [ class ("controls__robot controls__green" ++ (if (Robot.getColor model.activeRobot == Just Green) then " active" else "")), onClick (SetActiveRobot Green), title "Select red robot ([G] or [2])" ] []
-            , div [ class ("controls__robot controls__blue" ++ (if (Robot.getColor model.activeRobot == Just Blue) then " active" else "")), onClick (SetActiveRobot Blue), title "Select red robot ([B] or [3])" ] []
-            , div [ class ("controls__robot controls__yellow" ++ (if (Robot.getColor model.activeRobot == Just Yellow) then " active" else "")), onClick (SetActiveRobot Yellow), title "Select red robot ([Y] or [4])" ] []
-            , div [ class ("controls__robot controls__silver" ++ (if (Robot.getColor model.activeRobot == Just Silver) then " active" else "")), onClick (SetActiveRobot Silver), title "Select red robot ([S] or [5])" ] []
+            [ div [ class ("controls__robot controls__red" ++ (if (Robot.getColor model.activeRobot == Just Red) then " active" else "")), onClick (SetActiveRobot Red), attribute "flow" "down", attribute "tooltip" "Select red robot ([R] or [1])"] []
+            , div [ class ("controls__robot controls__green" ++ (if (Robot.getColor model.activeRobot == Just Green) then " active" else "")), onClick (SetActiveRobot Green), attribute "flow" "down", attribute "tooltip" "Select red robot ([G] or [2])" ] []
+            , div [ class ("controls__robot controls__blue" ++ (if (Robot.getColor model.activeRobot == Just Blue) then " active" else "")), onClick (SetActiveRobot Blue), attribute "flow" "down", attribute "tooltip" "Select red robot ([B] or [3])" ] []
+            , div [ class ("controls__robot controls__yellow" ++ (if (Robot.getColor model.activeRobot == Just Yellow) then " active" else "")), onClick (SetActiveRobot Yellow), attribute "flow" "down", attribute "tooltip" "Select red robot ([Y] or [4])" ] []
+            , div [ class ("controls__robot controls__silver" ++ (if (Robot.getColor model.activeRobot == Just Silver) then " active" else "")), onClick (SetActiveRobot Silver), attribute "flow" "down", attribute "tooltip" "Select red robot ([S] or [5])" ] []
             ]
           , div [ class "controls__directions" ]
-            [ div [ class ("controls__button controls__left" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.left then " active" else "")), onClick (AddMove Left), title "Move current robot left" ] []
-            , div [ class ("controls__button controls__up" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.up then " active" else "")), onClick (AddMove Up), title "Move current robot up" ] []
-            , div [ class ("controls__button controls__right" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.right then " active" else "")), onClick (AddMove Right), title "Move current robot right" ] []
-            , div [ class ("controls__button controls__down" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.down then " active" else "")), onClick (AddMove Down), title "Move current robot down" ] []
-            , div [ class ("controls__button controls__undo" ++ (if model.keys.backspace then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick PopMove, title "Undo last move" ] []
-            , div [ class ("controls__button controls__cancel" ++ (if model.keys.esc then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick ClearMoves, title "Clear current moves" ] []
+            [ span [attribute "flow" "down", attribute "tooltip" "Move current robot left"] [div [ class ("controls__button controls__left" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.left then " active" else "")), onClick (AddMove Left) ] []]
+            , span [attribute "flow" "down", attribute "tooltip" "Move current robot up" ] [div [ class ("controls__button controls__up" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.up then " active" else "")), onClick (AddMove Up)] []]
+            , span [attribute "flow" "down", attribute "tooltip" "Move current robot right" ] [div [ class ("controls__button controls__right" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.right then " active" else "")), onClick (AddMove Right)] []]
+            , span [attribute "flow" "down", attribute "tooltip" "Move current robot down"] [div [ class ("controls__button controls__down" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.down then " active" else "")), onClick (AddMove Down)] []]
+            , span [attribute "flow" "down", attribute "tooltip" "Undo last move" ] [div [ class ("controls__button controls__undo" ++ (if model.keys.backspace then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick PopMove] []]
+            , span [attribute "flow" "down", attribute "tooltip" "Clear current moves"] [div [ class ("controls__button controls__cancel" ++ (if model.keys.esc then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick ClearMoves ] []]
             ]
            ]
         , div [ class "game" ] (model.boundaryBoard |> drawBoard)

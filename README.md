@@ -29,7 +29,7 @@ A browser-based Ricochet Robots client written in Elm, to be paired with a backe
   * `101` `update_robots`: Update `robots` positions and legal moves
   * `102` `update_goals`: Reset `goalList` positions
   * `103`: Update new goal
-  * `104`: Switch to countdown (solution found)
+  * `104` `switch_to_countdown`: Switch to countdown (solution found)
   * `105`: Switch to clock (new game)
   * `106`: Send set of legal moves
   ---
