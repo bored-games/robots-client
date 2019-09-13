@@ -272,15 +272,17 @@ update msg model =
       in
         ( { model | toggleStates = newToggleStates }, Cmd.none )
         
-    {- TODO: make active timer the countdown timer. -}
     SwitchToCountdown json ->
-      case (Json.Decode.decodeValue Json.Decode.int json) of
+      case (Json.Decode.decodeValue (Json.Decode.field "timer" Json.Decode.int) json) of
         Ok time ->
-          ( { model | countdown = time, solutionFound = True }, Cmd.none )
+          case (Json.Decode.decodeValue (Json.Decode.field "countdown" Json.Decode.int) json) of
+            Ok countdown ->
+              ( { model | countdown = countdown, currentTimer = time, solutionFound = True }, Cmd.none )
+            Err _ ->
+              ( { model | debugString = "Countdown time error" }, Cmd.none )
         Err _ ->
           ( { model | debugString = "Countdown time error" }, Cmd.none )
         
-    {- TODO: make active timer the countdown timer. -}
     SwitchToTimer json ->
       case (Json.Decode.decodeValue (Json.Decode.field "timer" Json.Decode.int) json) of
         Ok time ->
