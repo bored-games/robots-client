@@ -47,6 +47,7 @@ main {
 	border-right: 1px solid #252626;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.5);
   z-index: 50;
+  cursor: default;
 }
 
 .sidebar {
@@ -474,39 +475,22 @@ textarea, input[type="text"], select {
   text-align: right;
 }
 
-.timer__countdown {
-  flex: 0 0 50%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.timer__current-timer {
-  flex: 0 0 50%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.timer__countdown.inactive, .timer__current-timer.inactive {
-  opacity: .25;
-}
-
-.counter__moves {
-  display: flex;
-  flex: 0 0 50%;
-  justify-content: flex-end;
-  align-items: center;
-}
-
+.timer__countdown,
+.timer__current-timer,
+.counter__moves,
 .counter__robots {
   flex: 0 0 50%;
+  display: flex;
   align-items: center;
   justify-content: flex-end;
-  display: flex;
 }
 
-.timer__current-timer span, .timer__countdown span {
+.timer__countdown.inactive,
+.timer__current-timer.inactive {
+  color: #323232;
+}
+
+.timer__current-timer span:first-of-type, .timer__countdown span:first-of-type {
   flex: 1 1 auto;
 }
 
@@ -652,16 +636,17 @@ span.emoticon {
     but this will also keep them from being obnoxious
     */
   min-width: 2.5em;
-  max-width: 21em;
+  max-width: 30em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: .5rem;
   border-radius: .2rem;
-  box-shadow: 0 0em 8px 4px rgba(0, 0, 0, 0.5), 0 0em 1px 1px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0em 8px 4px rgba(0, 0, 0, 0.5), 0 0em 1px 1px rgba(255, 255, 255, 0.2), 0 0 15px inset rgba(0, 0, 0, .4);
   background: #2c2d2f;
   color: #a6a6a6;
   font-size: 0.8rem;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, .8);
   z-index: 1000; /* absurdity 2 */
 }
@@ -763,6 +748,7 @@ span.emoticon {
 [tooltip][flow^="down"]:hover::before,
 [tooltip][flow^="down"]:hover::after {
   animation: tooltips-vert 200ms ease-out forwards;
+  animation-delay: .5s;
 }
 
 [tooltip][flow^="left"]:hover::before,
@@ -770,6 +756,7 @@ span.emoticon {
 [tooltip][flow^="right"]:hover::before,
 [tooltip][flow^="right"]:hover::after {
   animation: tooltips-horz 200ms ease-out forwards;
+  animation-delay: .5s;
 }
 
 
