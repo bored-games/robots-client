@@ -12,7 +12,7 @@ import Chat exposing (Chatline)
 import Browser
 import Browser.Events
 import Html exposing (..)
-import Html.Attributes exposing (style, type_, attribute, placeholder, value, class)
+import Html.Attributes exposing (id, style, type_, attribute, placeholder, value, class)
 import Html.Events exposing (onInput, onSubmit, onClick)
 import Time
 import Tuple
@@ -571,16 +571,16 @@ formatTimer seconds =
     hrs = ((seconds // 60) // 60)
     min = (seconds // 60) - (hrs * 60)
   in
-    (if hrs > 0 then (String.fromInt hrs ++ ":" ) else "") ++ String.fromInt min ++ ":" ++ (if sec < 10 then "0" else "") ++ (String.fromInt sec)
+    (if hrs > 0 then (String.fromInt hrs ++ ":" ) else "") ++ (String.pad 2 '0' (String.fromInt min)) ++ ":" ++ (if sec < 10 then "0" else "") ++ (String.fromInt sec)
 
 drawScore : String -> User -> Html Msg
 drawScore is_self user =
   div [ class "score" ] 
   [ div [ class "score__username", style "color" user.color  ]
-    ( span [ attribute "flow" "down", attribute "tooltip" "UID: TODO!" ] [ text user.username ] ::
-    (if is_self == user.username then span [ class "self", attribute "flow" "down", attribute "tooltip" "This is you!" ] [] else span [] []) ::
-    (if user.is_admin then span [ class "owner", attribute "flow" "down", attribute "tooltip" "Owner" ] [] else span [] []) ::
-    (if user.is_muted then span [ class "muted", attribute "flow" "down", attribute "tooltip" "Muted" ] [] else span [] []) ::
+    ( span [ attribute "flow" "down", attribute "tooltip" "UID: TODO!", attribute "flow" "right" ] [ text user.username ] ::
+    (if is_self == user.username then span [ class "self", attribute "flow" "right", attribute "tooltip" "This is you!" ] [] else span [] []) ::
+    (if user.is_admin then span [ class "owner", attribute "flow" "right", attribute "tooltip" "Owner" ] [] else span [] []) ::
+    (if user.is_muted then span [ class "muted", attribute "flow" "right", attribute "tooltip" "Muted" ] [] else span [] []) ::
     [])
   , text (String.fromInt user.score)
   ]
@@ -750,9 +750,8 @@ view model =
     div [ class "container" ]
       [
         div [ class "scorebar" ]
-        [
-          div [ class "scores" ] 
-            (h2 [] [ text "Scoreboard" ] :: ((List.reverse (List.sortBy .score model.users)) |> drawScores))
+        [ h2 [] [ text "Scoreboard" ]
+        , div [ class "scores", id "scores"] [ div [id "scores__inner"] (List.reverse (List.sortBy .score model.users) |> drawScores) ]
         , div [ class "debug" ]
           [ text (  model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]          
         , div [ class "sidebar__goal" ] [ div [ class ("goal " ++ .filename (Goal.toString model.goal)) ] [ ] ]
@@ -796,9 +795,8 @@ view model =
         , div [ class "game" ] (model.boundaryBoard |> drawBoard)
         ]
       , div [ class "sidebar" ]
-        [
-          div [ class "chat" ]
-            (h2 [] [ text "Chat" ] :: (List.reverse model.chat |> drawChat))
+        [ h2 [] [ text "Chat" ]
+        , div [class "chat", id "chat"] (List.reverse model.chat |> drawChat)
         , div [ class "sidebar__settings", style "display" model.toggleStates.settings ] (drawSettings model)
         , div [ class "sidebar__polloptions", style "display" model.toggleStates.pollOptions ] (drawPollOptions)
         , div [ class "message"]

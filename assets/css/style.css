@@ -48,6 +48,7 @@ main {
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.5);
   z-index: 50;
   cursor: default;
+  max-height: 100vh;
 }
 
 .sidebar {
@@ -57,11 +58,20 @@ main {
 	flex-direction: column;
 	border-left: 1px solid #252626;
   box-shadow: -2px 0px 8px rgba(0, 0, 0, .4);
+  max-height: 100vh;
 }
+
+.sidebar h2, .scorebar h2 {
+  padding: 0.75rem 0.75rem 0.5rem;
+  margin: 0;
+}
+
 
 .chat {
   flex: 1 1 auto;
-  padding: 0.75rem;
+  overflow-x: hidden;
+ /* overflow-y: auto;
+  padding: 0 0 0.75rem 0.75rem;*/
 }
 
 .chat__line {
@@ -421,13 +431,18 @@ textarea, input[type="text"], select {
 
 /****** Scorebar ******/
 
+#scores__inner {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
 .scores {
   flex: 1 1 auto;
-  padding: 0.75rem;
 }
 
 .score {
-  padding: 0.25rem 0;
+  padding: 0.25rem 0.85rem 0.25rem 0.85rem;
   color: #b0b0b0;
   display: flex;
 }
@@ -466,7 +481,7 @@ textarea, input[type="text"], select {
   display: flex;
   flex-wrap: wrap;
   font-family: Monospace;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
   color: #858585;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, .8);
@@ -496,9 +511,9 @@ textarea, input[type="text"], select {
 
 .icon {
   flex: 0 0 auto;
-  height: 1.35rem;
-  width: 1.35rem;
-  margin: 0 0.5rem;
+  height: 1.30rem;
+  width: 1.30rem;
+  margin: 0 0.25rem;
   background: currentColor;
   mask-size: 100% 100%;
   mask-repeat: no-repeat;
@@ -649,6 +664,7 @@ span.emoticon {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, .8);
   z-index: 1000; /* absurdity 2 */
+  font-weight: 200;
 }
 
 /* Make the tooltips respond to hover */

@@ -6584,14 +6584,30 @@ var author$project$Main$update = F2(
 						elm$core$Platform$Cmd$none);
 				case 'SwitchToCountdown':
 					var json = _n0.a;
-					var _n1 = A2(elm$json$Json$Decode$decodeValue, elm$json$Json$Decode$int, json);
+					var _n1 = A2(
+						elm$json$Json$Decode$decodeValue,
+						A2(elm$json$Json$Decode$field, 'timer', elm$json$Json$Decode$int),
+						json);
 					if (_n1.$ === 'Ok') {
 						var time = _n1.a;
-						return _Utils_Tuple2(
-							_Utils_update(
-								model,
-								{countdown: time, solutionFound: true}),
-							elm$core$Platform$Cmd$none);
+						var _n2 = A2(
+							elm$json$Json$Decode$decodeValue,
+							A2(elm$json$Json$Decode$field, 'countdown', elm$json$Json$Decode$int),
+							json);
+						if (_n2.$ === 'Ok') {
+							var countdown = _n2.a;
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{countdown: countdown, currentTimer: time, solutionFound: true}),
+								elm$core$Platform$Cmd$none);
+						} else {
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{debugString: 'Countdown time error'}),
+								elm$core$Platform$Cmd$none);
+						}
 					} else {
 						return _Utils_Tuple2(
 							_Utils_update(
@@ -6601,18 +6617,18 @@ var author$project$Main$update = F2(
 					}
 				case 'SwitchToTimer':
 					var json = _n0.a;
-					var _n2 = A2(
+					var _n3 = A2(
 						elm$json$Json$Decode$decodeValue,
 						A2(elm$json$Json$Decode$field, 'timer', elm$json$Json$Decode$int),
 						json);
-					if (_n2.$ === 'Ok') {
-						var time = _n2.a;
-						var _n3 = A2(
+					if (_n3.$ === 'Ok') {
+						var time = _n3.a;
+						var _n4 = A2(
 							elm$json$Json$Decode$decodeValue,
 							A2(elm$json$Json$Decode$field, 'countdown', elm$json$Json$Decode$int),
 							json);
-						if (_n3.$ === 'Ok') {
-							var countdown = _n3.a;
+						if (_n4.$ === 'Ok') {
+							var countdown = _n4.a;
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
@@ -6666,10 +6682,10 @@ var author$project$Main$update = F2(
 										])))));
 				case 'GetJSON':
 					var json = _n0.a;
-					var _n4 = A2(elm$json$Json$Decode$decodeValue, author$project$Main$decodeJSON, json);
-					if (_n4.$ === 'Ok') {
-						var action = _n4.a.action;
-						var content = _n4.a.content;
+					var _n5 = A2(elm$json$Json$Decode$decodeValue, author$project$Main$decodeJSON, json);
+					if (_n5.$ === 'Ok') {
+						var action = _n5.a.action;
+						var content = _n5.a.content;
 						switch (action) {
 							case 'connect_to_server':
 								var $temp$msg = author$project$Main$ConnectToServer(content),
@@ -6741,9 +6757,9 @@ var author$project$Main$update = F2(
 					}
 				case 'GetBoard':
 					var json = _n0.a;
-					var _n6 = A2(elm$json$Json$Decode$decodeValue, author$project$Board$decodeBoard, json);
-					if (_n6.$ === 'Ok') {
-						var board = _n6.a;
+					var _n7 = A2(elm$json$Json$Decode$decodeValue, author$project$Board$decodeBoard, json);
+					if (_n7.$ === 'Ok') {
+						var board = _n7.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -6758,9 +6774,9 @@ var author$project$Main$update = F2(
 					}
 				case 'GetRobotList':
 					var json = _n0.a;
-					var _n7 = A2(elm$json$Json$Decode$decodeValue, author$project$Robot$decodeRobotsList, json);
-					if (_n7.$ === 'Ok') {
-						var robotList = _n7.a;
+					var _n8 = A2(elm$json$Json$Decode$decodeValue, author$project$Robot$decodeRobotsList, json);
+					if (_n8.$ === 'Ok') {
+						var robotList = _n8.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -6775,21 +6791,21 @@ var author$project$Main$update = F2(
 					}
 				case 'GetGoalList':
 					var json = _n0.a;
-					var _n8 = A2(elm$json$Json$Decode$decodeValue, author$project$Goal$decodeGoalList, json);
-					if (_n8.$ === 'Ok') {
-						var goalList = _n8.a;
+					var _n9 = A2(elm$json$Json$Decode$decodeValue, author$project$Goal$decodeGoalList, json);
+					if (_n9.$ === 'Ok') {
+						var goalList = _n9.a;
 						var activeGoal = function () {
-							var _n9 = elm$core$List$head(
+							var _n10 = elm$core$List$head(
 								A2(
 									elm$core$List$filter,
 									function ($) {
 										return $.active;
 									},
 									goalList));
-							if (_n9.$ === 'Nothing') {
+							if (_n10.$ === 'Nothing') {
 								return author$project$Goal$RedMoon;
 							} else {
-								var anyGoal = _n9.a;
+								var anyGoal = _n10.a;
 								return function ($) {
 									return $.symbol;
 								}(anyGoal);
@@ -6809,9 +6825,9 @@ var author$project$Main$update = F2(
 					}
 				case 'GetUsersList':
 					var json = _n0.a;
-					var _n10 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUsersList, json);
-					if (_n10.$ === 'Ok') {
-						var usersList = _n10.a;
+					var _n11 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUsersList, json);
+					if (_n11.$ === 'Ok') {
+						var usersList = _n11.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -6826,9 +6842,9 @@ var author$project$Main$update = F2(
 					}
 				case 'GetUser':
 					var json = _n0.a;
-					var _n11 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUser, json);
-					if (_n11.$ === 'Ok') {
-						var user = _n11.a;
+					var _n12 = A2(elm$json$Json$Decode$decodeValue, author$project$User$decodeUser, json);
+					if (_n12.$ === 'Ok') {
+						var user = _n12.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -6861,9 +6877,9 @@ var author$project$Main$update = F2(
 										])))));
 				case 'GetChat':
 					var json = _n0.a;
-					var _n12 = A2(elm$json$Json$Decode$decodeValue, author$project$Chat$decodeChatline, json);
-					if (_n12.$ === 'Ok') {
-						var chatline = _n12.a;
+					var _n13 = A2(elm$json$Json$Decode$decodeValue, author$project$Chat$decodeChatline, json);
+					if (_n13.$ === 'Ok') {
+						var chatline = _n13.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
@@ -7772,7 +7788,8 @@ var author$project$Main$drawScore = F2(
 							_List_fromArray(
 								[
 									A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
-									A2(elm$html$Html$Attributes$attribute, 'tooltip', 'UID: TODO!')
+									A2(elm$html$Html$Attributes$attribute, 'tooltip', 'UID: TODO!'),
+									A2(elm$html$Html$Attributes$attribute, 'flow', 'right')
 								]),
 							_List_fromArray(
 								[
@@ -7785,7 +7802,7 @@ var author$project$Main$drawScore = F2(
 								_List_fromArray(
 									[
 										elm$html$Html$Attributes$class('self'),
-										A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+										A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
 										A2(elm$html$Html$Attributes$attribute, 'tooltip', 'This is you!')
 									]),
 								_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
@@ -7796,7 +7813,7 @@ var author$project$Main$drawScore = F2(
 									_List_fromArray(
 										[
 											elm$html$Html$Attributes$class('owner'),
-											A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+											A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
 											A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Owner')
 										]),
 									_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
@@ -7807,7 +7824,7 @@ var author$project$Main$drawScore = F2(
 										_List_fromArray(
 											[
 												elm$html$Html$Attributes$class('muted'),
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
 												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Muted')
 											]),
 										_List_Nil) : A2(elm$html$Html$span, _List_Nil, _List_Nil),
@@ -8067,11 +8084,47 @@ var author$project$Main$drawSettings = function (model) {
 		]);
 };
 var elm$core$Basics$modBy = _Basics_modBy;
+var elm$core$String$cons = _String_cons;
+var elm$core$String$fromChar = function (_char) {
+	return A2(elm$core$String$cons, _char, '');
+};
+var elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
+var elm$core$String$repeatHelp = F3(
+	function (n, chunk, result) {
+		return (n <= 0) ? result : A3(
+			elm$core$String$repeatHelp,
+			n >> 1,
+			_Utils_ap(chunk, chunk),
+			(!(n & 1)) ? result : _Utils_ap(result, chunk));
+	});
+var elm$core$String$repeat = F2(
+	function (n, chunk) {
+		return A3(elm$core$String$repeatHelp, n, chunk, '');
+	});
+var elm$core$String$pad = F3(
+	function (n, _char, string) {
+		var half = (n - elm$core$String$length(string)) / 2;
+		return _Utils_ap(
+			A2(
+				elm$core$String$repeat,
+				elm$core$Basics$ceiling(half),
+				elm$core$String$fromChar(_char)),
+			_Utils_ap(
+				string,
+				A2(
+					elm$core$String$repeat,
+					elm$core$Basics$floor(half),
+					elm$core$String$fromChar(_char))));
+	});
 var author$project$Main$formatTimer = function (seconds) {
 	var sec = A2(elm$core$Basics$modBy, 60, seconds);
 	var hrs = (((seconds / 60) | 0) / 60) | 0;
 	var min = ((seconds / 60) | 0) - (hrs * 60);
-	return ((hrs > 0) ? (elm$core$String$fromInt(hrs) + ':') : '') + (elm$core$String$fromInt(min) + (':' + (((sec < 10) ? '0' : '') + elm$core$String$fromInt(sec))));
+	return ((hrs > 0) ? (elm$core$String$fromInt(hrs) + ':') : '') + (A3(
+		elm$core$String$pad,
+		2,
+		_Utils_chr('0'),
+		elm$core$String$fromInt(min)) + (':' + (((sec < 10) ? '0' : '') + elm$core$String$fromInt(sec))));
 };
 var elm$virtual_dom$VirtualDom$Custom = function (a) {
 	return {$: 'Custom', a: a};
@@ -8208,6 +8261,7 @@ var elm$core$List$isEmpty = function (xs) {
 var elm$core$List$sortBy = _List_sortBy;
 var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$textarea = _VirtualDom_node('textarea');
+var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
 var elm$html$Html$Attributes$maxlength = function (n) {
 	return A2(
 		_VirtualDom_attribute,
@@ -8245,28 +8299,42 @@ var author$project$Main$view = function (model) {
 				_List_fromArray(
 					[
 						A2(
+						elm$html$Html$h2,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('Scoreboard')
+							])),
+						A2(
 						elm$html$Html$div,
 						_List_fromArray(
 							[
-								elm$html$Html$Attributes$class('scores')
+								elm$html$Html$Attributes$class('scores'),
+								elm$html$Html$Attributes$id('scores')
 							]),
-						A2(
-							elm$core$List$cons,
-							A2(
-								elm$html$Html$h2,
-								_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$div,
 								_List_fromArray(
 									[
-										elm$html$Html$text('Scoreboard')
-									])),
-							drawScores(
-								elm$core$List$reverse(
-									A2(
-										elm$core$List$sortBy,
-										function ($) {
-											return $.score;
-										},
-										model.users))))),
+										elm$html$Html$Attributes$id('scores__inner')
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$div,
+										_List_Nil,
+										drawScores(
+											elm$core$List$reverse(
+												A2(
+													elm$core$List$sortBy,
+													function ($) {
+														return $.score;
+													},
+													model.users))))
+									]))
+							])),
 						A2(
 						elm$html$Html$div,
 						_List_fromArray(
@@ -8693,22 +8761,21 @@ var author$project$Main$view = function (model) {
 				_List_fromArray(
 					[
 						A2(
+						elm$html$Html$h2,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('Chat')
+							])),
+						A2(
 						elm$html$Html$div,
 						_List_fromArray(
 							[
-								elm$html$Html$Attributes$class('chat')
+								elm$html$Html$Attributes$class('chat'),
+								elm$html$Html$Attributes$id('chat')
 							]),
-						A2(
-							elm$core$List$cons,
-							A2(
-								elm$html$Html$h2,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text('Chat')
-									])),
-							drawChat(
-								elm$core$List$reverse(model.chat)))),
+						drawChat(
+							elm$core$List$reverse(model.chat))),
 						A2(
 						elm$html$Html$div,
 						_List_fromArray(
