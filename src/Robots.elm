@@ -468,7 +468,14 @@ update msg model =
       let
         newQueue = pushMove dir model.activeRobot model.movesQueue
       in
-        ( { model | movesQueue = newQueue }, Cmd.none )
+        ( { model | movesQueue = newQueue }, 
+          outputPort
+            ( Json.Encode.encode
+              0
+              ( Json.Encode.object
+                [ ("action", Json.Encode.string "submit_movelist")
+                , ("content", Json.Encode.list Move.encodeMove (List.reverse newQueue)) ] ))
+        )
     
     -- Remove last move from queue (for Undo)
     PopMove ->
@@ -571,7 +578,10 @@ formatTimer seconds =
     hrs = ((seconds // 60) // 60)
     min = (seconds // 60) - (hrs * 60)
   in
-    (if hrs > 0 then (String.fromInt hrs ++ ":" ) else "") ++ (String.pad 2 '0' (String.fromInt min)) ++ ":" ++ (if sec < 10 then "0" else "") ++ (String.fromInt sec)
+    if hrs > 0 then
+      ((String.fromInt hrs ++ "h" ) ++ (String.pad 2 '0' (String.fromInt min)) ++ "m")
+    else
+      (String.pad 2 '0' (String.fromInt min) ++ ":" ++ (String.pad 2 '0' (String.fromInt sec)))
 
 drawScore : String -> User -> Html Msg
 drawScore is_self user =

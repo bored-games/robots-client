@@ -41,14 +41,14 @@ A browser-based Ricochet Robots client written in Elm, to be paired with a backe
 
   
 ### Frontend -> Backend
-  * `001`: Future: board click event...?
+  * `001`: `submit_movelist`: Submit list of moves
+  * `002`: Future: board click event...?
   ---
   * `100`: Reset all (scores, board, robot positions, goal)
   * `101`: Reset scores
   * `102`: Reset (shuffle) board
   * `103`: Reset robot positions
   * `104`: Reset goal
-  * `105`: Submit move
   ---
   * `200` `create_user`: Add user
   * `201` `update_user`: Update user

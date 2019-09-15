@@ -5,8 +5,11 @@
   <title>Ricochet Robots</title>
   <link rel="stylesheet" href="http://localhost:8000/assets/css/style.css">
 
+  
+  <!--
   <link type="text/css" href="http://localhost:8000/assets/css/scrollbars.css" rel="stylesheet"/>
   <script type="text/javascript" src="http://localhost:8000/assets/js/OverlayScrollbars.min.js"></script>
+  -->
 
   <script src="http://localhost:8000/assets/js/main.js"></script>
 
@@ -59,8 +62,8 @@
 
       // got message from server
       socket.addEventListener("message", (event) => {
+        console.log("Message from server:" + event.data)
         newJSON = JSON.parse(event.data)
-        console.log("Message from server:")
         console.log( newJSON );
         app.ports.inputPort.send( newJSON );
       })
@@ -72,7 +75,7 @@
 
     window.onload = function() {
       setupSocket();
-      
+      /*
       var mutationObserver = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
           instance = OverlayScrollbars(document.getElementById("scores__inner"), { });
@@ -87,6 +90,7 @@
         instance2 = OverlayScrollbars(document.getElementById("chat"), { });
       // use e.keyCode
       };
+      */
     }
    
 

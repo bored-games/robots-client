@@ -5,6 +5,7 @@ import List
 import String
 import Maybe
 import Set
+import Json.Encode
 
 type Direction
   = Left
@@ -36,3 +37,9 @@ countRobots moves =
   |> List.map Color.toString
   |> Set.fromList
   |> Set.size
+
+encodeMove : Move -> Json.Encode.Value
+encodeMove move =
+  Json.Encode.object [ ("color", Json.Encode.string (Color.toString (Just move.color))),
+                       ("direction", Json.Encode.string (directionToString move.direction))
+                     ]

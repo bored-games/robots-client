@@ -6298,6 +6298,56 @@ var author$project$Move$Down = {$: 'Down'};
 var author$project$Move$Left = {$: 'Left'};
 var author$project$Move$Right = {$: 'Right'};
 var author$project$Move$Up = {$: 'Up'};
+var author$project$Color$toString = function (color) {
+	if (color.$ === 'Nothing') {
+		return 'unknown-color';
+	} else {
+		switch (color.a.$) {
+			case 'Red':
+				var _n1 = color.a;
+				return 'red';
+			case 'Green':
+				var _n2 = color.a;
+				return 'green';
+			case 'Blue':
+				var _n3 = color.a;
+				return 'blue';
+			case 'Yellow':
+				var _n4 = color.a;
+				return 'yellow';
+			default:
+				var _n5 = color.a;
+				return 'silver';
+		}
+	}
+};
+var author$project$Move$directionToString = function (dir) {
+	switch (dir.$) {
+		case 'Left':
+			return 'left';
+		case 'Up':
+			return 'up';
+		case 'Down':
+			return 'down';
+		default:
+			return 'right';
+	}
+};
+var author$project$Move$encodeMove = function (move) {
+	return elm$json$Json$Encode$object(
+		_List_fromArray(
+			[
+				_Utils_Tuple2(
+				'color',
+				elm$json$Json$Encode$string(
+					author$project$Color$toString(
+						elm$core$Maybe$Just(move.color)))),
+				_Utils_Tuple2(
+				'direction',
+				elm$json$Json$Encode$string(
+					author$project$Move$directionToString(move.direction)))
+			]));
+};
 var author$project$Board$decodeDirection = A2(
 	elm$json$Json$Decode$andThen,
 	function (str) {
@@ -6387,6 +6437,15 @@ var author$project$User$decodeUsersList = elm$json$Json$Decode$list(author$proje
 var elm$core$Debug$log = _Debug_log;
 var elm$core$String$trim = _String_trim;
 var elm$json$Json$Decode$decodeValue = _Json_run;
+var elm$json$Json$Encode$list = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				elm$core$List$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(_Utils_Tuple0),
+				entries));
+	});
 var author$project$Main$update = F2(
 	function (msg, model) {
 		update:
@@ -7050,7 +7109,23 @@ var author$project$Main$update = F2(
 						_Utils_update(
 							model,
 							{movesQueue: newQueue}),
-						elm$core$Platform$Cmd$none);
+						author$project$Main$outputPort(
+							A2(
+								elm$json$Json$Encode$encode,
+								0,
+								elm$json$Json$Encode$object(
+									_List_fromArray(
+										[
+											_Utils_Tuple2(
+											'action',
+											elm$json$Json$Encode$string('submit_movelist')),
+											_Utils_Tuple2(
+											'content',
+											A2(
+												elm$json$Json$Encode$list,
+												author$project$Move$encodeMove,
+												elm$core$List$reverse(newQueue)))
+										])))));
 				case 'PopMove':
 					var moves = author$project$Main$popMove(model.movesQueue);
 					return _Utils_Tuple2(
@@ -7186,29 +7261,6 @@ var author$project$Board$get = F2(
 				val);
 		}
 	});
-var author$project$Color$toString = function (color) {
-	if (color.$ === 'Nothing') {
-		return 'unknown-color';
-	} else {
-		switch (color.a.$) {
-			case 'Red':
-				var _n1 = color.a;
-				return 'red';
-			case 'Green':
-				var _n2 = color.a;
-				return 'green';
-			case 'Blue':
-				var _n3 = color.a;
-				return 'blue';
-			case 'Yellow':
-				var _n4 = color.a;
-				return 'yellow';
-			default:
-				var _n5 = color.a;
-				return 'silver';
-		}
-	}
-};
 var author$project$Goal$matchGoal = F3(
 	function (rowi, colj, record) {
 		return _Utils_eq(
@@ -8120,11 +8172,19 @@ var author$project$Main$formatTimer = function (seconds) {
 	var sec = A2(elm$core$Basics$modBy, 60, seconds);
 	var hrs = (((seconds / 60) | 0) / 60) | 0;
 	var min = ((seconds / 60) | 0) - (hrs * 60);
-	return ((hrs > 0) ? (elm$core$String$fromInt(hrs) + ':') : '') + (A3(
+	return (hrs > 0) ? ((elm$core$String$fromInt(hrs) + 'h') + (A3(
 		elm$core$String$pad,
 		2,
 		_Utils_chr('0'),
-		elm$core$String$fromInt(min)) + (':' + (((sec < 10) ? '0' : '') + elm$core$String$fromInt(sec))));
+		elm$core$String$fromInt(min)) + 'm')) : (A3(
+		elm$core$String$pad,
+		2,
+		_Utils_chr('0'),
+		elm$core$String$fromInt(min)) + (':' + A3(
+		elm$core$String$pad,
+		2,
+		_Utils_chr('0'),
+		elm$core$String$fromInt(sec))));
 };
 var elm$virtual_dom$VirtualDom$Custom = function (a) {
 	return {$: 'Custom', a: a};
@@ -8144,18 +8204,6 @@ var author$project$Main$onEnter = function (msg) {
 	};
 	var decoder = A2(elm$json$Json$Decode$andThen, filterKey, elm$html$Html$Events$keyCode);
 	return A2(elm$html$Html$Events$custom, 'keydown', decoder);
-};
-var author$project$Move$directionToString = function (dir) {
-	switch (dir.$) {
-		case 'Left':
-			return 'left';
-		case 'Up':
-			return 'up';
-		case 'Down':
-			return 'down';
-		default:
-			return 'right';
-	}
 };
 var author$project$Main$printMoveList = function (moveList) {
 	if (moveList.b) {
@@ -8320,20 +8368,14 @@ var author$project$Main$view = function (model) {
 									[
 										elm$html$Html$Attributes$id('scores__inner')
 									]),
-								_List_fromArray(
-									[
+								drawScores(
+									elm$core$List$reverse(
 										A2(
-										elm$html$Html$div,
-										_List_Nil,
-										drawScores(
-											elm$core$List$reverse(
-												A2(
-													elm$core$List$sortBy,
-													function ($) {
-														return $.score;
-													},
-													model.users))))
-									]))
+											elm$core$List$sortBy,
+											function ($) {
+												return $.score;
+											},
+											model.users))))
 							])),
 						A2(
 						elm$html$Html$div,
