@@ -480,13 +480,27 @@ update msg model =
     -- Remove last move from queue (for Undo)
     PopMove ->
       let
-        moves = popMove model.movesQueue
+        newQueue = popMove model.movesQueue
       in
-      ( { model | movesQueue = moves }, Cmd.none )
+      ( { model | movesQueue = newQueue },
+          outputPort
+            ( Json.Encode.encode
+              0
+              ( Json.Encode.object
+                [ ("action", Json.Encode.string "submit_movelist")
+                , ("content", Json.Encode.list Move.encodeMove (List.reverse newQueue)) ] ))
+        )
       
     -- Remove all moves from queue and reset the active robot color
     ClearMoves ->
-      ( { model | movesQueue = [], activeRobot = Nothing}, Cmd.none )
+      ( { model | movesQueue = [], activeRobot = Nothing}, 
+          outputPort
+            ( Json.Encode.encode
+              0
+              ( Json.Encode.object
+                [ ("action", Json.Encode.string "submit_movelist")
+                , ("content", Json.Encode.list Move.encodeMove []) ] ))
+        )
 
 
 pushMove : Direction -> Maybe Robot -> List Move -> List Move

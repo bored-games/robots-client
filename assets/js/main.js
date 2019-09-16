@@ -7127,18 +7127,47 @@ var author$project$Main$update = F2(
 												elm$core$List$reverse(newQueue)))
 										])))));
 				case 'PopMove':
-					var moves = author$project$Main$popMove(model.movesQueue);
+					var newQueue = author$project$Main$popMove(model.movesQueue);
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{movesQueue: moves}),
-						elm$core$Platform$Cmd$none);
+							{movesQueue: newQueue}),
+						author$project$Main$outputPort(
+							A2(
+								elm$json$Json$Encode$encode,
+								0,
+								elm$json$Json$Encode$object(
+									_List_fromArray(
+										[
+											_Utils_Tuple2(
+											'action',
+											elm$json$Json$Encode$string('submit_movelist')),
+											_Utils_Tuple2(
+											'content',
+											A2(
+												elm$json$Json$Encode$list,
+												author$project$Move$encodeMove,
+												elm$core$List$reverse(newQueue)))
+										])))));
 				default:
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{activeRobot: elm$core$Maybe$Nothing, movesQueue: _List_Nil}),
-						elm$core$Platform$Cmd$none);
+						author$project$Main$outputPort(
+							A2(
+								elm$json$Json$Encode$encode,
+								0,
+								elm$json$Json$Encode$object(
+									_List_fromArray(
+										[
+											_Utils_Tuple2(
+											'action',
+											elm$json$Json$Encode$string('submit_movelist')),
+											_Utils_Tuple2(
+											'content',
+											A2(elm$json$Json$Encode$list, author$project$Move$encodeMove, _List_Nil))
+										])))));
 			}
 		}
 	});
