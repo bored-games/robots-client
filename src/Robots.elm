@@ -58,7 +58,7 @@ type alias Model =
   , currentTimer : Int
   , solutionFound : Bool
   , robots : List Robot
-  , activeRobot : Maybe Robot
+  , activeColor : Maybe Color
  -- , legalMoves : List ( Move )
   , movesQueue : List ( Move )
   }
@@ -141,7 +141,7 @@ type Msg
   | GetUser Json.Encode.Value              -- 201
   | GetChat Json.Encode.Value              -- 202
   | KeyChanged Bool String
-  | SetActiveRobot Color
+  | SetActiveColor (Maybe Color)
   | AddMove Direction
   | PopMove
   | ClearMoves
@@ -421,52 +421,52 @@ update msg model =
                 ++ (if .four newKeys then "y" else "_")
                 ++ (if .five newKeys then "s" else "_")
                 ++ (if .esc newKeys then "e" else "_")
-        activeRobot =
+        activeColor =
           if isDown then
             case key of
-              "1"      -> (Robot.getByColor Red model.robots)
-              "r"      -> (Robot.getByColor Red model.robots)
-              "R"      -> (Robot.getByColor Red model.robots)
-              "2"      -> (Robot.getByColor Green model.robots)
-              "g"      -> (Robot.getByColor Green model.robots)
-              "G"      -> (Robot.getByColor Green model.robots)
-              "3"      -> (Robot.getByColor Blue model.robots)
-              "b"      -> (Robot.getByColor Blue model.robots)
-              "B"      -> (Robot.getByColor Blue model.robots)
-              "4"      -> (Robot.getByColor Yellow model.robots)
-              "y"      -> (Robot.getByColor Yellow model.robots)
-              "Y"      -> (Robot.getByColor Yellow model.robots)
-              "5"      -> (Robot.getByColor Silver model.robots)
-              "s"      -> (Robot.getByColor Silver model.robots)
-              "S"      -> (Robot.getByColor Silver model.robots)
+              "1"      -> Just Red
+              "r"      -> Just Red
+              "R"      -> Just Red
+              "2"      -> Just Green
+              "g"      -> Just Green
+              "G"      -> Just Green
+              "3"      -> Just Blue
+              "b"      -> Just Blue
+              "B"      -> Just Blue
+              "4"      -> Just Yellow
+              "y"      -> Just Yellow
+              "Y"      -> Just Yellow
+              "5"      -> Just Silver
+              "s"      -> Just Silver
+              "S"      -> Just Silver
               "Escape" -> Nothing
-              _        -> model.activeRobot
+              _        -> model.activeColor
           else
-            model.activeRobot
+            model.activeColor
 
         newQueue =
           if isDown then
             case key of
-              "ArrowLeft"  -> pushMove Left model.activeRobot model.movesQueue
-              "ArrowRight" -> pushMove Right model.activeRobot model.movesQueue
-              "ArrowUp"    -> pushMove Up model.activeRobot model.movesQueue
-              "ArrowDown"  -> pushMove Down model.activeRobot model.movesQueue
+              "ArrowLeft"  -> pushMove Left model.activeColor model.robots model.movesQueue
+              "ArrowRight" -> pushMove Right model.activeColor model.robots model.movesQueue
+              "ArrowUp"    -> pushMove Up model.activeColor model.robots model.movesQueue
+              "ArrowDown"  -> pushMove Down model.activeColor model.robots model.movesQueue
               "Escape"     -> []
               "Backspace"  -> popMove model.movesQueue
               _ -> model.movesQueue
           else
             model.movesQueue
       in
-        ( { model | keys = newKeys, debugString = debugStr, activeRobot = activeRobot, movesQueue = newQueue }, Cmd.none )
+        ( { model | keys = newKeys, debugString = debugStr, activeColor = activeColor, movesQueue = newQueue }, Cmd.none )
 
     -- Set active robot color for next move
-    SetActiveRobot color ->
-      ( { model | activeRobot = Robot.getByColor color model.robots}, Cmd.none )
+    SetActiveColor color ->
+      ( { model | activeColor = color}, Cmd.none )
     
     -- Only push if there is an active robot and move is in set of legal moves.
     AddMove dir ->
       let
-        newQueue = pushMove dir model.activeRobot model.movesQueue
+        newQueue = pushMove dir model.activeColor model.robots model.movesQueue
       in
         ( { model | movesQueue = newQueue }, 
           outputPort
@@ -493,7 +493,7 @@ update msg model =
       
     -- Remove all moves from queue and reset the active robot color
     ClearMoves ->
-      ( { model | movesQueue = [], activeRobot = Nothing}, 
+      ( { model | movesQueue = [], activeColor = Nothing}, 
           outputPort
             ( Json.Encode.encode
               0
@@ -503,15 +503,18 @@ update msg model =
         )
 
 
-pushMove : Direction -> Maybe Robot -> List Move -> List Move
-pushMove dir activeRobot oldQueue =
-  case activeRobot of
+pushMove : Direction -> Maybe Color -> List Robot -> List Move -> List Move
+pushMove dir activeColor robots oldQueue =
+  case activeColor of
     Nothing -> oldQueue
-    Just robot ->
-      if (List.member dir robot.moves) then
-        (Move robot.color dir) :: oldQueue
-      else
-        oldQueue
+    Just color ->
+      case (Robot.getByColor color robots) of
+        Nothing -> oldQueue
+        Just activeRobot ->
+          if (List.member dir activeRobot.moves) then
+            (Move color dir) :: oldQueue
+          else
+            oldQueue
 
 popMove : List Move -> List Move
 popMove oldQueue =
@@ -801,17 +804,17 @@ view model =
       , div [ class "main"] [
           div [ class "controls" ]
           [ div [ class "controls__robots" ]
-            [ div [ class ("controls__robot controls__red" ++ (if (Robot.getColor model.activeRobot == Just Red) then " active" else "")), onClick (SetActiveRobot Red), attribute "flow" "down", attribute "tooltip" "Select red robot ([R] or [1])"] []
-            , div [ class ("controls__robot controls__green" ++ (if (Robot.getColor model.activeRobot == Just Green) then " active" else "")), onClick (SetActiveRobot Green), attribute "flow" "down", attribute "tooltip" "Select red robot ([G] or [2])" ] []
-            , div [ class ("controls__robot controls__blue" ++ (if (Robot.getColor model.activeRobot == Just Blue) then " active" else "")), onClick (SetActiveRobot Blue), attribute "flow" "down", attribute "tooltip" "Select red robot ([B] or [3])" ] []
-            , div [ class ("controls__robot controls__yellow" ++ (if (Robot.getColor model.activeRobot == Just Yellow) then " active" else "")), onClick (SetActiveRobot Yellow), attribute "flow" "down", attribute "tooltip" "Select red robot ([Y] or [4])" ] []
-            , div [ class ("controls__robot controls__silver" ++ (if (Robot.getColor model.activeRobot == Just Silver) then " active" else "")), onClick (SetActiveRobot Silver), attribute "flow" "down", attribute "tooltip" "Select red robot ([S] or [5])" ] []
+            [ div [ class ("controls__robot controls__red" ++ (if (model.activeColor == Just Red) then " active" else "")), onClick (SetActiveColor (Just Red)), attribute "flow" "down", attribute "tooltip" "Select red robot ([R] or [1])"] []
+            , div [ class ("controls__robot controls__green" ++ (if (model.activeColor == Just Green) then " active" else "")), onClick (SetActiveColor (Just Green)), attribute "flow" "down", attribute "tooltip" "Select red robot ([G] or [2])" ] []
+            , div [ class ("controls__robot controls__blue" ++ (if (model.activeColor == Just Blue) then " active" else "")), onClick (SetActiveColor (Just Blue)), attribute "flow" "down", attribute "tooltip" "Select red robot ([B] or [3])" ] []
+            , div [ class ("controls__robot controls__yellow" ++ (if (model.activeColor == Just Yellow) then " active" else "")), onClick (SetActiveColor (Just Yellow)), attribute "flow" "down", attribute "tooltip" "Select red robot ([Y] or [4])" ] []
+            , div [ class ("controls__robot controls__silver" ++ (if (model.activeColor == Just Silver) then " active" else "")), onClick (SetActiveColor (Just Silver)), attribute "flow" "down", attribute "tooltip" "Select red robot ([S] or [5])" ] []
             ]
           , div [ class "controls__directions" ]
-            [ span [attribute "flow" "down", attribute "tooltip" "Move current robot left"] [div [ class ("controls__button controls__left" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.left then " active" else "")), onClick (AddMove Left) ] []]
-            , span [attribute "flow" "down", attribute "tooltip" "Move current robot up" ] [div [ class ("controls__button controls__up" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.up then " active" else "")), onClick (AddMove Up)] []]
-            , span [attribute "flow" "down", attribute "tooltip" "Move current robot right" ] [div [ class ("controls__button controls__right" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.right then " active" else "")), onClick (AddMove Right)] []]
-            , span [attribute "flow" "down", attribute "tooltip" "Move current robot down"] [div [ class ("controls__button controls__down" ++ (if model.activeRobot == Nothing then " inactive" else "") ++ (if model.keys.down then " active" else "")), onClick (AddMove Down)] []]
+            [ span [attribute "flow" "down", attribute "tooltip" "Move current robot left"] [div [ class ("controls__button controls__left" ++ (if model.activeColor == Nothing then " inactive" else "") ++ (if model.keys.left then " active" else "")), onClick (AddMove Left) ] []]
+            , span [attribute "flow" "down", attribute "tooltip" "Move current robot up" ] [div [ class ("controls__button controls__up" ++ (if model.activeColor == Nothing then " inactive" else "") ++ (if model.keys.up then " active" else "")), onClick (AddMove Up)] []]
+            , span [attribute "flow" "down", attribute "tooltip" "Move current robot right" ] [div [ class ("controls__button controls__right" ++ (if model.activeColor == Nothing then " inactive" else "") ++ (if model.keys.right then " active" else "")), onClick (AddMove Right)] []]
+            , span [attribute "flow" "down", attribute "tooltip" "Move current robot down"] [div [ class ("controls__button controls__down" ++ (if model.activeColor == Nothing then " inactive" else "") ++ (if model.keys.down then " active" else "")), onClick (AddMove Down)] []]
             , span [attribute "flow" "down", attribute "tooltip" "Undo last move" ] [div [ class ("controls__button controls__undo" ++ (if model.keys.backspace then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick PopMove] []]
             , span [attribute "flow" "down", attribute "tooltip" "Clear current moves"] [div [ class ("controls__button controls__cancel" ++ (if model.keys.esc then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick ClearMoves ] []]
             ]
