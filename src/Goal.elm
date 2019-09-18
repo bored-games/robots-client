@@ -13,8 +13,8 @@ type GoalSymbol
   | GreenPlanet
   | BluePlanet
   | YellowPlanet
-  | GreenCross
   | RedCross
+  | GreenCross
   | BlueCross
   | YellowCross
   | RedGear
@@ -40,8 +40,8 @@ toString goal =
     GreenPlanet -> { plaintext = "Green Planet", filename = "green-planet" }
     BluePlanet -> { plaintext = "Blue Planet", filename = "blue-planet" }
     YellowPlanet -> { plaintext = "Yellow Planet", filename = "yellow-planet" }
-    GreenCross -> { plaintext = "Green Cross", filename = "red-cross" }
-    RedCross -> { plaintext = "Red Cross", filename = "green-cross" }
+    RedCross -> { plaintext = "Red Cross", filename = "red-cross" }
+    GreenCross -> { plaintext = "Green Cross", filename = "green-cross" }
     BlueCross -> { plaintext = "Blue Cross", filename = "blue-cross" }
     YellowCross -> { plaintext = "Yellow Cross", filename = "yellow-cross" }
     RedGear -> { plaintext = "Red Gear", filename = "red-gear" }

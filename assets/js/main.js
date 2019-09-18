@@ -7193,10 +7193,10 @@ var author$project$Goal$toString = function (goal) {
 			return {filename: 'blue-planet', plaintext: 'Blue Planet'};
 		case 'YellowPlanet':
 			return {filename: 'yellow-planet', plaintext: 'Yellow Planet'};
-		case 'GreenCross':
-			return {filename: 'red-cross', plaintext: 'Green Cross'};
 		case 'RedCross':
-			return {filename: 'green-cross', plaintext: 'Red Cross'};
+			return {filename: 'red-cross', plaintext: 'Red Cross'};
+		case 'GreenCross':
+			return {filename: 'green-cross', plaintext: 'Green Cross'};
 		case 'BlueCross':
 			return {filename: 'blue-cross', plaintext: 'Blue Cross'};
 		case 'YellowCross':
@@ -7702,7 +7702,7 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('set_score '),
+				elm$html$Html$text('score '),
 				A2(
 				elm$html$Html$span,
 				_List_fromArray(
@@ -7746,7 +7746,7 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('reset_board')
+				elm$html$Html$text('reset')
 			])),
 		A2(
 		elm$html$Html$div,
@@ -7758,7 +7758,7 @@ var author$project$Main$drawPollOptions = _List_fromArray(
 			]),
 		_List_fromArray(
 			[
-				elm$html$Html$text('new_game')
+				elm$html$Html$text('new')
 			])),
 		A2(
 		elm$html$Html$div,

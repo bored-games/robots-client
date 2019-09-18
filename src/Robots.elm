@@ -672,8 +672,6 @@ drawSquare rowi colj board robots goals =
          ]
 
 
-
-
 drawEmoticon : String -> Html Msg
 drawEmoticon str =
   div [ class ("emoticon emoticon--" ++ str), onClick (InsertEmoticon str) ] []
@@ -717,10 +715,10 @@ drawPollOptions =
   , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Mute user. Muted users cannot chat or create polls." ] [ text "mute ", span [ class "red" ] [ text "UID" ] ]
   , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Unmute user." ] [ text "unmute ", span [ class "red" ] [ text "UID" ] ]
   , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Kick user from the game." ] [ text "kick ", span [ class "red" ] [ text "UID" ] ]
-  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Set score of user to some number." ] [ text "set_score ", span [ class "red" ] [ text "UID " ], span [ class "blue" ] [ text "int" ] ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Set score of user to some number." ] [ text "score ", span [ class "red" ] [ text "UID " ], span [ class "blue" ] [ text "int" ] ]
   , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Reset all scores to 0." ] [ text "reset_scores" ]
-  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Reset board walls, goals, and robot positions." ] [ text "reset_board" ]
-  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Reset goal position." ] [ text "new_game" ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Reset board walls, goals, and robot positions." ] [ text "reset" ]
+  , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Reset goal position." ] [ text "new" ]
   , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Set time limit for polls in seconds. Must be at least 30." ] [ text "poll_time ", span [ class "blue" ] [ text "int" ] ]
   , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Set time limit for finding new solutions. Must be at least 0."] [ text "countdown_time ", span [ class "blue" ] [ text "int" ] ]
   , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Set number of puzzles before a new board is shuffled." ] [ text "puzzles_before_new_board ", span [ class "blue" ] [ text "int" ] ]
