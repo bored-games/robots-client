@@ -32,6 +32,7 @@ A browser-based Ricochet Robots client written in Elm, to be paired with a backe
   * `104` `switch_to_countdown`: Switch to countdown (solution found)
   * `105`: Switch to clock (new game)
   * `106`: Send set of legal moves
+  * `clear_moves_queue`: Force `movesQueue` to clear, e.g. for a new game.
   ---
   * `200` `update_scoreboard`: Update `users`
   * `201` `update_user`: Update `user`

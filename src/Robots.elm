@@ -12,7 +12,7 @@ import Chat exposing (Chatline)
 import Browser
 import Browser.Events
 import Html exposing (..)
-import Html.Attributes exposing (id, style, type_, attribute, placeholder, value, class)
+import Html.Attributes exposing (id, style, type_, attribute, placeholder, value, class, name, for)
 import Html.Events exposing (onInput, onSubmit, onClick)
 import Time
 import Tuple
@@ -98,7 +98,7 @@ init _ =
     (Board.square 16 (testFill) )                    -- boundaryBoard
     RedMoon                                                                   -- goalSymbol
     [ ]
-    { settings = "none",
+    { settings = "flex",
       pollOptions = "none",
       emoticons = "none",
       countdown = "flex" }                                                   -- toggleStates
@@ -332,6 +332,8 @@ update msg model =
               update (SwitchToCountdown content) model
             "switch_to_timer" ->
               update (SwitchToTimer content) model
+            "clear_moves_queue" ->
+              update ClearMoves model
             _ ->
               ((Debug.log "Error: unknown code in JSON message" model), Cmd.none ) -- Error: missing code
 
@@ -444,20 +446,24 @@ update msg model =
           else
             model.activeColor
 
-        newQueue =
+        command =
           if isDown then
             case key of
-              "ArrowLeft"  -> pushMove Left model.activeColor model.robots model.movesQueue
-              "ArrowRight" -> pushMove Right model.activeColor model.robots model.movesQueue
-              "ArrowUp"    -> pushMove Up model.activeColor model.robots model.movesQueue
-              "ArrowDown"  -> pushMove Down model.activeColor model.robots model.movesQueue
-              "Escape"     -> []
-              "Backspace"  -> popMove model.movesQueue
-              _ -> model.movesQueue
+              "ArrowLeft"  -> Just (update (AddMove Left) model)
+              "ArrowRight" -> Just (update (AddMove Right) model)
+              "ArrowUp"    -> Just (update (AddMove Up) model)
+              "ArrowDown"  -> Just (update (AddMove Down) model)
+              "Escape"     -> Just (update (ClearMoves) model)
+              "Backspace"  -> Just (update (PopMove) model)
+              _ -> Nothing
           else
-            model.movesQueue
+            Nothing
       in
-        ( { model | keys = newKeys, debugString = debugStr, activeColor = activeColor, movesQueue = newQueue }, Cmd.none )
+        case command of
+          Just cmd ->
+            cmd
+          _ ->
+            ( { model | keys = newKeys, debugString = debugStr, activeColor = activeColor }, Cmd.none )
 
     -- Set active robot color for next move
     SetActiveColor color ->
@@ -684,26 +690,43 @@ drawEmoticons =
 drawSettings : Model -> List (Html Msg)
 drawSettings model =
   [ h2 [ ] [ text "Settings" ]
-  , input [ type_ "text", onInput SetName, placeholder "New name", value model.nameInProgress ] []
-  , select [ onInput SetColor ]
-    [
-      option [ value "", style "color" "#707070" ] [ text "Change color" ]
-    , option [ value "#e05e5e", style "color" "#e05e5e" ] [ text "red" ]
-    , option [ value "#e09f5e", style "color" "#e09f5e" ] [ text "orange" ]
-    , option [ value "#e0e05e", style "color" "#e0e05e" ] [ text "yellow" ]
-    , option [ value "#9fe05e", style "color" "#9fe05e" ] [ text "lime" ]
-    , option [ value "#5ee05e", style "color" "#5ee05e" ] [ text "dark sea" ]
-    , option [ value "#5ee09f", style "color" "#5ee09f" ] [ text "aquamarine" ]
-    , option [ value "#5ee0e0", style "color" "#5ee0e0" ] [ text "azure" ]
-    , option [ value "#5e9fe0", style "color" "#5e9fe0" ] [ text "cornflower" ]
-    , option [ value "#5e5ee0", style "color" "#5e5ee0" ] [ text "periwinkle" ]
-    , option [ value "#9f5ee0", style "color" "#9f5ee0" ] [ text "dendrobium " ]
-    , option [ value "#e05ee0", style "color" "#e05ee0" ] [ text "french rose" ]
-    , option [ value "#e05e9f", style "color" "#e05e9f" ] [ text "barbie-mobile" ]
-    , option [ value "#b19278", style "color" "#b19278" ] [ text "english elm" ]
-    , option [ value "#e0e0e0", style "color" "#e0e0e0" ] [ text "gainsboro" ]
-  ]
-  , input [ type_ "submit", class "submit", value "Update", onClick UpdateSettings ] []
+  , div [ class "settings__flexbox" ]
+  [ div [ class "setting__input" ] [ input [ type_ "text", onInput SetName, placeholder "New name", value model.nameInProgress ] [] ]
+  , div [ class "setting__input" ]
+    [ select [ onInput SetColor ]
+      [ option [ value "", style "color" "#707070" ] [ text "Change color" ]
+      , option [ value "#e05e5e", style "color" "#e05e5e" ] [ text "red" ]
+      , option [ value "#e09f5e", style "color" "#e09f5e" ] [ text "orange" ]
+      , option [ value "#e0e05e", style "color" "#e0e05e" ] [ text "yellow" ]
+      , option [ value "#9fe05e", style "color" "#9fe05e" ] [ text "lime" ]
+      , option [ value "#5ee05e", style "color" "#5ee05e" ] [ text "dark sea" ]
+      , option [ value "#5ee09f", style "color" "#5ee09f" ] [ text "aquamarine" ]
+      , option [ value "#5ee0e0", style "color" "#5ee0e0" ] [ text "azure" ]
+      , option [ value "#5e9fe0", style "color" "#5e9fe0" ] [ text "cornflower" ]
+      , option [ value "#5e5ee0", style "color" "#5e5ee0" ] [ text "periwinkle" ]
+      , option [ value "#9f5ee0", style "color" "#9f5ee0" ] [ text "dendrobium " ]
+      , option [ value "#e05ee0", style "color" "#e05ee0" ] [ text "french rose" ]
+      , option [ value "#e05e9f", style "color" "#e05e9f" ] [ text "barbie-mobile" ]
+      , option [ value "#b19278", style "color" "#b19278" ] [ text "english elm" ]
+      , option [ value "#e0e0e0", style "color" "#e0e0e0" ] [ text "gainsboro" ]
+      ]
+    ]
+  , div [class "setting__checkbox"]
+    [ div [ class "checkbox" ]
+      [ input [ type_ "checkbox", id "checkboxShowSystemChat" ] []
+      , label [ for "checkboxShowSystemChat" ] []
+      ],
+      (text "System messages")
+    ]
+  , div [class "setting__checkbox"]
+    [ div [ class "checkbox" ]
+      [ input [ type_ "checkbox", id "checkboxSound" ] []
+      , label [ for "checkboxSound" ] []
+      ],
+      (text "Sound")
+    ]
+  , div [ class "setting__submit" ] [ input [ type_ "submit", class "submit", value "Update", onClick UpdateSettings ] [] ]
+    ]
   ]
   
 drawPollOptions : List (Html Msg)
@@ -780,7 +803,7 @@ view model =
         , div [ class "debug" ]
           [ text (  model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ]          
         , div [ class "sidebar__goal" ] [ div [ class ("goal " ++ .filename (Goal.toString model.goal)) ] [ ] ]
-        , div [ class "timer", onClick (IncrementScore model.user) ]
+        , div [ class ("timer" ++ if model.solutionFound then " winner" else ""), onClick (IncrementScore model.user) ]
           [ div [ class ("timer__countdown " ++ (if model.solutionFound then "active" else "inactive")) ]
             [ span [] [ text (formatTimer model.countdown) ]
             , span [attribute "flow" "right", attribute "tooltip" "Countdown before best solution wins!"] [div [ class "icon icon--timer"] []]

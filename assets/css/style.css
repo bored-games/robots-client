@@ -301,8 +301,7 @@ textarea, input[type="text"], select {
   background-color: #3b3b34
 }
 
-
-.controls__red { background-image: url('../static/images/game/red-robot.png'); }
+.controls__red { background-image: url('../static/images/game/red-robot.png');}
 .controls__green { background-image: url('../static/images/game/green-robot.png'); }
 .controls__blue { background-image: url('../static/images/game/blue-robot.png'); }
 .controls__yellow { background-image: url('../static/images/game/yellow-robot.png'); }
@@ -422,11 +421,18 @@ textarea, input[type="text"], select {
   background-position: center center;
 }
 
-.robot--red { background-image: url('../static/images/game/red-robot.png'); }
-.robot--blue { background-image: url('../static/images/game/blue-robot.png');; }
-.robot--green { background-image: url('../static/images/game/green-robot.png');; }
-.robot--yellow { background-image: url('../static/images/game/yellow-robot.png');; }
-.robot--silver { background-image: url('../static/images/game/silver-robot.png');; }
+
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.robot--red { background-image: url('../static/images/game/red-robot.png'); animation: fadein .3s; }
+.robot--blue { background-image: url('../static/images/game/blue-robot.png'); animation: fadein .3s; }
+.robot--green { background-image: url('../static/images/game/green-robot.png'); animation: fadein .3s; }
+.robot--yellow { background-image: url('../static/images/game/yellow-robot.png'); animation: fadein .3s; }
+.robot--silver { background-image: url('../static/images/game/silver-robot.png'); animation: fadein .3s; }
 
 
 /****** Scorebar ******/
@@ -473,6 +479,8 @@ textarea, input[type="text"], select {
 .sidebar__goal {
   border-bottom: 1px solid #333;
   padding: 0.75rem;
+  display: flex;
+  justify-content: center;
 }
 
 .timer {
@@ -482,12 +490,20 @@ textarea, input[type="text"], select {
   flex-wrap: wrap;
   font-family: Monospace;
   font-size: 1.25rem;
-  background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
+  background: linear-gradient(to top, #141416 0, rgba(255, 255, 255, .03) 100%);
+  background: linear-gradient(to top, #13090e 0, #25121c 25%, #141416 37.5%, rgba(255, 255, 255, .03) 62.5%, rgba(255, 255, 255, .03) 75%, #292403 75%, #231e02 82.5%, #1c1801 100%);
+  background-size: 100% 400%;
+  background-position: center center;
   color: #858585;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, .8);
   font-weight: 200;
   border-top: 1px solid #060606;
   text-align: right;
+  transition: 1s ease-in-out background-position;
+}
+
+.timer.winner {
+  background-position: top;
 }
 
 .timer__countdown,
@@ -612,10 +628,70 @@ span.emoticon {
 
 
 
+.settings__flexbox {
+  display: flex;
+  flex-wrap: wrap;
+}
 
+.setting__input {
+  flex: 1 1 50%;
+  display: flex;
+}
 
+.setting__checkbox {
+  white-space: nowrap;
+  flex: 1 1 50%;
+  color: #78787a;
+}
 
+.setting__submit {
+  flex: 1 1 100%;
+  display: flex;
+  justify-content: flex-end;
+}
 
+.checkbox {
+  display: inline-block;
+  width: 24px;
+  position: relative;
+  margin: 8px 8px 8px 4px;
+}
+
+.checkbox label {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(to top, #000 0%, #121213 100%);
+  border-radius: 4px;
+  box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.2);
+}
+
+.checkbox label:after {
+  content: '';
+  width: 11px;
+  height: 7px;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  border: 3px solid #cdcdce;
+  border-top: none;
+  border-right: none;
+  background: transparent;
+  opacity: 0;
+  transform: rotate(-45deg);
+}
+.checkbox label:hover::after {
+  opacity: 0.3;
+}
+.checkbox input[type=checkbox] {
+  visibility: hidden;
+}
+.checkbox input[type=checkbox]:checked + label:after {
+  opacity: 1;
+}
 
 
 /* START TOOLTIP STYLES */

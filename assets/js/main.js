@@ -4963,7 +4963,7 @@ var author$project$Main$init = function (_n0) {
 			author$project$Main$Keys(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false))(
 			{color: '#6c6adc', is_admin: true, is_muted: false, score: 0, username: 'patty'})(_List_Nil)(_List_Nil)('')('')('')(
 			A2(author$project$Board$square, 16, author$project$Main$testFill))(author$project$Goal$RedMoon)(_List_Nil)(
-			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'none'})(60)(0)(false)(_List_Nil)(elm$core$Maybe$Nothing)(_List_Nil),
+			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'flex'})(60)(0)(false)(_List_Nil)(elm$core$Maybe$Nothing)(_List_Nil),
 		elm$core$Platform$Cmd$none);
 };
 var author$project$Main$GetJSON = function (a) {
@@ -6103,6 +6103,10 @@ var author$project$Goal$decodeGoal = A4(
 	A2(elm$json$Json$Decode$field, 'active', elm$json$Json$Decode$bool));
 var elm$json$Json$Decode$list = _Json_decodeList;
 var author$project$Goal$decodeGoalList = elm$json$Json$Decode$list(author$project$Goal$decodeGoal);
+var author$project$Main$AddMove = function (a) {
+	return {$: 'AddMove', a: a};
+};
+var author$project$Main$ClearMoves = {$: 'ClearMoves'};
 var author$project$Main$ConnectToServer = function (a) {
 	return {$: 'ConnectToServer', a: a};
 };
@@ -6124,6 +6128,7 @@ var author$project$Main$GetUser = function (a) {
 var author$project$Main$GetUsersList = function (a) {
 	return {$: 'GetUsersList', a: a};
 };
+var author$project$Main$PopMove = {$: 'PopMove'};
 var author$project$Main$SwitchToCountdown = function (a) {
 	return {$: 'SwitchToCountdown', a: a};
 };
@@ -6806,6 +6811,12 @@ var author$project$Main$update = F2(
 								msg = $temp$msg;
 								model = $temp$model;
 								continue update;
+							case 'clear_moves_queue':
+								var $temp$msg = author$project$Main$ClearMoves,
+									$temp$model = model;
+								msg = $temp$msg;
+								model = $temp$model;
+								continue update;
 							default:
 								return _Utils_Tuple2(
 									A2(elm$core$Debug$log, 'Error: unknown code in JSON message', model),
@@ -6962,28 +6973,6 @@ var author$project$Main$update = F2(
 				case 'KeyChanged':
 					var isDown = _n0.a;
 					var key = _n0.b;
-					var newQueue = function () {
-						if (isDown) {
-							switch (key) {
-								case 'ArrowLeft':
-									return A4(author$project$Main$pushMove, author$project$Move$Left, model.activeColor, model.robots, model.movesQueue);
-								case 'ArrowRight':
-									return A4(author$project$Main$pushMove, author$project$Move$Right, model.activeColor, model.robots, model.movesQueue);
-								case 'ArrowUp':
-									return A4(author$project$Main$pushMove, author$project$Move$Up, model.activeColor, model.robots, model.movesQueue);
-								case 'ArrowDown':
-									return A4(author$project$Main$pushMove, author$project$Move$Down, model.activeColor, model.robots, model.movesQueue);
-								case 'Escape':
-									return _List_Nil;
-								case 'Backspace':
-									return author$project$Main$popMove(model.movesQueue);
-								default:
-									return model.movesQueue;
-							}
-						} else {
-							return model.movesQueue;
-						}
-					}();
 					var newKeys = A3(author$project$Main$updateKeys, isDown, key, model.keys);
 					var debugStr = _Utils_ap(
 						function ($) {
@@ -7052,6 +7041,46 @@ var author$project$Main$update = F2(
 																					function ($) {
 																						return $.esc;
 																					}(newKeys) ? 'e' : '_'))))))))))))))));
+					var command = function () {
+						if (isDown) {
+							switch (key) {
+								case 'ArrowLeft':
+									return elm$core$Maybe$Just(
+										A2(
+											author$project$Main$update,
+											author$project$Main$AddMove(author$project$Move$Left),
+											model));
+								case 'ArrowRight':
+									return elm$core$Maybe$Just(
+										A2(
+											author$project$Main$update,
+											author$project$Main$AddMove(author$project$Move$Right),
+											model));
+								case 'ArrowUp':
+									return elm$core$Maybe$Just(
+										A2(
+											author$project$Main$update,
+											author$project$Main$AddMove(author$project$Move$Up),
+											model));
+								case 'ArrowDown':
+									return elm$core$Maybe$Just(
+										A2(
+											author$project$Main$update,
+											author$project$Main$AddMove(author$project$Move$Down),
+											model));
+								case 'Escape':
+									return elm$core$Maybe$Just(
+										A2(author$project$Main$update, author$project$Main$ClearMoves, model));
+								case 'Backspace':
+									return elm$core$Maybe$Just(
+										A2(author$project$Main$update, author$project$Main$PopMove, model));
+								default:
+									return elm$core$Maybe$Nothing;
+							}
+						} else {
+							return elm$core$Maybe$Nothing;
+						}
+					}();
 					var activeColor = function () {
 						if (isDown) {
 							switch (key) {
@@ -7094,11 +7123,16 @@ var author$project$Main$update = F2(
 							return model.activeColor;
 						}
 					}();
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{activeColor: activeColor, debugString: debugStr, keys: newKeys, movesQueue: newQueue}),
-						elm$core$Platform$Cmd$none);
+					if (command.$ === 'Just') {
+						var cmd = command.a;
+						return cmd;
+					} else {
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{activeColor: activeColor, debugString: debugStr, keys: newKeys}),
+							elm$core$Platform$Cmd$none);
+					}
 				case 'SetActiveColor':
 					var color = _n0.a;
 					return _Utils_Tuple2(
@@ -7211,15 +7245,10 @@ var author$project$Goal$toString = function (goal) {
 			return {filename: 'yellow-gear', plaintext: 'Yellow Gear'};
 	}
 };
-var author$project$Main$AddMove = function (a) {
-	return {$: 'AddMove', a: a};
-};
-var author$project$Main$ClearMoves = {$: 'ClearMoves'};
 var author$project$Main$IncrementScore = function (a) {
 	return {$: 'IncrementScore', a: a};
 };
 var author$project$Main$NewGame = {$: 'NewGame'};
-var author$project$Main$PopMove = {$: 'PopMove'};
 var author$project$Main$SendMessage = {$: 'SendMessage'};
 var author$project$Main$SetActiveColor = function (a) {
 	return {$: 'SetActiveColor', a: a};
@@ -7926,8 +7955,11 @@ var author$project$Main$SetName = function (a) {
 };
 var author$project$Main$UpdateSettings = {$: 'UpdateSettings'};
 var elm$html$Html$input = _VirtualDom_node('input');
+var elm$html$Html$label = _VirtualDom_node('label');
 var elm$html$Html$option = _VirtualDom_node('option');
 var elm$html$Html$select = _VirtualDom_node('select');
+var elm$html$Html$Attributes$for = elm$html$Html$Attributes$stringProperty('htmlFor');
+var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
 var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
 var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
 var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
@@ -7973,199 +8005,303 @@ var author$project$Main$drawSettings = function (model) {
 					elm$html$Html$text('Settings')
 				])),
 			A2(
-			elm$html$Html$input,
+			elm$html$Html$div,
 			_List_fromArray(
 				[
-					elm$html$Html$Attributes$type_('text'),
-					elm$html$Html$Events$onInput(author$project$Main$SetName),
-					elm$html$Html$Attributes$placeholder('New name'),
-					elm$html$Html$Attributes$value(model.nameInProgress)
-				]),
-			_List_Nil),
-			A2(
-			elm$html$Html$select,
-			_List_fromArray(
-				[
-					elm$html$Html$Events$onInput(author$project$Main$SetColor)
+					elm$html$Html$Attributes$class('settings__flexbox')
 				]),
 			_List_fromArray(
 				[
 					A2(
-					elm$html$Html$option,
+					elm$html$Html$div,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$value(''),
-							A2(elm$html$Html$Attributes$style, 'color', '#707070')
+							elm$html$Html$Attributes$class('setting__input')
 						]),
 					_List_fromArray(
 						[
-							elm$html$Html$text('Change color')
+							A2(
+							elm$html$Html$input,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$type_('text'),
+									elm$html$Html$Events$onInput(author$project$Main$SetName),
+									elm$html$Html$Attributes$placeholder('New name'),
+									elm$html$Html$Attributes$value(model.nameInProgress)
+								]),
+							_List_Nil)
 						])),
 					A2(
-					elm$html$Html$option,
+					elm$html$Html$div,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$value('#e05e5e'),
-							A2(elm$html$Html$Attributes$style, 'color', '#e05e5e')
+							elm$html$Html$Attributes$class('setting__input')
 						]),
 					_List_fromArray(
 						[
-							elm$html$Html$text('red')
+							A2(
+							elm$html$Html$select,
+							_List_fromArray(
+								[
+									elm$html$Html$Events$onInput(author$project$Main$SetColor)
+								]),
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value(''),
+											A2(elm$html$Html$Attributes$style, 'color', '#707070')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('Change color')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#e05e5e'),
+											A2(elm$html$Html$Attributes$style, 'color', '#e05e5e')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('red')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#e09f5e'),
+											A2(elm$html$Html$Attributes$style, 'color', '#e09f5e')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('orange')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#e0e05e'),
+											A2(elm$html$Html$Attributes$style, 'color', '#e0e05e')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('yellow')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#9fe05e'),
+											A2(elm$html$Html$Attributes$style, 'color', '#9fe05e')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('lime')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#5ee05e'),
+											A2(elm$html$Html$Attributes$style, 'color', '#5ee05e')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('dark sea')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#5ee09f'),
+											A2(elm$html$Html$Attributes$style, 'color', '#5ee09f')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('aquamarine')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#5ee0e0'),
+											A2(elm$html$Html$Attributes$style, 'color', '#5ee0e0')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('azure')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#5e9fe0'),
+											A2(elm$html$Html$Attributes$style, 'color', '#5e9fe0')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('cornflower')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#5e5ee0'),
+											A2(elm$html$Html$Attributes$style, 'color', '#5e5ee0')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('periwinkle')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#9f5ee0'),
+											A2(elm$html$Html$Attributes$style, 'color', '#9f5ee0')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('dendrobium ')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#e05ee0'),
+											A2(elm$html$Html$Attributes$style, 'color', '#e05ee0')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('french rose')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#e05e9f'),
+											A2(elm$html$Html$Attributes$style, 'color', '#e05e9f')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('barbie-mobile')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#b19278'),
+											A2(elm$html$Html$Attributes$style, 'color', '#b19278')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('english elm')
+										])),
+									A2(
+									elm$html$Html$option,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$value('#e0e0e0'),
+											A2(elm$html$Html$Attributes$style, 'color', '#e0e0e0')
+										]),
+									_List_fromArray(
+										[
+											elm$html$Html$text('gainsboro')
+										]))
+								]))
 						])),
 					A2(
-					elm$html$Html$option,
+					elm$html$Html$div,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$value('#e09f5e'),
-							A2(elm$html$Html$Attributes$style, 'color', '#e09f5e')
+							elm$html$Html$Attributes$class('setting__checkbox')
 						]),
 					_List_fromArray(
 						[
-							elm$html$Html$text('orange')
+							A2(
+							elm$html$Html$div,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$class('checkbox')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$input,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$type_('checkbox'),
+											elm$html$Html$Attributes$id('checkboxShowSystemChat')
+										]),
+									_List_Nil),
+									A2(
+									elm$html$Html$label,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$for('checkboxShowSystemChat')
+										]),
+									_List_Nil)
+								])),
+							elm$html$Html$text('System messages')
 						])),
 					A2(
-					elm$html$Html$option,
+					elm$html$Html$div,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$value('#e0e05e'),
-							A2(elm$html$Html$Attributes$style, 'color', '#e0e05e')
+							elm$html$Html$Attributes$class('setting__checkbox')
 						]),
 					_List_fromArray(
 						[
-							elm$html$Html$text('yellow')
+							A2(
+							elm$html$Html$div,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$class('checkbox')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$input,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$type_('checkbox'),
+											elm$html$Html$Attributes$id('checkboxSound')
+										]),
+									_List_Nil),
+									A2(
+									elm$html$Html$label,
+									_List_fromArray(
+										[
+											elm$html$Html$Attributes$for('checkboxSound')
+										]),
+									_List_Nil)
+								])),
+							elm$html$Html$text('Sound')
 						])),
 					A2(
-					elm$html$Html$option,
+					elm$html$Html$div,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$value('#9fe05e'),
-							A2(elm$html$Html$Attributes$style, 'color', '#9fe05e')
+							elm$html$Html$Attributes$class('setting__submit')
 						]),
 					_List_fromArray(
 						[
-							elm$html$Html$text('lime')
-						])),
-					A2(
-					elm$html$Html$option,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$value('#5ee05e'),
-							A2(elm$html$Html$Attributes$style, 'color', '#5ee05e')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('dark sea')
-						])),
-					A2(
-					elm$html$Html$option,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$value('#5ee09f'),
-							A2(elm$html$Html$Attributes$style, 'color', '#5ee09f')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('aquamarine')
-						])),
-					A2(
-					elm$html$Html$option,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$value('#5ee0e0'),
-							A2(elm$html$Html$Attributes$style, 'color', '#5ee0e0')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('azure')
-						])),
-					A2(
-					elm$html$Html$option,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$value('#5e9fe0'),
-							A2(elm$html$Html$Attributes$style, 'color', '#5e9fe0')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('cornflower')
-						])),
-					A2(
-					elm$html$Html$option,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$value('#5e5ee0'),
-							A2(elm$html$Html$Attributes$style, 'color', '#5e5ee0')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('periwinkle')
-						])),
-					A2(
-					elm$html$Html$option,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$value('#9f5ee0'),
-							A2(elm$html$Html$Attributes$style, 'color', '#9f5ee0')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('dendrobium ')
-						])),
-					A2(
-					elm$html$Html$option,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$value('#e05ee0'),
-							A2(elm$html$Html$Attributes$style, 'color', '#e05ee0')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('french rose')
-						])),
-					A2(
-					elm$html$Html$option,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$value('#e05e9f'),
-							A2(elm$html$Html$Attributes$style, 'color', '#e05e9f')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('barbie-mobile')
-						])),
-					A2(
-					elm$html$Html$option,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$value('#b19278'),
-							A2(elm$html$Html$Attributes$style, 'color', '#b19278')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('english elm')
-						])),
-					A2(
-					elm$html$Html$option,
-					_List_fromArray(
-						[
-							elm$html$Html$Attributes$value('#e0e0e0'),
-							A2(elm$html$Html$Attributes$style, 'color', '#e0e0e0')
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text('gainsboro')
+							A2(
+							elm$html$Html$input,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$type_('submit'),
+									elm$html$Html$Attributes$class('submit'),
+									elm$html$Html$Attributes$value('Update'),
+									elm$html$Html$Events$onClick(author$project$Main$UpdateSettings)
+								]),
+							_List_Nil)
 						]))
-				])),
-			A2(
-			elm$html$Html$input,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$type_('submit'),
-					elm$html$Html$Attributes$class('submit'),
-					elm$html$Html$Attributes$value('Update'),
-					elm$html$Html$Events$onClick(author$project$Main$UpdateSettings)
-				]),
-			_List_Nil)
+				]))
 		]);
 };
 var elm$core$Basics$modBy = _Basics_modBy;
@@ -8331,7 +8467,6 @@ var elm$core$List$isEmpty = function (xs) {
 var elm$core$List$sortBy = _List_sortBy;
 var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$textarea = _VirtualDom_node('textarea');
-var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
 var elm$html$Html$Attributes$maxlength = function (n) {
 	return A2(
 		_VirtualDom_attribute,
@@ -8435,7 +8570,8 @@ var author$project$Main$view = function (model) {
 						elm$html$Html$div,
 						_List_fromArray(
 							[
-								elm$html$Html$Attributes$class('timer'),
+								elm$html$Html$Attributes$class(
+								'timer' + (model.solutionFound ? ' winner' : '')),
 								elm$html$Html$Events$onClick(
 								author$project$Main$IncrementScore(model.user))
 							]),
