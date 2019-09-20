@@ -1,6 +1,8 @@
 # :robot: Rickety Robots Client :robot:
 A browser-based Ricochet Robots client written in Elm, to be paired with a backend written in Elixir. Includes chat, scorekeeping, and democratically-driven game management!
 
+<p align="center"><img src="assets/static/images/game/red-robot.png" width="100px" alt="" /><img src="assets/static/images/game/green-robot.png" width="100px" alt="" /><img src="assets/static/images/game/blue-robot.png" width="100px" alt="" /><img src="assets/static/images/game/yellow-robot.png" width="100px" alt="" /><img src="assets/static/images/game/silver-robot.png" width="100px" alt="" /></p>
+
 ## Frontend Model (not finalized, documentation WIP)
   * **keys** : `Keys`. List of booleans representing active keyboard input
   * **user** : `User`. Information about the current user.
@@ -22,41 +24,38 @@ A browser-based Ricochet Robots client written in Elm, to be paired with a backe
 ## JSON Codes
 
 ### Backend -> Frontend
-  * `000` `connect_to_server` : Server has connected.
-  * `001`: Tick...?
+  * `connect_to_server` : Server has connected.
+  * Tick...?
   ---
-  * `100` `update_board`: Reset `board` layout
-  * `101` `update_robots`: Update `robots` positions and legal moves
-  * `102` `update_goals`: Reset `goalList` positions
-  * `103`: Update new goal
-  * `104` `switch_to_countdown`: Switch to countdown (solution found)
-  * `105`: Switch to clock (new game)
-  * `106`: Send set of legal moves
+  * `update_board`: Reset `board` layout
+  * `update_robots`: Update `robots` positions and legal moves
+  * `update_goals`: Reset `goalList` positions
+  *  Update new goal
+  * `switch_to_countdown`: Switch to countdown (e.g. solution found)
+  * `switch_to_timer`: Switch to timer clock (e.g. new game)
   * `clear_moves_queue`: Force `movesQueue` to clear, e.g. for a new game.
   ---
-  * `200` `update_scoreboard`: Update `users`
-  * `201` `update_user`: Update `user`
-  * `202` `update_chat`: Update `chat`
-  * `202`: 
-  * `203`: 
+  * `update_scoreboard`: Update `users`
+  * `update_user`: Update `user`
+  * `update_chat`: Update `chat`
 
   
 ### Frontend -> Backend
-  * `001`: `submit_movelist`: Submit list of moves
-  * `002`: Future: board click event...?
+  * `submit_movelist`: Submit list of moves
+  * Future: board click event...?
   ---
-  * `100`: Reset all (scores, board, robot positions, goal)
-  * `101`: Reset scores
-  * `102`: Reset (shuffle) board
-  * `103`: Reset robot positions
-  * `104`: Reset goal
+  * Reset all (scores, board, robot positions, goal)
+  * Reset scores
+  * Reset (shuffle) board
+  * Reset robot positions
+  * Reset goal
   ---
-  * `200` `create_user`: Add user
-  * `201` `update_user`: Update user
-  * `202` `update_chat`: Send (user) message
-  * `203`: Send (system) message
-  * `204`: Set score of user
-  * `205`: 
+  * `create_user`: Add user
+  * `update_user`: Update user
+  * `update_chat`: Send (user) message
+  * Send (system) message
+  * Set score of user
+  *  
 
 
 ## Keyboard Shortcuts
