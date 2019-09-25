@@ -59,6 +59,7 @@ main {
 	border-left: 1px solid #252626;
   box-shadow: -2px 0px 8px rgba(0, 0, 0, .4);
   max-height: 100vh;
+  overflow: hidden;
 }
 
 .sidebar h2, .scorebar h2 {
@@ -101,7 +102,8 @@ main {
   padding: 0.75rem;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
+  background: linear-gradient(to top, #141416 0, #1b1b1d 100%);
+  z-index: 100;
 }
 
 textarea, input[type="text"], select {
@@ -143,6 +145,53 @@ textarea, input[type="text"], select {
 }
 
 
+/****** Emoticons ******/
+.sidebar__emoticons {
+  display: flex;
+  flex-wrap: wrap;
+  width: auto;
+  padding: 0.25rem;
+}
+
+.emoticon {
+  height: 32px;
+  width: 32px;
+  background: transparent;
+  background-size: 100% 100%;
+  background-repeat: none;
+  background-position: center center;
+  flex: 0 0 auto;
+  margin: 3px;
+  cursor: pointer;
+}
+
+span.emoticon {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+}
+
+.emoticon--cool { background-image: url('../static/images/emoticons/cool.png'); }
+.emoticon--crazy { background-image: url('../static/images/emoticons/crazy.png'); }
+.emoticon--damn { background-image: url('../static/images/emoticons/damn.png'); }
+.emoticon--geek { background-image: url('../static/images/emoticons/geek.png'); }
+.emoticon--grin { background-image: url('../static/images/emoticons/grin.png'); }
+.emoticon--huh { background-image: url('../static/images/emoticons/huh.png'); }
+.emoticon--lol { background-image: url('../static/images/emoticons/lol.png'); }
+.emoticon--love { background-image: url('../static/images/emoticons/love.png'); }
+.emoticon--omg { background-image: url('../static/images/emoticons/omg.png'); }
+.emoticon--pout { background-image: url('../static/images/emoticons/pout.png'); }
+.emoticon--sad { background-image: url('../static/images/emoticons/sad.png'); }
+.emoticon--smile { background-image: url('../static/images/emoticons/smile.png'); }
+.emoticon--stars { background-image: url('../static/images/emoticons/stars.png'); }
+.emoticon--ugh { background-image: url('../static/images/emoticons/ugh.png'); }
+.emoticon--waiting { background-image: url('../static/images/emoticons/waiting.png'); }
+.emoticon--whoopsy { background-image: url('../static/images/emoticons/whoopsy.png'); }
+.emoticon--wink { background-image: url('../static/images/emoticons/wink.png'); }
+.emoticon--wtf { background-image: url('../static/images/emoticons/wtf.png'); }
+
+
+
 .message__actions button {
   height: 2.5rem;
   width: 2.5rem;
@@ -161,6 +210,9 @@ textarea, input[type="text"], select {
   flex-wrap: wrap;
   justify-content: flex-start;
   background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
+  
+  animation: module-display 200ms ease-out forwards;
+  z-index: 10;
 }
 
 .poll__info {
@@ -195,6 +247,25 @@ textarea, input[type="text"], select {
   background: linear-gradient(to top, transparent 0, rgba(255, 255, 255, .03));
   justify-content: flex-end;
 }
+
+@keyframes module-display {
+  0% {
+    transform: translate(0, 100%);
+  }
+  100% {
+    transform: translate(0, 0%);
+  }
+}
+.module-flex {
+  animation: module-display 200ms ease-out both;
+  z-index: 10;
+}
+
+.module-none {
+  display: none;
+}
+
+
 
 .sidebar__settings input, .sidebar__settings select {
   margin: 0 .25rem 0.5rem;
@@ -577,52 +648,6 @@ textarea, input[type="text"], select {
 .green-cross { background-image: url('../static/images/game/green-cross.png'); }
 .yellow-cross { background-image: url('../static/images/game/yellow-cross.png'); }
 .blue-cross { background-image: url('../static/images/game/blue-cross.png'); }
-
-/****** Emoticons ******/
-.sidebar__emoticons {
-  display: flex;
-  flex-wrap: wrap;
-  width: auto;
-  padding: 0.25rem;
-}
-
-.emoticon {
-  height: 32px;
-  width: 32px;
-  background: transparent;
-  background-size: 100% 100%;
-  background-repeat: none;
-  background-position: center center;
-  flex: 0 0 auto;
-  margin: 3px;
-  cursor: pointer;
-}
-
-span.emoticon {
-  display: inline-block;
-  vertical-align: middle;
-  margin: 0;
-}
-
-.emoticon--cool { background-image: url('../static/images/emoticons/cool.png'); }
-.emoticon--crazy { background-image: url('../static/images/emoticons/crazy.png'); }
-.emoticon--damn { background-image: url('../static/images/emoticons/damn.png'); }
-.emoticon--geek { background-image: url('../static/images/emoticons/geek.png'); }
-.emoticon--grin { background-image: url('../static/images/emoticons/grin.png'); }
-.emoticon--huh { background-image: url('../static/images/emoticons/huh.png'); }
-.emoticon--lol { background-image: url('../static/images/emoticons/lol.png'); }
-.emoticon--love { background-image: url('../static/images/emoticons/love.png'); }
-.emoticon--omg { background-image: url('../static/images/emoticons/omg.png'); }
-.emoticon--pout { background-image: url('../static/images/emoticons/pout.png'); }
-.emoticon--sad { background-image: url('../static/images/emoticons/sad.png'); }
-.emoticon--smile { background-image: url('../static/images/emoticons/smile.png'); }
-.emoticon--stars { background-image: url('../static/images/emoticons/stars.png'); }
-.emoticon--ugh { background-image: url('../static/images/emoticons/ugh.png'); }
-.emoticon--waiting { background-image: url('../static/images/emoticons/waiting.png'); }
-.emoticon--whoopsy { background-image: url('../static/images/emoticons/whoopsy.png'); }
-.emoticon--wink { background-image: url('../static/images/emoticons/wink.png'); }
-.emoticon--wtf { background-image: url('../static/images/emoticons/wtf.png'); }
-
 
 
 

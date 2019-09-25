@@ -8985,16 +8985,14 @@ var author$project$Main$view = function (model) {
 						elm$html$Html$div,
 						_List_fromArray(
 							[
-								elm$html$Html$Attributes$class('sidebar__settings'),
-								A2(elm$html$Html$Attributes$style, 'display', model.toggleStates.settings)
+								elm$html$Html$Attributes$class('sidebar__settings ' + ('module-' + model.toggleStates.settings))
 							]),
 						author$project$Main$drawSettings(model)),
 						A2(
 						elm$html$Html$div,
 						_List_fromArray(
 							[
-								elm$html$Html$Attributes$class('sidebar__polloptions'),
-								A2(elm$html$Html$Attributes$style, 'display', model.toggleStates.pollOptions)
+								elm$html$Html$Attributes$class('sidebar__polloptions ' + ('module-' + model.toggleStates.pollOptions))
 							]),
 						author$project$Main$drawPollOptions),
 						A2(
@@ -9021,8 +9019,7 @@ var author$project$Main$view = function (model) {
 								elm$html$Html$div,
 								_List_fromArray(
 									[
-										elm$html$Html$Attributes$class('sidebar__emoticons'),
-										A2(elm$html$Html$Attributes$style, 'display', model.toggleStates.emoticons)
+										elm$html$Html$Attributes$class('sidebar__emoticons ' + ('module-' + model.toggleStates.emoticons))
 									]),
 								author$project$Main$drawEmoticons),
 								A2(

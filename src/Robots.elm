@@ -98,7 +98,7 @@ init _ =
     (Board.square 16 (testFill) )                    -- boundaryBoard
     RedMoon                                                                   -- goalSymbol
     [ ]
-    { settings = "flex",
+    { settings = "none",
       pollOptions = "none",
       emoticons = "none",
       countdown = "flex" }                                                   -- toggleStates
@@ -845,11 +845,11 @@ view model =
       , div [ class "sidebar" ]
         [ h2 [] [ text "Chat" ]
         , div [class "chat", id "chat"] (List.reverse model.chat |> drawChat)
-        , div [ class "sidebar__settings", style "display" model.toggleStates.settings ] (drawSettings model)
-        , div [ class "sidebar__polloptions", style "display" model.toggleStates.pollOptions ] (drawPollOptions)
+        , div [ class ("sidebar__settings " ++ ("module-" ++ model.toggleStates.settings)) ] (drawSettings model)
+        , div [ class ("sidebar__polloptions " ++ ("module-" ++ model.toggleStates.pollOptions)) ] (drawPollOptions)
         , div [ class "message"]
           [ textarea [ class "message__box", onEnter SendMessage, onInput SetMessage, placeholder "Send a message", value model.messageInProgress, Html.Attributes.maxlength 255 ] []
-          , div [ class "sidebar__emoticons", style "display" model.toggleStates.emoticons ] (drawEmoticons)
+          , div [ class ("sidebar__emoticons " ++ ("module-" ++ model.toggleStates.emoticons)) ] (drawEmoticons)
           , div [ class "message__actions" ]
             [
             button [ class "settings", onClick ToggleSettings ] []
