@@ -4963,7 +4963,7 @@ var author$project$Main$init = function (_n0) {
 			author$project$Main$Keys(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false))(
 			{color: '#6c6adc', is_admin: true, is_muted: false, score: 0, username: 'patty'})(_List_Nil)(_List_Nil)('')('')('')(
 			A2(author$project$Board$square, 16, author$project$Main$testFill))(author$project$Goal$RedMoon)(_List_Nil)(
-			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'flex'})(60)(0)(false)(_List_Nil)(elm$core$Maybe$Nothing)(_List_Nil),
+			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'none'})(60)(0)(false)(_List_Nil)(elm$core$Maybe$Nothing)(_List_Nil),
 		elm$core$Platform$Cmd$none);
 };
 var author$project$Main$GetJSON = function (a) {
@@ -8374,22 +8374,6 @@ var author$project$Main$onEnter = function (msg) {
 	var decoder = A2(elm$json$Json$Decode$andThen, filterKey, elm$html$Html$Events$keyCode);
 	return A2(elm$html$Html$Events$custom, 'keydown', decoder);
 };
-var author$project$Main$printMoveList = function (moveList) {
-	if (moveList.b) {
-		var a = moveList.a;
-		var b = moveList.b;
-		return author$project$Color$toString(
-			elm$core$Maybe$Just(
-				function ($) {
-					return $.color;
-				}(a))) + (':' + (author$project$Move$directionToString(
-			function ($) {
-				return $.direction;
-			}(a)) + (' -> ' + author$project$Main$printMoveList(b))));
-	} else {
-		return '';
-	}
-};
 var author$project$Move$countMoves = function (moves) {
 	return elm$core$List$length(moves);
 };
@@ -8538,18 +8522,6 @@ var author$project$Main$view = function (model) {
 						elm$html$Html$div,
 						_List_fromArray(
 							[
-								elm$html$Html$Attributes$class('debug')
-							]),
-						_List_fromArray(
-							[
-								elm$html$Html$text(
-								model.debugString + ('   ' + author$project$Main$printMoveList(
-									elm$core$List$reverse(model.movesQueue))))
-							])),
-						A2(
-						elm$html$Html$div,
-						_List_fromArray(
-							[
 								elm$html$Html$Attributes$class('sidebar__goal')
 							]),
 						_List_fromArray(
@@ -8566,169 +8538,6 @@ var author$project$Main$view = function (model) {
 									]),
 								_List_Nil)
 							])),
-						A2(
-						elm$html$Html$div,
-						_List_fromArray(
-							[
-								elm$html$Html$Attributes$class(
-								'timer' + (model.solutionFound ? ' winner' : '')),
-								elm$html$Html$Events$onClick(
-								author$project$Main$IncrementScore(model.user))
-							]),
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$div,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class(
-										'timer__countdown ' + (model.solutionFound ? 'active' : 'inactive'))
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$span,
-										_List_Nil,
-										_List_fromArray(
-											[
-												elm$html$Html$text(
-												author$project$Main$formatTimer(model.countdown))
-											])),
-										A2(
-										elm$html$Html$span,
-										_List_fromArray(
-											[
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
-												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Countdown before best solution wins!')
-											]),
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$div,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$class('icon icon--timer')
-													]),
-												_List_Nil)
-											]))
-									])),
-								A2(
-								elm$html$Html$div,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class(
-										'timer__current-timer ' + (model.solutionFound ? 'inactive' : 'active'))
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$span,
-										_List_Nil,
-										_List_fromArray(
-											[
-												elm$html$Html$text(
-												author$project$Main$formatTimer(model.currentTimer))
-											])),
-										A2(
-										elm$html$Html$span,
-										_List_fromArray(
-											[
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
-												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Time spent on current puzzle')
-											]),
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$div,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$class('icon icon--clock')
-													]),
-												_List_Nil)
-											]))
-									])),
-								A2(
-								elm$html$Html$div,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class(
-										'counter__moves' + ((author$project$Move$countMoves(model.movesQueue) > 0) ? ' active' : ''))
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$span,
-										_List_Nil,
-										_List_fromArray(
-											[
-												elm$html$Html$text(
-												elm$core$String$fromInt(
-													author$project$Move$countMoves(model.movesQueue)))
-											])),
-										A2(
-										elm$html$Html$span,
-										_List_fromArray(
-											[
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
-												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Moves in current solution attempt')
-											]),
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$div,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$class('icon icon--count')
-													]),
-												_List_Nil)
-											]))
-									])),
-								A2(
-								elm$html$Html$div,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class(
-										'counter__robots' + ((author$project$Move$countRobots(model.movesQueue) > 0) ? ' active' : ''))
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$span,
-										_List_Nil,
-										_List_fromArray(
-											[
-												elm$html$Html$text(
-												elm$core$String$fromInt(
-													author$project$Move$countRobots(model.movesQueue)))
-											])),
-										A2(
-										elm$html$Html$span,
-										_List_fromArray(
-											[
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
-												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Robots in current solution attempt')
-											]),
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$div,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$class('icon icon--robot')
-													]),
-												_List_Nil)
-											]))
-									]))
-							]))
-					])),
-				A2(
-				elm$html$Html$div,
-				_List_fromArray(
-					[
-						elm$html$Html$Attributes$class('main')
-					]),
-				_List_fromArray(
-					[
 						A2(
 						elm$html$Html$div,
 						_List_fromArray(
@@ -8756,7 +8565,7 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Events$onClick(
 												author$project$Main$SetActiveColor(
 													elm$core$Maybe$Just(author$project$Color$Red))),
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
 												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select red robot ([R] or [1])')
 											]),
 										_List_Nil),
@@ -8771,8 +8580,8 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Events$onClick(
 												author$project$Main$SetActiveColor(
 													elm$core$Maybe$Just(author$project$Color$Green))),
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
-												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select red robot ([G] or [2])')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select green robot ([G] or [2])')
 											]),
 										_List_Nil),
 										A2(
@@ -8786,8 +8595,8 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Events$onClick(
 												author$project$Main$SetActiveColor(
 													elm$core$Maybe$Just(author$project$Color$Blue))),
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
-												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select red robot ([B] or [3])')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select blue robot ([B] or [3])')
 											]),
 										_List_Nil),
 										A2(
@@ -8801,8 +8610,8 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Events$onClick(
 												author$project$Main$SetActiveColor(
 													elm$core$Maybe$Just(author$project$Color$Yellow))),
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
-												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select red robot ([Y] or [4])')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select yellow robot ([Y] or [4])')
 											]),
 										_List_Nil),
 										A2(
@@ -8816,8 +8625,8 @@ var author$project$Main$view = function (model) {
 												elm$html$Html$Events$onClick(
 												author$project$Main$SetActiveColor(
 													elm$core$Maybe$Just(author$project$Color$Silver))),
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
-												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select red robot ([S] or [5])')
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Select silver robot ([S] or [5])')
 											]),
 										_List_Nil)
 									])),
@@ -8833,7 +8642,7 @@ var author$project$Main$view = function (model) {
 										elm$html$Html$span,
 										_List_fromArray(
 											[
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
 												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Move current robot left')
 											]),
 										_List_fromArray(
@@ -8853,7 +8662,7 @@ var author$project$Main$view = function (model) {
 										elm$html$Html$span,
 										_List_fromArray(
 											[
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
 												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Move current robot up')
 											]),
 										_List_fromArray(
@@ -8873,7 +8682,7 @@ var author$project$Main$view = function (model) {
 										elm$html$Html$span,
 										_List_fromArray(
 											[
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
 												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Move current robot right')
 											]),
 										_List_fromArray(
@@ -8893,7 +8702,7 @@ var author$project$Main$view = function (model) {
 										elm$html$Html$span,
 										_List_fromArray(
 											[
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
 												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Move current robot down')
 											]),
 										_List_fromArray(
@@ -8913,7 +8722,7 @@ var author$project$Main$view = function (model) {
 										elm$html$Html$span,
 										_List_fromArray(
 											[
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
 												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Undo last move')
 											]),
 										_List_fromArray(
@@ -8932,7 +8741,7 @@ var author$project$Main$view = function (model) {
 										elm$html$Html$span,
 										_List_fromArray(
 											[
-												A2(elm$html$Html$Attributes$attribute, 'flow', 'down'),
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
 												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Clear current moves')
 											]),
 										_List_fromArray(
@@ -8949,6 +8758,169 @@ var author$project$Main$view = function (model) {
 											]))
 									]))
 							])),
+						A2(
+						elm$html$Html$div,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class(
+								'timer' + (model.solutionFound ? ' winner' : '')),
+								elm$html$Html$Events$onClick(
+								author$project$Main$IncrementScore(model.user))
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class(
+										'timer__countdown ' + (model.solutionFound ? 'active' : 'inactive'))
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$span,
+										_List_fromArray(
+											[
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Countdown before best solution wins!')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$div,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class('icon icon--timer')
+													]),
+												_List_Nil)
+											])),
+										A2(
+										elm$html$Html$span,
+										_List_Nil,
+										_List_fromArray(
+											[
+												elm$html$Html$text(
+												author$project$Main$formatTimer(model.countdown))
+											]))
+									])),
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class(
+										'timer__current-timer ' + (model.solutionFound ? 'inactive' : 'active'))
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$span,
+										_List_fromArray(
+											[
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Time spent on current puzzle')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$div,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class('icon icon--clock')
+													]),
+												_List_Nil)
+											])),
+										A2(
+										elm$html$Html$span,
+										_List_Nil,
+										_List_fromArray(
+											[
+												elm$html$Html$text(
+												author$project$Main$formatTimer(model.currentTimer))
+											]))
+									])),
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class(
+										'counter__moves' + ((author$project$Move$countMoves(model.movesQueue) > 0) ? ' active' : ''))
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$span,
+										_List_fromArray(
+											[
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Moves in current solution attempt')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$div,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class('icon icon--count')
+													]),
+												_List_Nil)
+											])),
+										A2(
+										elm$html$Html$span,
+										_List_Nil,
+										_List_fromArray(
+											[
+												elm$html$Html$text(
+												elm$core$String$fromInt(
+													author$project$Move$countMoves(model.movesQueue)))
+											]))
+									])),
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class(
+										'counter__robots' + ((author$project$Move$countRobots(model.movesQueue) > 0) ? ' active' : ''))
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$span,
+										_List_fromArray(
+											[
+												A2(elm$html$Html$Attributes$attribute, 'flow', 'right'),
+												A2(elm$html$Html$Attributes$attribute, 'tooltip', 'Robots in current solution attempt')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$div,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class('icon icon--robot')
+													]),
+												_List_Nil)
+											])),
+										A2(
+										elm$html$Html$span,
+										_List_Nil,
+										_List_fromArray(
+											[
+												elm$html$Html$text(
+												elm$core$String$fromInt(
+													author$project$Move$countRobots(model.movesQueue)))
+											]))
+									]))
+							]))
+					])),
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('main')
+					]),
+				_List_fromArray(
+					[
 						A2(
 						elm$html$Html$div,
 						_List_fromArray(
