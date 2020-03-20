@@ -15,14 +15,13 @@ import Html exposing (..)
 import Html.Attributes exposing (id, style, type_, attribute, placeholder, value, class, name, for)
 import Html.Events exposing (onInput, onSubmit, onClick)
 import Time
-import Tuple
-import Set
 import Json.Encode
 import Json.Decode
 
 
 -- MAIN
 
+main : Program () Model Msg
 main =
   Browser.element
     { init = init
@@ -53,7 +52,12 @@ type alias Model =
   , boundaryBoard : Board.Grid Int
   , goal : GoalSymbol
   , goalList : List Goal
-  , toggleStates : { settings: String, pollOptions: String, emoticons: String, countdown: String }
+  , toggleStates :
+    { settings: String
+    , pollOptions: String
+    , emoticons: String
+    , countdown: String
+    }
   , countdown : Int
   , currentTimer : Int
   , solutionFound : Bool
@@ -82,7 +86,7 @@ type alias Keys =
 
 testFill : Int -> Int -> Int
 testFill x y =
-  1
+  x + y
 
 init : () -> (Model, Cmd Msg)
 init _ =
@@ -95,7 +99,7 @@ init _ =
     "" -- `messageInProgress`
     "" -- `nameInProgress`
     "" -- `colorInProgress`
-    (Board.square 16 (testFill) )                    -- boundaryBoard
+    (Board.square 16 testFill )                    -- boundaryBoard
     RedMoon                                                                   -- goalSymbol
     [ ]
     { settings = "none",

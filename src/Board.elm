@@ -19,7 +19,7 @@ column index grid =
     got
       |> Array.map (Maybe.map (\x -> Array.fromList [ x ]))
       |> Array.map (Maybe.withDefault Array.empty)
-      |> Array.foldr (Array.append) Array.empty
+      |> Array.foldr Array.append Array.empty
       |> Just
 
 
