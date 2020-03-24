@@ -24,38 +24,29 @@ A browser-based Ricochet Robots client written in Elm, to be paired with a backe
 ## JSON Codes
 
 ### Backend -> Frontend
-  * `connect_to_server` : Server has connected.
-  * Tick...?
-  ---
-  * `update_board`: Reset `board` layout
-  * `update_robots`: Update `robots` positions and legal moves
-  * `update_goals`: Reset `goalList` positions
-  *  Update new goal
-  * `switch_to_countdown`: Switch to countdown (e.g. solution found)
-  * `switch_to_timer`: Switch to timer clock (e.g. new game)
-  * `clear_moves_queue`: Force `movesQueue` to clear, e.g. for a new game.
-  ---
-  * `update_scoreboard`: Update `users`
-  * `update_user`: Update `user`
-  * `update_chat`: Update `chat`
-
+"action" | "content" | Description
+-------- | --------- | -----------
+`connect_to_server` | | Server has connected. Respond with a request to create a user.
+Tick| | Not implemented, so timers are not currently synchronized between frontend and backend.
+`update_board`| | Reset `board` layout with a boundaryBoard sent from the server.
+`update_robots`| | Update `robots` positions and sets of legal moves
+`update_goals`| | Reset `goalList` positions and set the active goal
+`switch_to_countdown`| | Switch clock mode to countdown (e.g. solution found)
+`switch_to_timer`| | Switch clock mode to timer (e.g. new game)
+`clear_moves_queue`| | Force `movesQueue` to clear, e.g. upon a new game.
+`update_scoreboard`| | Update `users` names, colors, scores and all (for example, after each round is scored).
+`update_user`| | Update current `user` name, color, etc.
+`update_chat`| | Update `chat`
   
 ### Frontend -> Backend
-  * `submit_movelist`: Submit list of moves
-  * Future: board click event...?
-  ---
-  * Reset all (scores, board, robot positions, goal)
-  * Reset scores
-  * Reset (shuffle) board
-  * Reset robot positions
-  * Reset goal
-  ---
-  * `create_user`: Add user
-  * `update_user`: Update user
-  * `update_chat`: Send (user) message
-  * Send (system) message
-  * Set score of user
-  *  
+"action" | "content" | Description
+-------- | --------- | -----------
+`submit_movelist` | `List (JSON Encoded Moves)`| Submit list of moves
+`create_user` | `""` | Add user
+`update_user` | `JSON Encoded User` | Update user
+`update_chat` | `JSON Encoded Chatline` | Send (user) message
+`new_game` | `""` | Immediately initialize a new game (only available to admin users).
+`ping` | `"ping"` | Send "ping" every 50 seconds to maintain the connection.
 
 
 ## Keyboard Shortcuts
