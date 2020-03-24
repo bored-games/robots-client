@@ -41,10 +41,10 @@ Tick| | Not implemented, so timers are not currently synchronized between fronte
 ### Frontend -> Backend
 "action" | "content" | Description
 -------- | --------- | -----------
-`submit_movelist` | `List (JSON Encoded Moves)`| Submit list of moves
+`submit_movelist` | `[ {"color": "Color", "direction": "Direction"} ]`| Submit list of moves
 `create_user` | `""` | Add user
-`update_user` | `JSON Encoded User` | Update user
-`update_chat` | `JSON Encoded Chatline` | Send (user) message
+`update_user` | `{"username": "User", "color": "#faefa0", "score": 5, "is_admin": true, "is_muted": false}` | Update user
+`update_chat` | `{"user": <User>, "msg": "Hello!", "kind": 0}` | Send (user) message
 `new_game` | `""` | Immediately initialize a new game (only available to admin users).
 `ping` | `"ping"` | Send "ping" every 50 seconds to maintain the connection.
 
