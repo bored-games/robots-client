@@ -2,8 +2,6 @@ module Move exposing (..)
 
 import Color exposing (Color)
 import List
-import String
-import Maybe
 import Set
 import Json.Encode
 

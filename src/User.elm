@@ -1,4 +1,4 @@
-module User exposing (..)
+module User exposing (User, encodeUser, decodeUser, decodeUsersList)
 
 import Json.Encode
 import Json.Decode

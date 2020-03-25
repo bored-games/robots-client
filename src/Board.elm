@@ -1,4 +1,4 @@
-module Board exposing (..)
+module Board exposing (Grid, get, square, decodeBoard, decodeDirectionsList, column, mapWithCoordinate, set)
 
 import Coordinate exposing (Coordinate)
 import Move exposing (Direction(..))
@@ -57,12 +57,7 @@ get coord grid =
   let
     a1 = Array.get (Coordinate.toRow coord) grid
   in
-    case a1 of
-      Nothing ->
-        Nothing
-    
-      Just val ->
-        Array.get (Coordinate.toColumn coord) val
+    Maybe.andThen (Array.get (Coordinate.toColumn coord)) a1
 
 
 {-| Overwrite the contents at a given `Coordinate` -}

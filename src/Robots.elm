@@ -5,7 +5,7 @@ import Move exposing (Direction(..), Move)
 import Board
 import Color exposing (..)
 import Robot exposing (Robot)
-import Goal exposing (GoalSymbol(..), Goal)
+import Goal exposing (..)
 import User exposing (User)
 import Chat exposing (Chatline)
 
@@ -13,7 +13,7 @@ import Browser
 import Browser.Events
 import Html exposing (..)
 import Html.Attributes exposing (id, style, type_, attribute, placeholder, value, class, name, for)
-import Html.Events exposing (onInput, onSubmit, onClick)
+import Html.Events exposing (onInput, onClick)
 import Time
 import Json.Encode
 import Json.Decode
@@ -100,7 +100,7 @@ init _ =
     "" -- `nameInProgress`
     "" -- `colorInProgress`
     (Board.square 16 testFill )                    -- boundaryBoard
-    RedMoon                                                                   -- goalSymbol
+    RedMoon                                                                  -- goalSymbol
     [ ]
     { settings = "none",
       pollOptions = "none",
@@ -166,10 +166,10 @@ update msg model =
         oldName = oldUser.username
         oldToggleStates = model.toggleStates
         newColor = model.colorInProgress
-        newName = if (List.member model.nameInProgress (List.map .username oldUsers)) then oldName else (if String.length model.nameInProgress > 0 then model.nameInProgress else oldName)
+        newName = if List.member model.nameInProgress (List.map .username oldUsers) then oldName else (if String.length model.nameInProgress > 0 then model.nameInProgress else oldName)
         newUser = { oldUser | username = newName, color = newColor }
         replaceUser testUser =
-          if (oldUser.username == testUser.username) then
+          if oldUser.username == testUser.username then
             { testUser | username = newName, color = newColor }
           else
             testUser
@@ -203,7 +203,7 @@ update msg model =
                         [ ( "action", Json.Encode.string "update_chat"),
                           ( "content", Chat.encodeChatline model.user newmsg 0 ) ] ) ) )
 
-    NewGame -> -- TODO!
+    NewGame -> -- TO DO!
       ( { model
         | currentTimer = 0
         , countdown = 0
@@ -220,8 +220,8 @@ update msg model =
     IncrementScore user ->
       let
         incrementScore testUser =
-          if (user.username == testUser.username) then
-            { testUser | score = (testUser.score + 1) }
+          if user.username == testUser.username then
+            { testUser | score = testUser.score + 1 }
           else
             testUser
         users = List.map incrementScore model.users
@@ -235,7 +235,7 @@ update msg model =
         oldToggleStates = model.toggleStates
         newToggleStates =
           { oldToggleStates
-          | pollOptions = (if oldToggleStates.pollOptions == "none" then "flex" else "none")
+          | pollOptions = if oldToggleStates.pollOptions == "none" then "flex" else "none"
           , settings = "none"
           , emoticons = "none" }
       in
@@ -248,7 +248,7 @@ update msg model =
         oldToggleStates = model.toggleStates
         newToggleStates =
           { oldToggleStates
-            | settings = (if oldToggleStates.settings == "none" then "flex" else "none")
+            | settings = if oldToggleStates.settings == "none" then "flex" else "none"
             , pollOptions = "none"
             , emoticons = "none" }
       in
@@ -259,14 +259,14 @@ update msg model =
         oldToggleStates = model.toggleStates
         newToggleStates =
           { oldToggleStates
-          | emoticons = (if oldToggleStates.emoticons == "none" then "flex" else "none")
+          | emoticons = if oldToggleStates.emoticons == "none" then "flex" else "none"
           , pollOptions = "none"
           , settings = "none" }
       in
         ( { model | toggleStates = newToggleStates }, Cmd.none )
     
     InsertEmoticon str ->
-      ( { model | messageInProgress = (model.messageInProgress ++ " :" ++ str ++ ": ") }, Cmd.none )
+      ( { model | messageInProgress = model.messageInProgress ++ " :" ++ str ++ ": " }, Cmd.none )
 
     {- ???????? -}
     DisplayCountdown status ->
@@ -277,9 +277,9 @@ update msg model =
         ( { model | toggleStates = newToggleStates }, Cmd.none )
         
     SwitchToCountdown json ->
-      case (Json.Decode.decodeValue (Json.Decode.field "timer" Json.Decode.int) json) of
+      case Json.Decode.decodeValue (Json.Decode.field "timer" Json.Decode.int) json of
         Ok time ->
-          case (Json.Decode.decodeValue (Json.Decode.field "countdown" Json.Decode.int) json) of
+          case Json.Decode.decodeValue (Json.Decode.field "countdown" Json.Decode.int) json of
             Ok countdown ->
               ( { model | countdown = countdown, currentTimer = time, solutionFound = True }, Cmd.none )
             Err _ ->
@@ -288,9 +288,9 @@ update msg model =
           ( { model | debugString = "Countdown time error" }, Cmd.none )
         
     SwitchToTimer json ->
-      case (Json.Decode.decodeValue (Json.Decode.field "timer" Json.Decode.int) json) of
+      case Json.Decode.decodeValue (Json.Decode.field "timer" Json.Decode.int) json of
         Ok time ->
-          case (Json.Decode.decodeValue (Json.Decode.field "countdown" Json.Decode.int) json) of
+          case Json.Decode.decodeValue (Json.Decode.field "countdown" Json.Decode.int) json of
             Ok countdown ->
               ( { model | currentTimer = time, countdown = countdown, solutionFound = False }, Cmd.none )
             Err _ ->
@@ -298,15 +298,15 @@ update msg model =
         Err _ ->
           ( { model | debugString = "Timer time error" }, Cmd.none )
 
-    Tick newTime ->
+    Tick _ ->
       let
           countdownDisplay = if model.solutionFound then model.countdown-1 else model.countdown
           currentTimerDisplay = model.currentTimer + 1
       in
-          ( { model | currentTimer = currentTimerDisplay, countdown = (max 0 countdownDisplay) }, Cmd.none )
+          ( { model | currentTimer = currentTimerDisplay, countdown = max 0 countdownDisplay }, Cmd.none )
 
-    Ping newTime ->
-      ( { model | currentTimer = (model.currentTimer + 1) }
+    Ping _ ->
+      ( { model | currentTimer = model.currentTimer + 1 }
         , outputPort (Json.Encode.encode
                         0
                       ( Json.Encode.object
@@ -315,7 +315,7 @@ update msg model =
       )
 
     GetJSON json ->
-      case (Json.Decode.decodeValue decodeJSON json) of
+      case Json.Decode.decodeValue decodeJSON json of
         Ok {action, content} ->
           case action of
             "connect_to_server"   ->
@@ -339,33 +339,33 @@ update msg model =
             "clear_moves_queue" ->
               update ClearMoves model
             _ ->
-              ((Debug.log "Error: unknown code in JSON message" model), Cmd.none ) -- Error: missing code
+              (Debug.log "Error: unknown code in JSON message" model, Cmd.none ) -- Error: missing code
 
         Err _ ->
-          ( { model | debugString = ("Bad JSON: " ++ (Json.Encode.encode 0 json))}, Cmd.none )
+          ( { model | debugString = "Bad JSON: " ++ Json.Encode.encode 0 json}, Cmd.none )
 
     GetBoard json ->
-      case (Json.Decode.decodeValue Board.decodeBoard json) of
+      case Json.Decode.decodeValue Board.decodeBoard json of
         Ok board ->
           ( { model | boundaryBoard = board, debugString = "New board success"}, Cmd.none )
         Err _ ->
           ( { model | debugString = "Critical error getting new board"}, Cmd.none )
 
     GetRobotList json ->
-      case (Json.Decode.decodeValue Robot.decodeRobotsList json) of
+      case Json.Decode.decodeValue Robot.decodeRobotsList json of
         Ok robotList ->
           ( { model | robots = robotList}, Cmd.none )
         Err _ ->
           ( { model | robots = [], debugString = "Critical error getting new robots"}, Cmd.none )
           
     GetGoalList json ->
-      case (Json.Decode.decodeValue Goal.decodeGoalList json) of
+      case Json.Decode.decodeValue Goal.decodeGoalList json of
         Ok goalList ->
           let
             activeGoal =
               case List.head (List.filter .active goalList) of
               Nothing ->
-                RedMoon -- TODO: handle error!
+                RedMoon -- TO DO: handle error!
               Just anyGoal ->
                 .symbol anyGoal
           in
@@ -377,20 +377,20 @@ update msg model =
           ( { model | goalList = [], debugString = "Critical error getting new goals"}, Cmd.none )
 
     GetUsersList json ->
-      case (Json.Decode.decodeValue User.decodeUsersList json) of
+      case Json.Decode.decodeValue User.decodeUsersList json of
         Ok usersList ->
           ( { model | users = usersList}, Cmd.none )
         Err _ ->
           ( { model | debugString = "Error parsing userlist JSON"}, Cmd.none )
 
     GetUser json ->
-      case (Json.Decode.decodeValue User.decodeUser json) of
+      case Json.Decode.decodeValue User.decodeUser json of
         Ok user ->
           ( { model | user = user}, Cmd.none )
         Err _ ->
           ( { model | debugString = "Error parsing user JSON"}, Cmd.none )
           
-    ConnectToServer json ->
+    ConnectToServer _ ->
       ( model,
         outputPort
           ( Json.Encode.encode
@@ -401,7 +401,7 @@ update msg model =
         )
 
     GetChat json ->
-      case (Json.Decode.decodeValue Chat.decodeChatline json) of
+      case Json.Decode.decodeValue Chat.decodeChatline json of
         Ok chatline ->
           ( { model | chat = chatline::model.chat}, Cmd.none )
         Err _ ->
@@ -457,8 +457,8 @@ update msg model =
               "ArrowRight" -> Just (update (AddMove Right) model)
               "ArrowUp"    -> Just (update (AddMove Up) model)
               "ArrowDown"  -> Just (update (AddMove Down) model)
-              "Escape"     -> Just (update (ClearMoves) model)
-              "Backspace"  -> Just (update (PopMove) model)
+              "Escape"     -> Just (update ClearMoves model)
+              "Backspace"  -> Just (update PopMove model)
               _ -> Nothing
           else
             Nothing
@@ -518,11 +518,11 @@ pushMove dir activeColor robots oldQueue =
   case activeColor of
     Nothing -> oldQueue
     Just color ->
-      case (Robot.getByColor color robots) of
+      case Robot.getByColor color robots of
         Nothing -> oldQueue
         Just activeRobot ->
-          if (List.member dir activeRobot.moves) then
-            (Move color dir) :: oldQueue
+          if List.member dir activeRobot.moves then
+            Move color dir :: oldQueue
           else
             oldQueue
 
@@ -530,18 +530,19 @@ popMove : List Move -> List Move
 popMove oldQueue =
   case oldQueue of
     [] -> []
-    a::b -> b
+    _::b -> b
 
 
+{-
 -- debug function:
 printMoveList : List Move -> String
 printMoveList moveList =
   case moveList of
     a::b ->
-      (Color.toString (Just (.color a))) ++ ":" ++ Move.directionToString (.direction a) ++ " -> " ++ (printMoveList b)
+      Color.toString (Just (.color a)) ++ ":" ++ Move.directionToString (.direction a) ++ " -> " ++ (printMoveList b)
     _ ->
       ""
-
+-}
 
 updateKeys : Bool -> String -> Keys -> Keys
 updateKeys isDown key keys =
@@ -586,7 +587,7 @@ port outputPort : (String) -> Cmd msg
 port inputPort : (Json.Encode.Value -> msg) -> Sub msg
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
   Sub.batch
     [ Time.every 50000 Ping
     , Time.every 1000 Tick
@@ -601,24 +602,24 @@ subscriptions model =
 formatTimer : Int -> String
 formatTimer seconds =
   let
-    sec = (modBy 60 seconds)
-    hrs = ((seconds // 60) // 60)
+    sec = modBy 60 seconds
+    hrs = (seconds // 60) // 60
     min = (seconds // 60) - (hrs * 60)
   in
     if hrs > 0 then
-      ((String.fromInt hrs ++ "h" ) ++ (String.pad 2 '0' (String.fromInt min)) ++ "m")
+      (String.fromInt hrs ++ "h" ) ++ String.pad 2 '0' (String.fromInt min) ++ "m"
     else
-      (String.pad 2 '0' (String.fromInt min) ++ ":" ++ (String.pad 2 '0' (String.fromInt sec)))
+      String.pad 2 '0' (String.fromInt min) ++ ":" ++ String.pad 2 '0' (String.fromInt sec)
 
 drawScore : String -> User -> Html Msg
 drawScore is_self user =
   div [ class "score" ] 
   [ div [ class "score__username", style "color" user.color  ]
-    ( span [ attribute "flow" "down", attribute "tooltip" "UID: TODO!", attribute "flow" "right" ] [ text user.username ] ::
-    (if is_self == user.username then span [ class "self", attribute "flow" "right", attribute "tooltip" "This is you!" ] [] else span [] []) ::
-    (if user.is_admin then span [ class "owner", attribute "flow" "right", attribute "tooltip" "Owner" ] [] else span [] []) ::
-    (if user.is_muted then span [ class "muted", attribute "flow" "right", attribute "tooltip" "Muted" ] [] else span [] []) ::
-    [])
+    [ span [ attribute "flow" "down", attribute "tooltip" "UID: TODO!", attribute "flow" "right" ] [ text user.username ]
+    , if is_self == user.username then span [ class "self", attribute "flow" "right", attribute "tooltip" "This is you!" ] [] else span [] []
+    , if user.is_admin then span [ class "owner", attribute "flow" "right", attribute "tooltip" "Owner" ] [] else span [] []
+    , if user.is_muted then span [ class "muted", attribute "flow" "right", attribute "tooltip" "Muted" ] [] else span [] []
+    ]
   , text (String.fromInt user.score)
   ]
 
@@ -652,16 +653,16 @@ drawSquare : Int -> Int -> Board.Grid Int -> List Robot -> List Goal -> Html Msg
 drawSquare rowi colj board robots goals =
   let
     val = Board.get (colj, rowi) board
-    robotSquares = List.map .pos robots
+    {- robotSquares = List.map .pos robots -- draw symbols at robot start positions? no-}
     matchedRobot = 
-      case (List.head (List.filter (Robot.matchRobot rowi colj) robots)) of
+      case List.head (List.filter (Robot.matchRobot rowi colj) robots) of
         Nothing ->
           ""
         Just matchedRobotObj ->
           (Color.toString (Just (.color matchedRobotObj)))
 
     matchedGoal = 
-      case (List.head (List.filter (Goal.matchGoal rowi colj) goals)) of
+      case List.head (List.filter (Goal.matchGoal rowi colj) goals) of
         Nothing ->
           ""
         Just matchedGoalObj ->
@@ -686,6 +687,7 @@ drawEmoticon : String -> Html Msg
 drawEmoticon str =
   div [ class ("emoticon emoticon--" ++ str), onClick (InsertEmoticon str) ] []
 
+emoticonList : List (String)
 emoticonList = [ "cool", "crazy", "damn", "geek", "grin", "huh", "lol", "love", "omg", "pout", "sad", "smile", "stars", "ugh", "waiting", "whoopsy", "wink", "wtf" ]
 drawEmoticons : List (Html Msg)
 drawEmoticons =
@@ -720,14 +722,14 @@ drawSettings model =
       [ input [ type_ "checkbox", id "checkboxShowSystemChat" ] []
       , label [ for "checkboxShowSystemChat" ] []
       ],
-      (text "System messages")
+      text "System messages"
     ]
   , div [class "setting__checkbox"]
     [ div [ class "checkbox" ]
       [ input [ type_ "checkbox", id "checkboxSound" ] []
       , label [ for "checkboxSound" ] []
       ],
-      (text "Sound")
+      text "Sound"
     ]
   , div [ class "setting__submit" ] [ input [ type_ "submit", class "submit", value "Update", onClick UpdateSettings ] [] ]
     ]
@@ -736,7 +738,7 @@ drawSettings model =
 drawPollOptions : List (Html Msg)
 drawPollOptions =
   [ h2 [ ] [ text "Poll Commands" ]
-  , div [ class "poll__info" ] [ text ( "Use /poll <command> or /set <command> to change settings. UIDs can be found by hovering over usernames in the scoreboard." ) ]
+  , div [ class "poll__info" ] [ text "Use /poll <command> or /set <command> to change settings. UIDs can be found by hovering over usernames in the scoreboard." ]
   , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Give 'owner' status to user. Owners can use '/set'." ] [ text "owner ", span [ class "red" ] [ text "UID" ] ]
   , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Remove 'owner' status from user." ] [ text "demote ", span [ class "red" ] [ text "UID" ] ]
   , div [ class "poll__command", attribute "flow" "left", attribute "tooltip" "Mute user. Muted users cannot chat or create polls." ] [ text "mute ", span [ class "red" ] [ text "UID" ] ]
@@ -759,14 +761,13 @@ parseEmoticonHtml str =
       let
         parsedStr = String.slice (ind1+1) ind2 teststr
       in
-        case List.member parsedStr emoticonList of
-          True ->
-            span [ class ("emoticon emoticon--" ++ parsedStr) ] [] :: parseEmoticonHtml (String.dropLeft (ind2+1) str)
-          False ->
-            text (":"++parsedStr) :: parseEmoticonHtml (String.dropLeft (ind2) str)
+        if List.member parsedStr emoticonList then
+          span [ class ("emoticon emoticon--" ++ parsedStr) ] [] :: parseEmoticonHtml (String.dropLeft (ind2+1) str)
+        else
+          text (":"++parsedStr) :: parseEmoticonHtml (String.dropLeft ind2 str)
   in
-    case (String.indexes ":" str) of
-      a::b::rest ->
+    case String.indexes ":" str of
+      a::b::_ ->
         text (String.slice 0 a str)
         :: parseEmoticon a b str
 
@@ -809,11 +810,11 @@ view model =
         , div [ class "sidebar__goal" ] [ div [ class ("goal " ++ .filename (Goal.toString model.goal)) ] [ ] ]
         , div [ class "controls" ]
           [ div [ class "controls__robots" ]
-            [ div [ class ("controls__robot controls__red" ++ (if (model.activeColor == Just Red) then " active" else "")), onClick (SetActiveColor (Just Red)), attribute "flow" "right", attribute "tooltip" "Select red robot ([R] or [1])"] []
-            , div [ class ("controls__robot controls__green" ++ (if (model.activeColor == Just Green) then " active" else "")), onClick (SetActiveColor (Just Green)), attribute "flow" "right", attribute "tooltip" "Select green robot ([G] or [2])" ] []
-            , div [ class ("controls__robot controls__blue" ++ (if (model.activeColor == Just Blue) then " active" else "")), onClick (SetActiveColor (Just Blue)), attribute "flow" "right", attribute "tooltip" "Select blue robot ([B] or [3])" ] []
-            , div [ class ("controls__robot controls__yellow" ++ (if (model.activeColor == Just Yellow) then " active" else "")), onClick (SetActiveColor (Just Yellow)), attribute "flow" "right", attribute "tooltip" "Select yellow robot ([Y] or [4])" ] []
-            , div [ class ("controls__robot controls__silver" ++ (if (model.activeColor == Just Silver) then " active" else "")), onClick (SetActiveColor (Just Silver)), attribute "flow" "right", attribute "tooltip" "Select silver robot ([S] or [5])" ] []
+            [ div [ class ("controls__robot controls__red" ++ (if model.activeColor == Just Red then " active" else "")), onClick (SetActiveColor (Just Red)), attribute "flow" "right", attribute "tooltip" "Select red robot ([R] or [1])"] []
+            , div [ class ("controls__robot controls__green" ++ (if model.activeColor == Just Green then " active" else "")), onClick (SetActiveColor (Just Green)), attribute "flow" "right", attribute "tooltip" "Select green robot ([G] or [2])" ] []
+            , div [ class ("controls__robot controls__blue" ++ (if model.activeColor == Just Blue then " active" else "")), onClick (SetActiveColor (Just Blue)), attribute "flow" "right", attribute "tooltip" "Select blue robot ([B] or [3])" ] []
+            , div [ class ("controls__robot controls__yellow" ++ (if model.activeColor == Just Yellow then " active" else "")), onClick (SetActiveColor (Just Yellow)), attribute "flow" "right", attribute "tooltip" "Select yellow robot ([Y] or [4])" ] []
+            , div [ class ("controls__robot controls__silver" ++ (if model.activeColor == Just Silver then " active" else "")), onClick (SetActiveColor (Just Silver)), attribute "flow" "right", attribute "tooltip" "Select silver robot ([S] or [5])" ] []
             ]
           , div [ class "controls__directions" ]
             [ span [attribute "flow" "right", attribute "tooltip" "Move current robot left"] [div [ class ("controls__button controls__left" ++ (if model.activeColor == Nothing then " inactive" else "") ++ (if model.keys.left then " active" else "")), onClick (AddMove Left) ] []]
@@ -850,10 +851,10 @@ view model =
         [ h2 [] [ text "Chat" ]
         , div [class "chat", id "chat"] (List.reverse model.chat |> drawChat)
         , div [ class ("sidebar__settings " ++ ("module-" ++ model.toggleStates.settings)) ] (drawSettings model)
-        , div [ class ("sidebar__polloptions " ++ ("module-" ++ model.toggleStates.pollOptions)) ] (drawPollOptions)
+        , div [ class ("sidebar__polloptions " ++ ("module-" ++ model.toggleStates.pollOptions)) ] drawPollOptions
         , div [ class "message"]
           [ textarea [ class "message__box", onEnter SendMessage, onInput SetMessage, placeholder "Send a message", value model.messageInProgress, Html.Attributes.maxlength 255 ] []
-          , div [ class ("sidebar__emoticons " ++ ("module-" ++ model.toggleStates.emoticons)) ] (drawEmoticons)
+          , div [ class ("sidebar__emoticons " ++ ("module-" ++ model.toggleStates.emoticons)) ] drawEmoticons
           , div [ class "message__actions" ]
             [
             button [ class "settings", onClick ToggleSettings ] []

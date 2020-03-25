@@ -1,9 +1,9 @@
 module Goal exposing (..)
 
-import Coordinate exposing (..)
+import Coordinate exposing (Coordinate, toCoordinate)
 import Json.Decode
 
--- TODO: Include Wildcard?
+-- Include Wildcard?
 type GoalSymbol
   = RedMoon
   | GreenMoon

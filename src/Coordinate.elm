@@ -1,4 +1,4 @@
-module Coordinate exposing (..)
+module Coordinate exposing (Coordinate, toCoordinate, toRow, toColumn, toString)
 
 import Tuple
 import String 
@@ -10,6 +10,7 @@ type alias Coordinate =
 toCoordinate : Int -> Int -> Coordinate
 toCoordinate x y =
   (x, y)
+
 
 {-| Get string for `Coordinate` as "(x, y)". -}
 toString : Coordinate -> String

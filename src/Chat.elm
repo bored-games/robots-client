@@ -1,4 +1,4 @@
-module Chat exposing (..)
+module Chat exposing (Chatline, decodeChatline, encodeChatline)
 
 import User exposing (User)
 import Json.Encode

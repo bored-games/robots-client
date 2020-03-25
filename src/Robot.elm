@@ -1,4 +1,4 @@
-module Robot exposing (..)
+module Robot exposing (Robot, decodeRobotsList, getByColor, matchRobot)
 
 import Color
 import Coordinate
@@ -22,12 +22,12 @@ getByColor color robots =
   in  
     (List.head (List.filter matchRobotByColor robots))
 
+{--
 {-| Return color of selected Robot -}
 getColor : Maybe Robot -> Maybe Color.Color
 getColor robot =
-  case robot of
-    Nothing -> Nothing
-    Just r -> Just (.color r)
+  Maybe.map .color robot
+--}
 
 {-| Helper function: does (colj, rowi) match position of Robot? -}
 matchRobot : Int -> Int -> Robot -> Bool
