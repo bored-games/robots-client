@@ -26,18 +26,20 @@ A browser-based Ricochet Robots client written in Elm, to be paired with a backe
 ### Backend -> Frontend
 "action" | "content" | Description
 -------- | --------- | -----------
-`connect_to_server` | | Server has connected. Respond with a request to create a user.
+`connect_to_server` | `""` | Server has connected. Respond with a request to create a user.
 Tick| | Not implemented, so timers are not currently synchronized between frontend and backend.
-`update_board`| | Reset `board` layout with a boundaryBoard sent from the server.
-`update_robots`| | Update `robots` positions and sets of legal moves
-`update_goals`| | Reset `goalList` positions and set the active goal
-`switch_to_countdown`| | Switch clock mode to countdown (e.g. solution found)
-`switch_to_timer`| | Switch clock mode to timer (e.g. new game)
-`clear_moves_queue`| | Force `movesQueue` to clear, e.g. upon a new game.
-`update_scoreboard`| | Update `users` names, colors, scores and all (for example, after each round is scored).
-`update_user`| | Update current `user` name, color, etc.
-`update_chat`| | Update `chat`
+`update_board`| `[ [ 147, ... ], ... ]` | Reset `board` layout with a boundaryBoard sent from the server. Payload contains a 16x16 array of integer corresponding to a graphical representation of the board.
+`update_robots`| `[ "pos": {"x": 1, "y": 2}, "color": "red", "moves": [ "up", "left" ] ]` | Update `robots` positions and sets of legal moves
+`update_goals`| `[ "pos": {"x": 1, "y": 2}, "symbol": "RedMoon", "active": true ]` | Reset `goalList` positions and set the active goal
+`switch_to_countdown`| `"timer": 25, "countdown": 60` | Switch clock mode to countdown (e.g. solution found)
+`switch_to_timer`| `"timer": 0, "countdown": 60` | Switch clock mode to timer (e.g. new game)
+`clear_moves_queue`| `""` | Force `movesQueue` to clear, e.g. upon a new game.
+`update_scoreboard`| `[ {"username": "User", "color": "#faefa0", "score": 5, "is_admin": true, "is_muted": false} ]` | Update `users` names, colors, scores and all (for example, after each round is scored).
+`update_user`| `{"username": "User", "color": "#faefa0", "score": 5, "is_admin": true, "is_muted": false}` | Update current `user` name, color, etc.
+`update_chat`| `{"user": <User>, "msg": "Hello!", "kind": 0}` | Update `chat`
   
+
+
 ### Frontend -> Backend
 "action" | "content" | Description
 -------- | --------- | -----------
