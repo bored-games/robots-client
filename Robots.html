@@ -30,7 +30,7 @@
 
     var socket;
     var instance;
-    var app = Elm.Main.init({node:document.getElementById('elm-node')});
+    var app = Elm.Robots.init({node:document.getElementById('elm-node')});
     
     function setupSocket() {
       socket = new WebSocket("ws://localhost:4000/ws/robots123")
@@ -44,14 +44,18 @@
       }
 
       socket.onopen = function() {
+        
         app.ports.outputPort.subscribe(function (data) {
           console.log("Message from client:")
           console.log(data);
           socket.send(data);
-          
         });
         
-        app.ports.inputPort.send( {"action": "connect_to_server", "content": "welcome!"} );
+        // data = '{"action": "create_room", "content": "this_is_my_room"}';
+        data = '{"action": "join_room", "content": "Default Room"}';
+        console.log("Message from client:")
+        console.log(data);
+        socket.send( data );
 
       }
 

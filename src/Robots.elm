@@ -1,4 +1,4 @@
-port module Main exposing (Model, Msg(..), init, inputPort, main, outputPort, subscriptions, update, view)
+port module Robots exposing (Model, Msg(..), init, inputPort, main, outputPort, subscriptions, update, view)
 
 import Coordinate exposing (..)
 import Move exposing (Direction(..), Move)
@@ -11,6 +11,7 @@ import Chat exposing (Chatline)
 
 import Browser
 import Browser.Events
+import Dict
 import Html exposing (..)
 import Html.Attributes exposing (id, style, type_, attribute, placeholder, value, class, name, for)
 import Html.Events exposing (onInput, onClick)
@@ -42,6 +43,7 @@ type alias JSONMessage =
 
 type alias Model =
   { debugString : String
+  , room_name : String
   , keys : Keys
   , user : User
   , users : List User
@@ -85,15 +87,16 @@ type alias Keys =
 
 
 testFill : Int -> Int -> Int
-testFill x y =
-  x + y
+testFill _ _ =
+  0
 
 init : () -> (Model, Cmd Msg)
 init _ =
   (Model
     "Initialized model."
+    ""
     (Keys False False False False False False False False False False False False False)
-    { username = "patty", color = "#6c6adc", score = 0, is_admin = True, is_muted = False }
+    { username = "Patrick", nickname = "patty", color = "#6c6adc", score = 0, is_admin = True, is_muted = False }
     [ ] -- `users` (and scores)
     [ ] -- `chat`
     "" -- `messageInProgress`
@@ -163,14 +166,14 @@ update msg model =
       let
         oldUser = model.user
         oldUsers = model.users
-        oldName = oldUser.username
+        oldName = oldUser.nickname
         oldToggleStates = model.toggleStates
         newColor = model.colorInProgress
-        newName = if List.member model.nameInProgress (List.map .username oldUsers) then oldName else (if String.length model.nameInProgress > 0 then model.nameInProgress else oldName)
-        newUser = { oldUser | username = newName, color = newColor }
+        newName = if List.member model.nameInProgress (List.map .nickname oldUsers) then oldName else (if String.length model.nameInProgress > 0 then model.nameInProgress else oldName)
+        newUser = { oldUser | nickname = newName, color = newColor }
         replaceUser testUser =
-          if oldUser.username == testUser.username then
-            { testUser | username = newName, color = newColor }
+          if oldUser.nickname == testUser.nickname then
+            { testUser | nickname = newName, color = newColor }
           else
             testUser
         newUsers = List.map replaceUser oldUsers
@@ -201,7 +204,7 @@ update msg model =
                           0
                         ( Json.Encode.object
                         [ ( "action", Json.Encode.string "update_chat"),
-                          ( "content", Chat.encodeChatline model.user newmsg 0 ) ] ) ) )
+                          ( "content", Chat.encodeChatline model.room_name model.user newmsg 0 ) ] ) ) )
 
     NewGame -> -- TO DO!
       ( { model
@@ -220,7 +223,7 @@ update msg model =
     IncrementScore user ->
       let
         incrementScore testUser =
-          if user.username == testUser.username then
+          if user.nickname == testUser.nickname then
             { testUser | score = testUser.score + 1 }
           else
             testUser
@@ -332,6 +335,10 @@ update msg model =
               update (GetUser content) model
             "update_chat" ->
               update (GetChat content) model
+            "player_chat_new_message" ->
+              update (GetChat content) model
+            "system_chat_new_message" ->
+              update (GetChat content) model
             "switch_to_countdown" ->
               update (SwitchToCountdown content) model
             "switch_to_timer" ->
@@ -347,7 +354,7 @@ update msg model =
     GetBoard json ->
       case Json.Decode.decodeValue Board.decodeBoard json of
         Ok board ->
-          ( { model | boundaryBoard = board, debugString = "New board success"}, Cmd.none )
+          ( { model | boundaryBoard = board}, Cmd.none )
         Err _ ->
           ( { model | debugString = "Critical error getting new board"}, Cmd.none )
 
@@ -379,7 +386,7 @@ update msg model =
     GetUsersList json ->
       case Json.Decode.decodeValue User.decodeUsersList json of
         Ok usersList ->
-          ( { model | users = usersList}, Cmd.none )
+          ( { model | users = (Dict.values usersList)}, Cmd.none )
         Err _ ->
           ( { model | debugString = "Error parsing userlist JSON"}, Cmd.none )
 
@@ -390,15 +397,20 @@ update msg model =
         Err _ ->
           ( { model | debugString = "Error parsing user JSON"}, Cmd.none )
           
-    ConnectToServer _ ->
-      ( model,
-        outputPort
-          ( Json.Encode.encode
-            0
-            ( Json.Encode.object
-              [ ("action", Json.Encode.string "create_user")
-              , ("content", Json.Encode.string "") ] ))
-        )
+    ConnectToServer json ->
+      case Json.Decode.decodeValue Json.Decode.string json of
+        Ok room_name ->
+          ( { model | room_name = room_name}
+          , outputPort
+            ( Json.Encode.encode
+              0
+              ( Json.Encode.object
+                [ ("action", Json.Encode.string "get_user")
+                , ("content", Json.Encode.string room_name) ] ))
+          )
+        Err _ ->
+          ( { model | debugString = "Error parsing room name!"}, Cmd.none )
+
 
     GetChat json ->
       case Json.Decode.decodeValue Chat.decodeChatline json of
@@ -615,7 +627,7 @@ drawScore : String -> User -> Html Msg
 drawScore is_self user =
   div [ class "score" ] 
   [ div [ class "score__username", style "color" user.color  ]
-    [ span [ attribute "flow" "down", attribute "tooltip" "UID: TODO!", attribute "flow" "right" ] [ text user.username ]
+    [ span [ attribute "flow" "down", attribute "tooltip" ("UID: " ++ user.username), attribute "flow" "right" ] [ text user.nickname ]
     , if is_self == user.username then span [ class "self", attribute "flow" "right", attribute "tooltip" "This is you!" ] [] else span [] []
     , if user.is_admin then span [ class "owner", attribute "flow" "right", attribute "tooltip" "Owner" ] [] else span [] []
     , if user.is_muted then span [ class "muted", attribute "flow" "right", attribute "tooltip" "Muted" ] [] else span [] []
@@ -625,14 +637,14 @@ drawScore is_self user =
 
 drawMessage : Chatline -> Html Msg
 drawMessage message =
-  case message.kind of
-    0 -> -- regular chat message
+  case message.user of
+    Just user -> -- regular chat message
       ( div [ class "chat__line" ] 
-        ( div [ class "chat__username", style "color" message.user.color ]
-          [ text message.user.username ] :: parseEmoticonHtml message.msg )
+        ( div [ class "chat__username", style "color" user.color ]
+          [ text user.nickname ] :: parseEmoticonHtml message.message )
       )
     _ -> -- system message
-      (div [ class "chat__line" ] [ em [ class "chat__line--system" ] [ text message.msg ] ])
+      (div [ class "chat__line" ] [ em [ class "chat__line--system" ] [ text message.message ] ])
 
 
 drawAll : Int -> Board.Grid Int -> List Robot -> List Goal -> List ( List (Html Msg) )
@@ -657,30 +669,33 @@ drawSquare rowi colj board robots goals =
     matchedRobot = 
       case List.head (List.filter (Robot.matchRobot rowi colj) robots) of
         Nothing ->
-          ""
+          Nothing
         Just matchedRobotObj ->
-          (Color.toString (Just (.color matchedRobotObj)))
+          (Just (.color matchedRobotObj))
 
     matchedGoal = 
       case List.head (List.filter (Goal.matchGoal rowi colj) goals) of
         Nothing ->
-          ""
+          Nothing
         Just matchedGoalObj ->
-          (.filename (Goal.toString matchedGoalObj.symbol))
+          Just (.filename (Goal.toString matchedGoalObj.symbol))
+
+    innerHTML = []
+      |> ( case matchedRobot of
+            Nothing -> identity
+            mr -> (::) (div [ class ("robot robot--"++ (Color.toString (mr))), onClick (SetActiveColor (mr)) ] []))
+      |> ( case matchedGoal of
+            Just mg -> (::) (div [ class ("goal "++mg) ] [])
+            Nothing -> identity)
+
   in
     case val of
       Nothing ->
         div [ class "square square--block" ]
-         [
-           div [ class ("goal "++matchedGoal) ] []
-         , div [ class ("robot robot--"++matchedRobot) ] []
-        ]
+         innerHTML
       Just n -> 
         div [ class ("square square--" ++ String.fromInt n) ]
-         [
-           div [ class ("goal "++matchedGoal) ] []
-         , div [ class ("robot robot--"++matchedRobot) ] []
-         ]
+         innerHTML
 
 
 drawEmoticon : String -> Html Msg
@@ -795,7 +810,7 @@ view model =
     drawChat chat =
       List.map drawMessage chat
     drawScores users =
-      List.map (drawScore model.user.username) users
+      List.map (drawScore model.user.nickname) users
     drawBoard board =
       List.concat ( drawAll 0 board model.robots model.goalList )
 
@@ -805,8 +820,8 @@ view model =
         div [ class "scorebar" ]
         [ h2 [] [ text "Scoreboard" ]
         , div [ class "scores", id "scores"] [ div [id "scores__inner"] (List.reverse (List.sortBy .score model.users) |> drawScores) ]
-        {- , div [ class "debug" ]
-          [ text (  model.debugString ++ "   " ++ (printMoveList (List.reverse model.movesQueue))) ] -}
+        -- , div [ class "debug" ]
+        --   [ text (  model.debugString ++ "   ") ]
         , div [ class "sidebar__goal" ] [ div [ class ("goal " ++ .filename (Goal.toString model.goal)) ] [ ] ]
         , div [ class "controls" ]
           [ div [ class "controls__robots" ]
