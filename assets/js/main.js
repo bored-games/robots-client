@@ -6891,6 +6891,18 @@ var $author$project$Robots$update = F2(
 								msg = $temp$msg;
 								model = $temp$model;
 								continue update;
+							case 'system_chat_to_player_new_message':
+								var $temp$msg = $author$project$Robots$GetChat(content),
+									$temp$model = model;
+								msg = $temp$msg;
+								model = $temp$model;
+								continue update;
+							case 'system_chat_svg':
+								var $temp$msg = $author$project$Robots$GetChat(content),
+									$temp$model = model;
+								msg = $temp$msg;
+								model = $temp$model;
+								continue update;
 							case 'switch_to_countdown':
 								var $temp$msg = $author$project$Robots$SwitchToCountdown(content),
 									$temp$model = model;
@@ -7249,7 +7261,7 @@ var $author$project$Robots$update = F2(
 				case 'AddMove':
 					var dir = _v0.a;
 					var newQueue = A4($author$project$Robots$pushMove, dir, model.activeColor, model.robots, model.movesQueue);
-					return _Utils_Tuple2(
+					return _Utils_eq(model.movesQueue, newQueue) ? _Utils_Tuple2(model, $elm$core$Platform$Cmd$none) : _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{movesQueue: newQueue}),
@@ -7262,13 +7274,22 @@ var $author$project$Robots$update = F2(
 										[
 											_Utils_Tuple2(
 											'action',
-											$elm$json$Json$Encode$string('submit_movelist')),
+											$elm$json$Json$Encode$string('game_action')),
 											_Utils_Tuple2(
 											'content',
-											A2(
-												$elm$json$Json$Encode$list,
-												$author$project$Move$encodeMove,
-												$elm$core$List$reverse(newQueue)))
+											$elm$json$Json$Encode$object(
+												_List_fromArray(
+													[
+														_Utils_Tuple2(
+														'action',
+														$elm$json$Json$Encode$string('submit_movelist')),
+														_Utils_Tuple2(
+														'content',
+														A2(
+															$elm$json$Json$Encode$list,
+															$author$project$Move$encodeMove,
+															$elm$core$List$reverse(newQueue)))
+													])))
 										])))));
 				case 'PopMove':
 					var newQueue = $author$project$Robots$popMove(model.movesQueue);
@@ -7285,13 +7306,22 @@ var $author$project$Robots$update = F2(
 										[
 											_Utils_Tuple2(
 											'action',
-											$elm$json$Json$Encode$string('submit_movelist')),
+											$elm$json$Json$Encode$string('game_action')),
 											_Utils_Tuple2(
 											'content',
-											A2(
-												$elm$json$Json$Encode$list,
-												$author$project$Move$encodeMove,
-												$elm$core$List$reverse(newQueue)))
+											$elm$json$Json$Encode$object(
+												_List_fromArray(
+													[
+														_Utils_Tuple2(
+														'action',
+														$elm$json$Json$Encode$string('submit_movelist')),
+														_Utils_Tuple2(
+														'content',
+														A2(
+															$elm$json$Json$Encode$list,
+															$author$project$Move$encodeMove,
+															$elm$core$List$reverse(newQueue)))
+													])))
 										])))));
 				default:
 					return _Utils_Tuple2(
@@ -7307,10 +7337,19 @@ var $author$project$Robots$update = F2(
 										[
 											_Utils_Tuple2(
 											'action',
-											$elm$json$Json$Encode$string('submit_movelist')),
+											$elm$json$Json$Encode$string('game_action')),
 											_Utils_Tuple2(
 											'content',
-											A2($elm$json$Json$Encode$list, $author$project$Move$encodeMove, _List_Nil))
+											$elm$json$Json$Encode$object(
+												_List_fromArray(
+													[
+														_Utils_Tuple2(
+														'action',
+														$elm$json$Json$Encode$string('submit_movelist')),
+														_Utils_Tuple2(
+														'content',
+														A2($elm$json$Json$Encode$list, $author$project$Move$encodeMove, _List_Nil))
+													])))
 										])))));
 			}
 		}
@@ -8525,12 +8564,28 @@ var $elm$core$List$isEmpty = function (xs) {
 		return false;
 	}
 };
+var $author$project$Robots$isLegalMove = F3(
+	function (dir, activeColor, robots) {
+		if (activeColor.$ === 'Nothing') {
+			return false;
+		} else {
+			var color = activeColor.a;
+			var _v1 = A2($author$project$Robot$getByColor, color, robots);
+			if (_v1.$ === 'Nothing') {
+				return false;
+			} else {
+				var activeRobot = _v1.a;
+				return A2($elm$core$List$member, dir, activeRobot.moves);
+			}
+		}
+	});
 var $elm$html$Html$Attributes$maxlength = function (n) {
 	return A2(
 		_VirtualDom_attribute,
 		'maxlength',
 		$elm$core$String$fromInt(n));
 };
+var $elm$core$Basics$not = _Basics_not;
 var $elm$virtual_dom$VirtualDom$Custom = function (a) {
 	return {$: 'Custom', a: a};
 };
@@ -8747,7 +8802,7 @@ var $author$project$Robots$view = function (model) {
 												_List_fromArray(
 													[
 														$elm$html$Html$Attributes$class(
-														'controls__button controls__left' + ((_Utils_eq(model.activeColor, $elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.left ? ' active' : ''))),
+														'controls__button controls__left' + (((!A3($author$project$Robots$isLegalMove, $author$project$Move$Left, model.activeColor, model.robots)) ? ' inactive' : '') + (model.keys.left ? ' active' : ''))),
 														$elm$html$Html$Events$onClick(
 														$author$project$Robots$AddMove($author$project$Move$Left))
 													]),
@@ -8767,7 +8822,7 @@ var $author$project$Robots$view = function (model) {
 												_List_fromArray(
 													[
 														$elm$html$Html$Attributes$class(
-														'controls__button controls__up' + ((_Utils_eq(model.activeColor, $elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.up ? ' active' : ''))),
+														'controls__button controls__up' + (((!A3($author$project$Robots$isLegalMove, $author$project$Move$Up, model.activeColor, model.robots)) ? ' inactive' : '') + (model.keys.up ? ' active' : ''))),
 														$elm$html$Html$Events$onClick(
 														$author$project$Robots$AddMove($author$project$Move$Up))
 													]),
@@ -8787,7 +8842,7 @@ var $author$project$Robots$view = function (model) {
 												_List_fromArray(
 													[
 														$elm$html$Html$Attributes$class(
-														'controls__button controls__right' + ((_Utils_eq(model.activeColor, $elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.right ? ' active' : ''))),
+														'controls__button controls__right' + (((!A3($author$project$Robots$isLegalMove, $author$project$Move$Right, model.activeColor, model.robots)) ? ' inactive' : '') + (model.keys.right ? ' active' : ''))),
 														$elm$html$Html$Events$onClick(
 														$author$project$Robots$AddMove($author$project$Move$Right))
 													]),
@@ -8807,7 +8862,7 @@ var $author$project$Robots$view = function (model) {
 												_List_fromArray(
 													[
 														$elm$html$Html$Attributes$class(
-														'controls__button controls__down' + ((_Utils_eq(model.activeColor, $elm$core$Maybe$Nothing) ? ' inactive' : '') + (model.keys.down ? ' active' : ''))),
+														'controls__button controls__down' + (((!A3($author$project$Robots$isLegalMove, $author$project$Move$Down, model.activeColor, model.robots)) ? ' inactive' : '') + (model.keys.down ? ' active' : ''))),
 														$elm$html$Html$Events$onClick(
 														$author$project$Robots$AddMove($author$project$Move$Down))
 													]),

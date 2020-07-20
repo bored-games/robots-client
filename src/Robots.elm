@@ -339,6 +339,10 @@ update msg model =
               update (GetChat content) model
             "system_chat_new_message" ->
               update (GetChat content) model
+            "system_chat_to_player_new_message" ->
+              update (GetChat content) model
+            "system_chat_svg" ->
+              update (GetChat content) model
             "switch_to_countdown" ->
               update (SwitchToCountdown content) model
             "switch_to_timer" ->
@@ -386,7 +390,7 @@ update msg model =
     GetUsersList json ->
       case Json.Decode.decodeValue User.decodeUsersList json of
         Ok usersList ->
-          ( { model | users = (Dict.values usersList)}, Cmd.none )
+          ( { model | users = Dict.values usersList}, Cmd.none )
         Err _ ->
           ( { model | debugString = "Error parsing userlist JSON"}, Cmd.none )
 
@@ -490,14 +494,24 @@ update msg model =
       let
         newQueue = pushMove dir model.activeColor model.robots model.movesQueue
       in
-        ( { model | movesQueue = newQueue }, 
-          outputPort
-            ( Json.Encode.encode
-              0
-              ( Json.Encode.object
-                [ ("action", Json.Encode.string "submit_movelist")
-                , ("content", Json.Encode.list Move.encodeMove (List.reverse newQueue)) ] ))
-        )
+        if model.movesQueue == newQueue then
+          ( model, Cmd.none )
+        else
+          ( { model | movesQueue = newQueue }, 
+            outputPort
+              ( Json.Encode.encode
+                0
+                ( Json.Encode.object
+                  [ ("action", Json.Encode.string "game_action")
+                  , ("content", Json.Encode.object
+                    [ ("action", Json.Encode.string "submit_movelist"),
+                      ("content", Json.Encode.list Move.encodeMove (List.reverse newQueue))
+                    ]
+                  )
+                ]
+              )
+            )
+          )
     
     -- Remove last move from queue (for Undo)
     PopMove ->
@@ -509,8 +523,15 @@ update msg model =
             ( Json.Encode.encode
               0
               ( Json.Encode.object
-                [ ("action", Json.Encode.string "submit_movelist")
-                , ("content", Json.Encode.list Move.encodeMove (List.reverse newQueue)) ] ))
+                [ ("action", Json.Encode.string "game_action")
+                , ("content", Json.Encode.object
+                  [ ("action", Json.Encode.string "submit_movelist"),
+                    ("content", Json.Encode.list Move.encodeMove (List.reverse newQueue))
+                  ]
+                )
+              ]
+            )
+          )
         )
       
     -- Remove all moves from queue and reset the active robot color
@@ -520,10 +541,25 @@ update msg model =
             ( Json.Encode.encode
               0
               ( Json.Encode.object
-                [ ("action", Json.Encode.string "submit_movelist")
-                , ("content", Json.Encode.list Move.encodeMove []) ] ))
+                [ ("action", Json.Encode.string "game_action")
+                , ("content", Json.Encode.object
+                  [ ("action", Json.Encode.string "submit_movelist"),
+                    ("content", Json.Encode.list Move.encodeMove [])
+                  ]
+                )
+              ]
+            )
+          )
         )
 
+isLegalMove : Direction -> Maybe Color -> List Robot -> Bool
+isLegalMove dir activeColor robots =
+  case activeColor of
+    Nothing -> False
+    Just color ->
+      case Robot.getByColor color robots of
+         Nothing -> False
+         Just activeRobot -> List.member dir activeRobot.moves 
 
 pushMove : Direction -> Maybe Color -> List Robot -> List Move -> List Move
 pushMove dir activeColor robots oldQueue =
@@ -683,7 +719,7 @@ drawSquare rowi colj board robots goals =
     innerHTML = []
       |> ( case matchedRobot of
             Nothing -> identity
-            mr -> (::) (div [ class ("robot robot--"++ (Color.toString (mr))), onClick (SetActiveColor (mr)) ] []))
+            mr -> (::) (div [ class ("robot robot--"++ Color.toString mr), onClick (SetActiveColor mr) ] []))
       |> ( case matchedGoal of
             Just mg -> (::) (div [ class ("goal "++mg) ] [])
             Nothing -> identity)
@@ -832,10 +868,10 @@ view model =
             , div [ class ("controls__robot controls__silver" ++ (if model.activeColor == Just Silver then " active" else "")), onClick (SetActiveColor (Just Silver)), attribute "flow" "right", attribute "tooltip" "Select silver robot ([S] or [5])" ] []
             ]
           , div [ class "controls__directions" ]
-            [ span [attribute "flow" "right", attribute "tooltip" "Move current robot left"] [div [ class ("controls__button controls__left" ++ (if model.activeColor == Nothing then " inactive" else "") ++ (if model.keys.left then " active" else "")), onClick (AddMove Left) ] []]
-            , span [attribute "flow" "right", attribute "tooltip" "Move current robot up" ] [div [ class ("controls__button controls__up" ++ (if model.activeColor == Nothing then " inactive" else "") ++ (if model.keys.up then " active" else "")), onClick (AddMove Up)] []]
-            , span [attribute "flow" "right", attribute "tooltip" "Move current robot right" ] [div [ class ("controls__button controls__right" ++ (if model.activeColor == Nothing then " inactive" else "") ++ (if model.keys.right then " active" else "")), onClick (AddMove Right)] []]
-            , span [attribute "flow" "right", attribute "tooltip" "Move current robot down"] [div [ class ("controls__button controls__down" ++ (if model.activeColor == Nothing then " inactive" else "") ++ (if model.keys.down then " active" else "")), onClick (AddMove Down)] []]
+            [ span [attribute "flow" "right", attribute "tooltip" "Move current robot left"] [div [ class ("controls__button controls__left" ++ (if not (isLegalMove Left model.activeColor model.robots) then " inactive" else "") ++ (if model.keys.left then " active" else "")), onClick (AddMove Left) ] []]
+            , span [attribute "flow" "right", attribute "tooltip" "Move current robot up" ] [div [ class ("controls__button controls__up" ++ (if not (isLegalMove Up model.activeColor model.robots) then " inactive" else "") ++ (if model.keys.up then " active" else "")), onClick (AddMove Up)] []]
+            , span [attribute "flow" "right", attribute "tooltip" "Move current robot right" ] [div [ class ("controls__button controls__right" ++ (if not (isLegalMove Right model.activeColor model.robots) then " inactive" else "") ++ (if model.keys.right then " active" else "")), onClick (AddMove Right)] []]
+            , span [attribute "flow" "right", attribute "tooltip" "Move current robot down"] [div [ class ("controls__button controls__down" ++ (if not (isLegalMove Down model.activeColor model.robots) then " inactive" else "") ++ (if model.keys.down then " active" else "")), onClick (AddMove Down)] []]
             , span [attribute "flow" "right", attribute "tooltip" "Undo last move" ] [div [ class ("controls__button controls__undo" ++ (if model.keys.backspace then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick PopMove] []]
             , span [attribute "flow" "right", attribute "tooltip" "Clear current moves"] [div [ class ("controls__button controls__cancel" ++ (if model.keys.esc then " active" else "") ++ (if List.isEmpty model.movesQueue then " inactive" else "")), onClick ClearMoves ] []]
             ]
