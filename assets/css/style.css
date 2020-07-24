@@ -1161,7 +1161,7 @@ span.emoticon {
   text-overflow: ellipsis;
   padding: .5rem;
   border-radius: .2rem;
-  box-shadow: 0 0em 8px 4px rgba(0, 0, 0, 0.5), 0 0em 1px 1px rgba(255, 255, 255, 0.2), 0 0 15px inset rgba(0, 0, 0, .4);
+  box-shadow: 0 0em 8px 4px rgba(0, 0, 0, 0.5), 0 0em 1px 1px rgba(255, 255, 255, 0.2);
   background: #2c2d2f;
   color: #a6a6a6;
   font-size: 0.8rem;
@@ -1189,7 +1189,7 @@ span.emoticon {
 [tooltip][flow^="up"]::before {
   bottom: 100%;
   border-bottom-width: 0;
-  border-top-color: #333;
+  border-top-color: #2c2d2f;
 }
 
 [tooltip]:not([flow])::after,
@@ -1209,7 +1209,7 @@ span.emoticon {
 [tooltip][flow^="down"]::before {
   top: 100%;
   border-top-width: 0;
-  border-bottom-color: #333;
+  border-bottom-color: #2c2d2f;
 }
 
 [tooltip][flow^="down"]::after {
@@ -1226,7 +1226,7 @@ span.emoticon {
 [tooltip][flow^="left"]::before {
   top: 50%;
   border-right-width: 0;
-  border-left-color: #333;
+  border-left-color: #2c2d2f;
   left: calc(0em - 5px);
   transform: translate(-.5em, -50%);
 }
@@ -1241,7 +1241,7 @@ span.emoticon {
 [tooltip][flow^="right"]::before {
   top: 50%;
   border-left-width: 0;
-  border-right-color: #333;
+  border-right-color: #2c2d2f;
   right: calc(0em - 5px);
   transform: translate(.5em, -50%);
 }
@@ -1255,14 +1255,14 @@ span.emoticon {
 /* KEYFRAMES */
 @keyframes tooltips-vert {
   to {
-    opacity: .9;
+    opacity: 1;
     transform: translate(-50%, 0);
   }
 }
 
 @keyframes tooltips-horz {
   to {
-    opacity: .9;
+    opacity: 1;
     transform: translate(0, -50%);
   }
 }

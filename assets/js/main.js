@@ -5212,23 +5212,25 @@ var $author$project$Robots$Keys = function (up) {
 var $author$project$Robots$Model = function (debugString) {
 	return function (room_name) {
 		return function (keys) {
-			return function (user) {
-				return function (users) {
-					return function (chat) {
-						return function (messageInProgress) {
-							return function (nameInProgress) {
-								return function (colorInProgress) {
-									return function (boundaryBoard) {
-										return function (goal) {
-											return function (goalList) {
-												return function (toggleStates) {
-													return function (countdown) {
-														return function (currentTimer) {
-															return function (solutionFound) {
-																return function (robots) {
-																	return function (activeColor) {
-																		return function (movesQueue) {
-																			return {activeColor: activeColor, boundaryBoard: boundaryBoard, chat: chat, colorInProgress: colorInProgress, countdown: countdown, currentTimer: currentTimer, debugString: debugString, goal: goal, goalList: goalList, keys: keys, messageInProgress: messageInProgress, movesQueue: movesQueue, nameInProgress: nameInProgress, robots: robots, room_name: room_name, solutionFound: solutionFound, toggleStates: toggleStates, user: user, users: users};
+			return function (blockKeyShortcuts) {
+				return function (user) {
+					return function (users) {
+						return function (chat) {
+							return function (messageInProgress) {
+								return function (nameInProgress) {
+									return function (colorInProgress) {
+										return function (boundaryBoard) {
+											return function (goal) {
+												return function (goalList) {
+													return function (toggleStates) {
+														return function (countdown) {
+															return function (currentTimer) {
+																return function (solutionFound) {
+																	return function (robots) {
+																		return function (activeColor) {
+																			return function (movesQueue) {
+																				return {activeColor: activeColor, blockKeyShortcuts: blockKeyShortcuts, boundaryBoard: boundaryBoard, chat: chat, colorInProgress: colorInProgress, countdown: countdown, currentTimer: currentTimer, debugString: debugString, goal: goal, goalList: goalList, keys: keys, messageInProgress: messageInProgress, movesQueue: movesQueue, nameInProgress: nameInProgress, robots: robots, room_name: room_name, solutionFound: solutionFound, toggleStates: toggleStates, user: user, users: users};
+																			};
 																		};
 																	};
 																};
@@ -5248,7 +5250,6 @@ var $author$project$Robots$Model = function (debugString) {
 		};
 	};
 };
-var $author$project$Goal$RedMoon = {$: 'RedMoon'};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Board$rectangle = F3(
@@ -5276,9 +5277,9 @@ var $author$project$Robots$testFill = F2(
 var $author$project$Robots$init = function (_v0) {
 	return _Utils_Tuple2(
 		$author$project$Robots$Model('Initialized model.')('')(
-			$author$project$Robots$Keys(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false))(
+			$author$project$Robots$Keys(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false))(false)(
 			{color: '#6c6adc', is_admin: true, is_muted: false, nickname: 'patty', score: 0, username: 'Patrick'})(_List_Nil)(_List_Nil)('')('')('')(
-			A2($author$project$Board$square, 16, $author$project$Robots$testFill))($author$project$Goal$RedMoon)(_List_Nil)(
+			A2($author$project$Board$square, 16, $author$project$Robots$testFill))($elm$core$Maybe$Nothing)(_List_Nil)(
 			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'none'})(60)(0)(false)(_List_Nil)($elm$core$Maybe$Nothing)(_List_Nil),
 		$elm$core$Platform$Cmd$none);
 };
@@ -5958,6 +5959,9 @@ var $author$project$Robots$GetGoalList = function (a) {
 var $author$project$Robots$GetRobotList = function (a) {
 	return {$: 'GetRobotList', a: a};
 };
+var $author$project$Robots$GetSVG = function (a) {
+	return {$: 'GetSVG', a: a};
+};
 var $author$project$Robots$GetUser = function (a) {
 	return {$: 'GetUser', a: a};
 };
@@ -5982,9 +5986,13 @@ var $elm$json$Json$Decode$array = _Json_decodeArray;
 var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $author$project$Board$decodeRow = $elm$json$Json$Decode$array($elm$json$Json$Decode$int);
 var $author$project$Board$decodeBoard = $elm$json$Json$Decode$array($author$project$Board$decodeRow);
-var $author$project$Chat$Chatline = F4(
+var $author$project$Chat$Chatline = F5(
+	function (room_name, user, message, timestamp, kind) {
+		return {kind: kind, message: message, room_name: room_name, timestamp: timestamp, user: user};
+	});
+var $author$project$Chat$chatMessageToChatline = F4(
 	function (room_name, user, message, timestamp) {
-		return {message: message, room_name: room_name, timestamp: timestamp, user: user};
+		return A5($author$project$Chat$Chatline, room_name, user, message, timestamp, 1);
 	});
 var $author$project$User$User = F6(
 	function (username, nickname, color, score, is_admin, is_muted) {
@@ -6013,7 +6021,7 @@ var $elm$json$Json$Decode$maybe = function (decoder) {
 };
 var $author$project$Chat$decodeChatline = A5(
 	$elm$json$Json$Decode$map4,
-	$author$project$Chat$Chatline,
+	$author$project$Chat$chatMessageToChatline,
 	A2($elm$json$Json$Decode$field, 'room_name', $elm$json$Json$Decode$string),
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'user', $author$project$User$decodeUser)),
@@ -6033,6 +6041,7 @@ var $author$project$Goal$GreenMoon = {$: 'GreenMoon'};
 var $author$project$Goal$GreenPlanet = {$: 'GreenPlanet'};
 var $author$project$Goal$RedCross = {$: 'RedCross'};
 var $author$project$Goal$RedGear = {$: 'RedGear'};
+var $author$project$Goal$RedMoon = {$: 'RedMoon'};
 var $author$project$Goal$RedPlanet = {$: 'RedPlanet'};
 var $author$project$Goal$YellowCross = {$: 'YellowCross'};
 var $author$project$Goal$YellowGear = {$: 'YellowGear'};
@@ -6168,6 +6177,18 @@ var $author$project$Robot$decodeRobot = A4(
 	A2($elm$json$Json$Decode$field, 'color', $author$project$Color$decodeColorSymbol),
 	A2($elm$json$Json$Decode$field, 'moves', $author$project$Board$decodeDirectionsList));
 var $author$project$Robot$decodeRobotsList = $elm$json$Json$Decode$list($author$project$Robot$decodeRobot);
+var $author$project$Chat$svgToChatline = F4(
+	function (room_name, user, message, timestamp) {
+		return A5($author$project$Chat$Chatline, room_name, user, message, timestamp, 2);
+	});
+var $author$project$Chat$decodeSVGline = A5(
+	$elm$json$Json$Decode$map4,
+	$author$project$Chat$svgToChatline,
+	A2($elm$json$Json$Decode$field, 'room_name', $elm$json$Json$Decode$string),
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'user', $author$project$User$decodeUser)),
+	A2($elm$json$Json$Decode$field, 'url', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'timestamp', $elm$json$Json$Decode$string));
 var $elm$json$Json$Decode$keyValuePairs = _Json_decodeKeyValuePairs;
 var $elm$json$Json$Decode$dict = function (decoder) {
 	return A2(
@@ -6359,7 +6380,6 @@ var $elm$json$Json$Encode$list = F2(
 				_Json_emptyArray(_Utils_Tuple0),
 				entries));
 	});
-var $elm$core$Debug$log = _Debug_log;
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
 		any:
@@ -6543,17 +6563,16 @@ var $author$project$Robots$update = F2(
 	function (msg, model) {
 		update:
 		while (true) {
-			var _v0 = A2($elm$core$Debug$log, 'MESSAGE: ', msg);
-			switch (_v0.$) {
+			switch (msg.$) {
 				case 'SetName':
-					var name = _v0.a;
+					var name = msg.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{nameInProgress: name}),
 						$elm$core$Platform$Cmd$none);
 				case 'SetColor':
-					var color = _v0.a;
+					var color = msg.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -6605,7 +6624,7 @@ var $author$project$Robots$update = F2(
 											$author$project$User$encodeUser(newUser))
 										])))));
 				case 'SetMessage':
-					var message = _v0.a;
+					var message = msg.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -6655,14 +6674,16 @@ var $author$project$Robots$update = F2(
 											$elm$json$Json$Encode$string(''))
 										])))));
 				case 'NewGoal':
-					var newGoal = _v0.a;
+					var newGoal = msg.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{goal: newGoal}),
+							{
+								goal: $elm$core$Maybe$Just(newGoal)
+							}),
 						$elm$core$Platform$Cmd$none);
 				case 'IncrementScore':
-					var user = _v0.a;
+					var user = msg.a;
 					var incrementScore = function (testUser) {
 						return _Utils_eq(user.nickname, testUser.nickname) ? _Utils_update(
 							testUser,
@@ -6717,14 +6738,14 @@ var $author$project$Robots$update = F2(
 							{toggleStates: newToggleStates}),
 						$elm$core$Platform$Cmd$none);
 				case 'InsertEmoticon':
-					var str = _v0.a;
+					var str = msg.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{messageInProgress: model.messageInProgress + (' :' + (str + ': '))}),
 						$elm$core$Platform$Cmd$none);
 				case 'DisplayCountdown':
-					var status = _v0.a;
+					var status = msg.a;
 					var oldToggleStates = model.toggleStates;
 					var newToggleStates = _Utils_update(
 						oldToggleStates,
@@ -6735,7 +6756,7 @@ var $author$project$Robots$update = F2(
 							{toggleStates: newToggleStates}),
 						$elm$core$Platform$Cmd$none);
 				case 'SwitchToCountdown':
-					var json = _v0.a;
+					var json = msg.a;
 					var _v1 = A2(
 						$elm$json$Json$Decode$decodeValue,
 						A2($elm$json$Json$Decode$field, 'timer', $elm$json$Json$Decode$int),
@@ -6751,7 +6772,7 @@ var $author$project$Robots$update = F2(
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
-									{countdown: countdown, currentTimer: time, solutionFound: true}),
+									{countdown: countdown, currentTimer: time, debugString: 'Countdown beings', solutionFound: true}),
 								$elm$core$Platform$Cmd$none);
 						} else {
 							return _Utils_Tuple2(
@@ -6768,7 +6789,7 @@ var $author$project$Robots$update = F2(
 							$elm$core$Platform$Cmd$none);
 					}
 				case 'SwitchToTimer':
-					var json = _v0.a;
+					var json = msg.a;
 					var _v3 = A2(
 						$elm$json$Json$Decode$decodeValue,
 						A2($elm$json$Json$Decode$field, 'timer', $elm$json$Json$Decode$int),
@@ -6831,7 +6852,7 @@ var $author$project$Robots$update = F2(
 											$elm$json$Json$Encode$string('ping'))
 										])))));
 				case 'GetJSON':
-					var json = _v0.a;
+					var json = msg.a;
 					var _v5 = A2($elm$json$Json$Decode$decodeValue, $author$project$Robots$decodeJSON, json);
 					if (_v5.$ === 'Ok') {
 						var action = _v5.a.action;
@@ -6898,7 +6919,7 @@ var $author$project$Robots$update = F2(
 								model = $temp$model;
 								continue update;
 							case 'system_chat_svg':
-								var $temp$msg = $author$project$Robots$GetChat(content),
+								var $temp$msg = $author$project$Robots$GetSVG(content),
 									$temp$model = model;
 								msg = $temp$msg;
 								model = $temp$model;
@@ -6922,9 +6943,7 @@ var $author$project$Robots$update = F2(
 								model = $temp$model;
 								continue update;
 							default:
-								return _Utils_Tuple2(
-									A2($elm$core$Debug$log, 'Error: unknown code in JSON message', model),
-									$elm$core$Platform$Cmd$none);
+								return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 						}
 					} else {
 						return _Utils_Tuple2(
@@ -6936,7 +6955,7 @@ var $author$project$Robots$update = F2(
 							$elm$core$Platform$Cmd$none);
 					}
 				case 'GetBoard':
-					var json = _v0.a;
+					var json = msg.a;
 					var _v7 = A2($elm$json$Json$Decode$decodeValue, $author$project$Board$decodeBoard, json);
 					if (_v7.$ === 'Ok') {
 						var board = _v7.a;
@@ -6953,7 +6972,7 @@ var $author$project$Robots$update = F2(
 							$elm$core$Platform$Cmd$none);
 					}
 				case 'GetRobotList':
-					var json = _v0.a;
+					var json = msg.a;
 					var _v8 = A2($elm$json$Json$Decode$decodeValue, $author$project$Robot$decodeRobotsList, json);
 					if (_v8.$ === 'Ok') {
 						var robotList = _v8.a;
@@ -6970,7 +6989,7 @@ var $author$project$Robots$update = F2(
 							$elm$core$Platform$Cmd$none);
 					}
 				case 'GetGoalList':
-					var json = _v0.a;
+					var json = msg.a;
 					var _v9 = A2($elm$json$Json$Decode$decodeValue, $author$project$Goal$decodeGoalList, json);
 					if (_v9.$ === 'Ok') {
 						var goalList = _v9.a;
@@ -6983,12 +7002,10 @@ var $author$project$Robots$update = F2(
 									},
 									goalList));
 							if (_v10.$ === 'Nothing') {
-								return $author$project$Goal$RedMoon;
+								return $elm$core$Maybe$Nothing;
 							} else {
 								var anyGoal = _v10.a;
-								return function ($) {
-									return $.symbol;
-								}(anyGoal);
+								return $elm$core$Maybe$Just(anyGoal.symbol);
 							}
 						}();
 						return _Utils_Tuple2(
@@ -7004,7 +7021,7 @@ var $author$project$Robots$update = F2(
 							$elm$core$Platform$Cmd$none);
 					}
 				case 'GetUsersList':
-					var json = _v0.a;
+					var json = msg.a;
 					var _v11 = A2($elm$json$Json$Decode$decodeValue, $author$project$User$decodeUsersList, json);
 					if (_v11.$ === 'Ok') {
 						var usersList = _v11.a;
@@ -7023,7 +7040,7 @@ var $author$project$Robots$update = F2(
 							$elm$core$Platform$Cmd$none);
 					}
 				case 'GetUser':
-					var json = _v0.a;
+					var json = msg.a;
 					var _v12 = A2($elm$json$Json$Decode$decodeValue, $author$project$User$decodeUser, json);
 					if (_v12.$ === 'Ok') {
 						var user = _v12.a;
@@ -7040,7 +7057,7 @@ var $author$project$Robots$update = F2(
 							$elm$core$Platform$Cmd$none);
 					}
 				case 'ConnectToServer':
-					var json = _v0.a;
+					var json = msg.a;
 					var _v13 = A2($elm$json$Json$Decode$decodeValue, $elm$json$Json$Decode$string, json);
 					if (_v13.$ === 'Ok') {
 						var room_name = _v13.a;
@@ -7070,7 +7087,7 @@ var $author$project$Robots$update = F2(
 							$elm$core$Platform$Cmd$none);
 					}
 				case 'GetChat':
-					var json = _v0.a;
+					var json = msg.a;
 					var _v14 = A2($elm$json$Json$Decode$decodeValue, $author$project$Chat$decodeChatline, json);
 					if (_v14.$ === 'Ok') {
 						var chatline = _v14.a;
@@ -7088,178 +7105,141 @@ var $author$project$Robots$update = F2(
 								{debugString: 'Error parsing chat JSON'}),
 							$elm$core$Platform$Cmd$none);
 					}
-				case 'KeyChanged':
-					var isDown = _v0.a;
-					var key = _v0.b;
-					var newKeys = A3($author$project$Robots$updateKeys, isDown, key, model.keys);
-					var debugStr = _Utils_ap(
-						function ($) {
-							return $.up;
-						}(newKeys) ? '↑' : '_',
-						_Utils_ap(
-							function ($) {
-								return $.down;
-							}(newKeys) ? '↓' : '_',
-							_Utils_ap(
-								function ($) {
-									return $.left;
-								}(newKeys) ? '←' : '_',
-								_Utils_ap(
-									function ($) {
-										return $.right;
-									}(newKeys) ? '→' : '_',
-									_Utils_ap(
-										function ($) {
-											return $.space;
-										}(newKeys) ? ' ' : '_',
-										_Utils_ap(
-											function ($) {
-												return $.enter;
-											}(newKeys) ? '=' : '_',
-											_Utils_ap(
-												function ($) {
-													return $.one;
-												}(newKeys) ? '1' : '_',
-												_Utils_ap(
-													function ($) {
-														return $.two;
-													}(newKeys) ? '2' : '_',
-													_Utils_ap(
-														function ($) {
-															return $.three;
-														}(newKeys) ? '3' : '_',
-														_Utils_ap(
-															function ($) {
-																return $.four;
-															}(newKeys) ? '4' : '_',
-															_Utils_ap(
-																function ($) {
-																	return $.five;
-																}(newKeys) ? '5' : '_',
-																_Utils_ap(
-																	function ($) {
-																		return $.one;
-																	}(newKeys) ? 'r' : '_',
-																	_Utils_ap(
-																		function ($) {
-																			return $.two;
-																		}(newKeys) ? 'g' : '_',
-																		_Utils_ap(
-																			function ($) {
-																				return $.three;
-																			}(newKeys) ? 'b' : '_',
-																			_Utils_ap(
-																				function ($) {
-																					return $.four;
-																				}(newKeys) ? 'y' : '_',
-																				_Utils_ap(
-																					function ($) {
-																						return $.five;
-																					}(newKeys) ? 's' : '_',
-																					function ($) {
-																						return $.esc;
-																					}(newKeys) ? 'e' : '_'))))))))))))))));
-					var command = function () {
-						if (isDown) {
-							switch (key) {
-								case 'ArrowLeft':
-									return $elm$core$Maybe$Just(
-										A2(
-											$author$project$Robots$update,
-											$author$project$Robots$AddMove($author$project$Move$Left),
-											model));
-								case 'ArrowRight':
-									return $elm$core$Maybe$Just(
-										A2(
-											$author$project$Robots$update,
-											$author$project$Robots$AddMove($author$project$Move$Right),
-											model));
-								case 'ArrowUp':
-									return $elm$core$Maybe$Just(
-										A2(
-											$author$project$Robots$update,
-											$author$project$Robots$AddMove($author$project$Move$Up),
-											model));
-								case 'ArrowDown':
-									return $elm$core$Maybe$Just(
-										A2(
-											$author$project$Robots$update,
-											$author$project$Robots$AddMove($author$project$Move$Down),
-											model));
-								case 'Escape':
-									return $elm$core$Maybe$Just(
-										A2($author$project$Robots$update, $author$project$Robots$ClearMoves, model));
-								case 'Backspace':
-									return $elm$core$Maybe$Just(
-										A2($author$project$Robots$update, $author$project$Robots$PopMove, model));
-								default:
-									return $elm$core$Maybe$Nothing;
-							}
-						} else {
-							return $elm$core$Maybe$Nothing;
-						}
-					}();
-					var activeColor = function () {
-						if (isDown) {
-							switch (key) {
-								case '1':
-									return $elm$core$Maybe$Just($author$project$Color$Red);
-								case 'r':
-									return $elm$core$Maybe$Just($author$project$Color$Red);
-								case 'R':
-									return $elm$core$Maybe$Just($author$project$Color$Red);
-								case '2':
-									return $elm$core$Maybe$Just($author$project$Color$Green);
-								case 'g':
-									return $elm$core$Maybe$Just($author$project$Color$Green);
-								case 'G':
-									return $elm$core$Maybe$Just($author$project$Color$Green);
-								case '3':
-									return $elm$core$Maybe$Just($author$project$Color$Blue);
-								case 'b':
-									return $elm$core$Maybe$Just($author$project$Color$Blue);
-								case 'B':
-									return $elm$core$Maybe$Just($author$project$Color$Blue);
-								case '4':
-									return $elm$core$Maybe$Just($author$project$Color$Yellow);
-								case 'y':
-									return $elm$core$Maybe$Just($author$project$Color$Yellow);
-								case 'Y':
-									return $elm$core$Maybe$Just($author$project$Color$Yellow);
-								case '5':
-									return $elm$core$Maybe$Just($author$project$Color$Silver);
-								case 's':
-									return $elm$core$Maybe$Just($author$project$Color$Silver);
-								case 'S':
-									return $elm$core$Maybe$Just($author$project$Color$Silver);
-								case 'Escape':
-									return $elm$core$Maybe$Nothing;
-								default:
-									return model.activeColor;
-							}
-						} else {
-							return model.activeColor;
-						}
-					}();
-					if (command.$ === 'Just') {
-						var cmd = command.a;
-						return cmd;
+				case 'GetSVG':
+					var json = msg.a;
+					var _v15 = A2($elm$json$Json$Decode$decodeValue, $author$project$Chat$decodeSVGline, json);
+					if (_v15.$ === 'Ok') {
+						var chatline = _v15.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{
+									chat: A2($elm$core$List$cons, chatline, model.chat)
+								}),
+							$elm$core$Platform$Cmd$none);
 					} else {
 						return _Utils_Tuple2(
 							_Utils_update(
 								model,
-								{activeColor: activeColor, debugString: debugStr, keys: newKeys}),
+								{debugString: 'Error parsing chat JSON'}),
 							$elm$core$Platform$Cmd$none);
 					}
+				case 'BlockKeyShortcuts':
+					var bool = msg.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{blockKeyShortcuts: bool}),
+						$elm$core$Platform$Cmd$none);
+				case 'KeyChanged':
+					var isDown = msg.a;
+					var key = msg.b;
+					if (model.blockKeyShortcuts) {
+						return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					} else {
+						var newKeys = A3($author$project$Robots$updateKeys, isDown, key, model.keys);
+						var command = function () {
+							if (isDown) {
+								switch (key) {
+									case 'ArrowLeft':
+										return $elm$core$Maybe$Just(
+											A2(
+												$author$project$Robots$update,
+												$author$project$Robots$AddMove($author$project$Move$Left),
+												model));
+									case 'ArrowRight':
+										return $elm$core$Maybe$Just(
+											A2(
+												$author$project$Robots$update,
+												$author$project$Robots$AddMove($author$project$Move$Right),
+												model));
+									case 'ArrowUp':
+										return $elm$core$Maybe$Just(
+											A2(
+												$author$project$Robots$update,
+												$author$project$Robots$AddMove($author$project$Move$Up),
+												model));
+									case 'ArrowDown':
+										return $elm$core$Maybe$Just(
+											A2(
+												$author$project$Robots$update,
+												$author$project$Robots$AddMove($author$project$Move$Down),
+												model));
+									case 'Escape':
+										return $elm$core$Maybe$Just(
+											A2($author$project$Robots$update, $author$project$Robots$ClearMoves, model));
+									case 'Backspace':
+										return $elm$core$Maybe$Just(
+											A2($author$project$Robots$update, $author$project$Robots$PopMove, model));
+									default:
+										return $elm$core$Maybe$Nothing;
+								}
+							} else {
+								return $elm$core$Maybe$Nothing;
+							}
+						}();
+						var activeColor = function () {
+							if (isDown) {
+								switch (key) {
+									case '1':
+										return $elm$core$Maybe$Just($author$project$Color$Red);
+									case 'r':
+										return $elm$core$Maybe$Just($author$project$Color$Red);
+									case 'R':
+										return $elm$core$Maybe$Just($author$project$Color$Red);
+									case '2':
+										return $elm$core$Maybe$Just($author$project$Color$Green);
+									case 'g':
+										return $elm$core$Maybe$Just($author$project$Color$Green);
+									case 'G':
+										return $elm$core$Maybe$Just($author$project$Color$Green);
+									case '3':
+										return $elm$core$Maybe$Just($author$project$Color$Blue);
+									case 'b':
+										return $elm$core$Maybe$Just($author$project$Color$Blue);
+									case 'B':
+										return $elm$core$Maybe$Just($author$project$Color$Blue);
+									case '4':
+										return $elm$core$Maybe$Just($author$project$Color$Yellow);
+									case 'y':
+										return $elm$core$Maybe$Just($author$project$Color$Yellow);
+									case 'Y':
+										return $elm$core$Maybe$Just($author$project$Color$Yellow);
+									case '5':
+										return $elm$core$Maybe$Just($author$project$Color$Silver);
+									case 's':
+										return $elm$core$Maybe$Just($author$project$Color$Silver);
+									case 'S':
+										return $elm$core$Maybe$Just($author$project$Color$Silver);
+									case 'Escape':
+										return $elm$core$Maybe$Nothing;
+									default:
+										return model.activeColor;
+								}
+							} else {
+								return model.activeColor;
+							}
+						}();
+						if (command.$ === 'Just') {
+							var cmd = command.a;
+							return cmd;
+						} else {
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{activeColor: activeColor, keys: newKeys}),
+								$elm$core$Platform$Cmd$none);
+						}
+					}
 				case 'SetActiveColor':
-					var color = _v0.a;
+					var color = msg.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{activeColor: color}),
 						$elm$core$Platform$Cmd$none);
 				case 'AddMove':
-					var dir = _v0.a;
+					var dir = msg.a;
 					var newQueue = A4($author$project$Robots$pushMove, dir, model.activeColor, model.robots, model.movesQueue);
 					return _Utils_eq(model.movesQueue, newQueue) ? _Utils_Tuple2(model, $elm$core$Platform$Cmd$none) : _Utils_Tuple2(
 						_Utils_update(
@@ -7354,6 +7334,9 @@ var $author$project$Robots$update = F2(
 			}
 		}
 	});
+var $author$project$Robots$BlockKeyShortcuts = function (a) {
+	return {$: 'BlockKeyShortcuts', a: a};
+};
 var $author$project$Robots$IncrementScore = function (a) {
 	return {$: 'IncrementScore', a: a};
 };
@@ -7552,39 +7535,59 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		$elm$json$Json$Decode$succeed(msg));
 };
 var $author$project$Goal$toString = function (goal) {
-	switch (goal.$) {
-		case 'RedMoon':
-			return {filename: 'red-moon', plaintext: 'Red Moon'};
-		case 'GreenMoon':
-			return {filename: 'green-moon', plaintext: 'Green Moon'};
-		case 'BlueMoon':
-			return {filename: 'blue-moon', plaintext: 'Blue Moon'};
-		case 'YellowMoon':
-			return {filename: 'yellow-moon', plaintext: 'Yellow Moon'};
-		case 'RedPlanet':
-			return {filename: 'red-planet', plaintext: 'Red Planet'};
-		case 'GreenPlanet':
-			return {filename: 'green-planet', plaintext: 'Green Planet'};
-		case 'BluePlanet':
-			return {filename: 'blue-planet', plaintext: 'Blue Planet'};
-		case 'YellowPlanet':
-			return {filename: 'yellow-planet', plaintext: 'Yellow Planet'};
-		case 'RedCross':
-			return {filename: 'red-cross', plaintext: 'Red Cross'};
-		case 'GreenCross':
-			return {filename: 'green-cross', plaintext: 'Green Cross'};
-		case 'BlueCross':
-			return {filename: 'blue-cross', plaintext: 'Blue Cross'};
-		case 'YellowCross':
-			return {filename: 'yellow-cross', plaintext: 'Yellow Cross'};
-		case 'RedGear':
-			return {filename: 'red-gear', plaintext: 'Red Gear'};
-		case 'GreenGear':
-			return {filename: 'green-gear', plaintext: 'Green Gear'};
-		case 'BlueGear':
-			return {filename: 'blue-gear', plaintext: 'Blue Gear'};
-		default:
-			return {filename: 'yellow-gear', plaintext: 'Yellow Gear'};
+	if (goal.$ === 'Nothing') {
+		return {filename: '', plaintext: ''};
+	} else {
+		switch (goal.a.$) {
+			case 'RedMoon':
+				var _v1 = goal.a;
+				return {filename: 'red-moon', plaintext: 'Red Moon'};
+			case 'GreenMoon':
+				var _v2 = goal.a;
+				return {filename: 'green-moon', plaintext: 'Green Moon'};
+			case 'BlueMoon':
+				var _v3 = goal.a;
+				return {filename: 'blue-moon', plaintext: 'Blue Moon'};
+			case 'YellowMoon':
+				var _v4 = goal.a;
+				return {filename: 'yellow-moon', plaintext: 'Yellow Moon'};
+			case 'RedPlanet':
+				var _v5 = goal.a;
+				return {filename: 'red-planet', plaintext: 'Red Planet'};
+			case 'GreenPlanet':
+				var _v6 = goal.a;
+				return {filename: 'green-planet', plaintext: 'Green Planet'};
+			case 'BluePlanet':
+				var _v7 = goal.a;
+				return {filename: 'blue-planet', plaintext: 'Blue Planet'};
+			case 'YellowPlanet':
+				var _v8 = goal.a;
+				return {filename: 'yellow-planet', plaintext: 'Yellow Planet'};
+			case 'RedCross':
+				var _v9 = goal.a;
+				return {filename: 'red-cross', plaintext: 'Red Cross'};
+			case 'GreenCross':
+				var _v10 = goal.a;
+				return {filename: 'green-cross', plaintext: 'Green Cross'};
+			case 'BlueCross':
+				var _v11 = goal.a;
+				return {filename: 'blue-cross', plaintext: 'Blue Cross'};
+			case 'YellowCross':
+				var _v12 = goal.a;
+				return {filename: 'yellow-cross', plaintext: 'Yellow Cross'};
+			case 'RedGear':
+				var _v13 = goal.a;
+				return {filename: 'red-gear', plaintext: 'Red Gear'};
+			case 'GreenGear':
+				var _v14 = goal.a;
+				return {filename: 'green-gear', plaintext: 'Green Gear'};
+			case 'BlueGear':
+				var _v15 = goal.a;
+				return {filename: 'blue-gear', plaintext: 'Blue Gear'};
+			default:
+				var _v16 = goal.a;
+				return {filename: 'yellow-gear', plaintext: 'Yellow Gear'};
+		}
 	}
 };
 var $author$project$Robots$drawSquare = F5(
@@ -7623,7 +7626,8 @@ var $author$project$Robots$drawSquare = F5(
 					function ($) {
 						return $.filename;
 					}(
-						$author$project$Goal$toString(matchedGoalObj.symbol)));
+						$author$project$Goal$toString(
+							$elm$core$Maybe$Just(matchedGoalObj.symbol))));
 			}
 		}();
 		var innerHTML = function () {
@@ -7711,6 +7715,7 @@ var $author$project$Robots$emoticonList = _List_fromArray(
 	['cool', 'crazy', 'damn', 'geek', 'grin', 'huh', 'lol', 'love', 'omg', 'pout', 'sad', 'smile', 'stars', 'ugh', 'waiting', 'whoopsy', 'wink', 'wtf']);
 var $author$project$Robots$drawEmoticons = A2($elm$core$List$map, $author$project$Robots$drawEmoticon, $author$project$Robots$emoticonList);
 var $elm$html$Html$em = _VirtualDom_node('em');
+var $elm$html$Html$object = _VirtualDom_node('object');
 var $elm$html$Html$span = _VirtualDom_node('span');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
@@ -7754,30 +7759,8 @@ var $author$project$Robots$parseEmoticonHtml = function (str) {
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$Robots$drawMessage = function (message) {
-	var _v0 = message.user;
-	if (_v0.$ === 'Just') {
-		var user = _v0.a;
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('chat__line')
-				]),
-			A2(
-				$elm$core$List$cons,
-				A2(
-					$elm$html$Html$div,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$class('chat__username'),
-							A2($elm$html$Html$Attributes$style, 'color', user.color)
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text(user.nickname)
-						])),
-				$author$project$Robots$parseEmoticonHtml(message.message)));
-	} else {
+	var _v0 = message.kind;
+	if (_v0 === 2) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -7787,16 +7770,59 @@ var $author$project$Robots$drawMessage = function (message) {
 			_List_fromArray(
 				[
 					A2(
-					$elm$html$Html$em,
+					$elm$html$Html$object,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('chat__line--system')
+							$elm$html$Html$Attributes$class('chat__line--svg'),
+							A2($elm$html$Html$Attributes$attribute, 'data', message.message)
 						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text(message.message)
-						]))
+					_List_Nil)
 				]));
+	} else {
+		var _v1 = message.user;
+		if (_v1.$ === 'Just') {
+			var user = _v1.a;
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('chat__line')
+					]),
+				A2(
+					$elm$core$List$cons,
+					A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('chat__username'),
+								A2($elm$html$Html$Attributes$style, 'color', user.color)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(user.nickname)
+							])),
+					$author$project$Robots$parseEmoticonHtml(message.message)));
+		} else {
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('chat__line')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$em,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('chat__line--system')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(message.message)
+							]))
+					]));
+		}
 	}
 };
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
@@ -8160,6 +8186,18 @@ var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('ht
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$label = _VirtualDom_node('label');
+var $elm$html$Html$Events$onBlur = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'blur',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$html$Html$Events$onFocus = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'focus',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
@@ -8229,7 +8267,11 @@ var $author$project$Robots$drawSettings = function (model) {
 									$elm$html$Html$Attributes$type_('text'),
 									$elm$html$Html$Events$onInput($author$project$Robots$SetName),
 									$elm$html$Html$Attributes$placeholder('New name'),
-									$elm$html$Html$Attributes$value(model.nameInProgress)
+									$elm$html$Html$Attributes$value(model.nameInProgress),
+									$elm$html$Html$Events$onFocus(
+									$author$project$Robots$BlockKeyShortcuts(true)),
+									$elm$html$Html$Events$onBlur(
+									$author$project$Robots$BlockKeyShortcuts(false))
 								]),
 							_List_Nil)
 						])),
@@ -9134,7 +9176,11 @@ var $author$project$Robots$view = function (model) {
 										$elm$html$Html$Events$onInput($author$project$Robots$SetMessage),
 										$elm$html$Html$Attributes$placeholder('Send a message'),
 										$elm$html$Html$Attributes$value(model.messageInProgress),
-										$elm$html$Html$Attributes$maxlength(255)
+										$elm$html$Html$Attributes$maxlength(255),
+										$elm$html$Html$Events$onFocus(
+										$author$project$Robots$BlockKeyShortcuts(true)),
+										$elm$html$Html$Events$onBlur(
+										$author$project$Robots$BlockKeyShortcuts(false))
 									]),
 								_List_Nil),
 								A2(

@@ -14,7 +14,7 @@ import Browser.Events
 import Dict
 import Html exposing (..)
 import Html.Attributes exposing (id, style, type_, attribute, placeholder, value, class, name, for)
-import Html.Events exposing (onInput, onClick)
+import Html.Events exposing (onInput, onClick, onFocus, onBlur)
 import Time
 import Json.Encode
 import Json.Decode
@@ -32,7 +32,6 @@ main =
     }
 
 
-
 -- MODEL
 
 type alias JSONMessage = 
@@ -45,6 +44,7 @@ type alias Model =
   { debugString : String
   , room_name : String
   , keys : Keys
+  , blockKeyShortcuts : Bool
   , user : User
   , users : List User
   , chat : List Chatline
@@ -52,7 +52,7 @@ type alias Model =
   , nameInProgress : String
   , colorInProgress : String
   , boundaryBoard : Board.Grid Int
-  , goal : GoalSymbol
+  , goal : Maybe GoalSymbol
   , goalList : List Goal
   , toggleStates :
     { settings: String
@@ -65,7 +65,6 @@ type alias Model =
   , solutionFound : Bool
   , robots : List Robot
   , activeColor : Maybe Color
- -- , legalMoves : List ( Move )
   , movesQueue : List ( Move )
   }
 
@@ -96,14 +95,15 @@ init _ =
     "Initialized model."
     ""
     (Keys False False False False False False False False False False False False False)
+    False                                                                    -- Block keyboard shortcuts
     { username = "Patrick", nickname = "patty", color = "#6c6adc", score = 0, is_admin = True, is_muted = False }
-    [ ] -- `users` (and scores)
-    [ ] -- `chat`
-    "" -- `messageInProgress`
-    "" -- `nameInProgress`
-    "" -- `colorInProgress`
-    (Board.square 16 testFill )                    -- boundaryBoard
-    RedMoon                                                                  -- goalSymbol
+    [ ]                                                                      -- `users` (and scores)
+    [ ]                                                                      -- `chat`
+    ""                                                                       -- `messageInProgress`
+    ""                                                                       -- `nameInProgress`
+    ""                                                                       -- `colorInProgress`
+    (Board.square 16 testFill )                                              -- boundaryBoard
+    Nothing                                                                  -- goalSymbol
     [ ]
     { settings = "none",
       pollOptions = "none",
@@ -111,7 +111,7 @@ init _ =
       countdown = "flex" }                                                   -- toggleStates
     60                                                                       -- countdown
     0                                                                        -- currentTimer
-    False -- solutionFound
+    False                                                                    -- solutionFound
     []                                                                       -- robots
     Nothing                                                                  -- activeRobot
     []                                                                       -- movesQueue
@@ -147,6 +147,8 @@ type Msg
   | GetUsersList Json.Encode.Value         -- 200
   | GetUser Json.Encode.Value              -- 201
   | GetChat Json.Encode.Value              -- 202
+  | GetSVG Json.Encode.Value               -- 202
+  | BlockKeyShortcuts Bool
   | KeyChanged Bool String
   | SetActiveColor (Maybe Color)
   | AddMove Direction
@@ -155,7 +157,8 @@ type Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  case Debug.log "MESSAGE: " msg of
+  case msg of -- case Debug.log "MESSAGE: " msg of
+
     SetName name ->
       ( { model | nameInProgress = name }, Cmd.none )
       
@@ -169,7 +172,10 @@ update msg model =
         oldName = oldUser.nickname
         oldToggleStates = model.toggleStates
         newColor = model.colorInProgress
-        newName = if List.member model.nameInProgress (List.map .nickname oldUsers) then oldName else (if String.length model.nameInProgress > 0 then model.nameInProgress else oldName)
+        newName = if List.member model.nameInProgress (List.map .nickname oldUsers) then
+                    oldName
+                  else
+                    if String.length model.nameInProgress > 0 then model.nameInProgress else oldName
         newUser = { oldUser | nickname = newName, color = newColor }
         replaceUser testUser =
           if oldUser.nickname == testUser.nickname then
@@ -218,7 +224,7 @@ update msg model =
                         ( "content", Json.Encode.string "" ) ] ) ) )
 
     NewGoal newGoal ->
-      ( { model | goal = newGoal }, Cmd.none )
+      ( { model | goal = Just newGoal }, Cmd.none )
 
     IncrementScore user ->
       let
@@ -284,7 +290,7 @@ update msg model =
         Ok time ->
           case Json.Decode.decodeValue (Json.Decode.field "countdown" Json.Decode.int) json of
             Ok countdown ->
-              ( { model | countdown = countdown, currentTimer = time, solutionFound = True }, Cmd.none )
+              ( { model | debugString = "Countdown beings", countdown = countdown, currentTimer = time, solutionFound = True }, Cmd.none )
             Err _ ->
               ( { model | debugString = "Countdown time error" }, Cmd.none )
         Err _ ->
@@ -342,7 +348,7 @@ update msg model =
             "system_chat_to_player_new_message" ->
               update (GetChat content) model
             "system_chat_svg" ->
-              update (GetChat content) model
+              update (GetSVG content) model
             "switch_to_countdown" ->
               update (SwitchToCountdown content) model
             "switch_to_timer" ->
@@ -350,7 +356,8 @@ update msg model =
             "clear_moves_queue" ->
               update ClearMoves model
             _ ->
-              (Debug.log "Error: unknown code in JSON message" model, Cmd.none ) -- Error: missing code
+              -- (Debug.log "Error: unknown code in JSON message" model, Cmd.none ) -- Error: missing code
+              ( model, Cmd.none ) -- Error: missing code
 
         Err _ ->
           ( { model | debugString = "Bad JSON: " ++ Json.Encode.encode 0 json}, Cmd.none )
@@ -376,9 +383,9 @@ update msg model =
             activeGoal =
               case List.head (List.filter .active goalList) of
               Nothing ->
-                RedMoon -- TO DO: handle error!
+                Nothing
               Just anyGoal ->
-                .symbol anyGoal
+                Just anyGoal.symbol 
           in
             ( { model
                 | goalList = goalList
@@ -423,67 +430,64 @@ update msg model =
         Err _ ->
           ( { model | debugString = "Error parsing chat JSON"}, Cmd.none )
 
-    KeyChanged isDown key ->
-      let
-        newKeys = updateKeys isDown key model.keys
-        debugStr = (if .up newKeys then "↑" else "_")
-                ++ (if .down newKeys then "↓" else "_")
-                ++ (if .left newKeys then "←" else "_")
-                ++ (if .right newKeys then "→" else "_")
-                ++ (if .space newKeys then " " else "_")
-                ++ (if .enter newKeys then "=" else "_")
-                ++ (if .one newKeys then "1" else "_")
-                ++ (if .two newKeys then "2" else "_")
-                ++ (if .three newKeys then "3" else "_")
-                ++ (if .four newKeys then "4" else "_")
-                ++ (if .five newKeys then "5" else "_")
-                ++ (if .one newKeys then "r" else "_")
-                ++ (if .two newKeys then "g" else "_")
-                ++ (if .three newKeys then "b" else "_")
-                ++ (if .four newKeys then "y" else "_")
-                ++ (if .five newKeys then "s" else "_")
-                ++ (if .esc newKeys then "e" else "_")
-        activeColor =
-          if isDown then
-            case key of
-              "1"      -> Just Red
-              "r"      -> Just Red
-              "R"      -> Just Red
-              "2"      -> Just Green
-              "g"      -> Just Green
-              "G"      -> Just Green
-              "3"      -> Just Blue
-              "b"      -> Just Blue
-              "B"      -> Just Blue
-              "4"      -> Just Yellow
-              "y"      -> Just Yellow
-              "Y"      -> Just Yellow
-              "5"      -> Just Silver
-              "s"      -> Just Silver
-              "S"      -> Just Silver
-              "Escape" -> Nothing
-              _        -> model.activeColor
-          else
-            model.activeColor
 
-        command =
-          if isDown then
-            case key of
-              "ArrowLeft"  -> Just (update (AddMove Left) model)
-              "ArrowRight" -> Just (update (AddMove Right) model)
-              "ArrowUp"    -> Just (update (AddMove Up) model)
-              "ArrowDown"  -> Just (update (AddMove Down) model)
-              "Escape"     -> Just (update ClearMoves model)
-              "Backspace"  -> Just (update PopMove model)
-              _ -> Nothing
-          else
-            Nothing
-      in
-        case command of
-          Just cmd ->
-            cmd
-          _ ->
-            ( { model | keys = newKeys, debugString = debugStr, activeColor = activeColor }, Cmd.none )
+    GetSVG json ->
+      case Json.Decode.decodeValue Chat.decodeSVGline json of
+        Ok chatline ->
+          ( { model | chat = chatline::model.chat}, Cmd.none )
+        Err _ ->
+          ( { model | debugString = "Error parsing chat JSON"}, Cmd.none )
+
+    BlockKeyShortcuts bool ->
+          ( { model | blockKeyShortcuts = bool}, Cmd.none )
+
+    KeyChanged isDown key ->
+      if model.blockKeyShortcuts then
+        ( model, Cmd.none )
+      else
+        let
+          newKeys = updateKeys isDown key model.keys
+          activeColor =
+            if isDown then
+              case key of
+                "1"      -> Just Red
+                "r"      -> Just Red
+                "R"      -> Just Red
+                "2"      -> Just Green
+                "g"      -> Just Green
+                "G"      -> Just Green
+                "3"      -> Just Blue
+                "b"      -> Just Blue
+                "B"      -> Just Blue
+                "4"      -> Just Yellow
+                "y"      -> Just Yellow
+                "Y"      -> Just Yellow
+                "5"      -> Just Silver
+                "s"      -> Just Silver
+                "S"      -> Just Silver
+                "Escape" -> Nothing
+                _        -> model.activeColor
+            else
+              model.activeColor
+
+          command =
+            if isDown then
+              case key of
+                "ArrowLeft"  -> Just (update (AddMove Left) model)
+                "ArrowRight" -> Just (update (AddMove Right) model)
+                "ArrowUp"    -> Just (update (AddMove Up) model)
+                "ArrowDown"  -> Just (update (AddMove Down) model)
+                "Escape"     -> Just (update ClearMoves model)
+                "Backspace"  -> Just (update PopMove model)
+                _ -> Nothing
+            else
+              Nothing
+        in
+          case command of
+            Just cmd ->
+              cmd
+            _ ->
+              ( { model | keys = newKeys, activeColor = activeColor }, Cmd.none )
 
     -- Set active robot color for next move
     SetActiveColor color ->
@@ -673,14 +677,16 @@ drawScore is_self user =
 
 drawMessage : Chatline -> Html Msg
 drawMessage message =
-  case message.user of
-    Just user -> -- regular chat message
-      ( div [ class "chat__line" ] 
-        ( div [ class "chat__username", style "color" user.color ]
-          [ text user.nickname ] :: parseEmoticonHtml message.message )
-      )
-    _ -> -- system message
-      (div [ class "chat__line" ] [ em [ class "chat__line--system" ] [ text message.message ] ])
+  case message.kind of
+    2 -> (div [ class "chat__line" ] [ object [ class "chat__line--svg", attribute "data" message.message ] [ ] ])
+    _ -> case message.user of
+           Just user -> -- regular chat message
+             ( div [ class "chat__line" ] 
+               ( div [ class "chat__username", style "color" user.color ]
+                 [ text user.nickname ] :: parseEmoticonHtml message.message )
+             )
+           _ -> -- system message
+             (div [ class "chat__line" ] [ em [ class "chat__line--system" ] [ text message.message ] ])
 
 
 drawAll : Int -> Board.Grid Int -> List Robot -> List Goal -> List ( List (Html Msg) )
@@ -714,7 +720,7 @@ drawSquare rowi colj board robots goals =
         Nothing ->
           Nothing
         Just matchedGoalObj ->
-          Just (.filename (Goal.toString matchedGoalObj.symbol))
+          Just (.filename (Goal.toString (Just matchedGoalObj.symbol)))
 
     innerHTML = []
       |> ( case matchedRobot of
@@ -748,7 +754,7 @@ drawSettings : Model -> List (Html Msg)
 drawSettings model =
   [ h2 [ ] [ text "Settings" ]
   , div [ class "settings__flexbox" ]
-  [ div [ class "setting__input" ] [ input [ type_ "text", onInput SetName, placeholder "New name", value model.nameInProgress ] [] ]
+  [ div [ class "setting__input" ] [ input [ type_ "text", onInput SetName, placeholder "New name", value model.nameInProgress, onFocus (BlockKeyShortcuts True), onBlur (BlockKeyShortcuts False) ] [] ]
   , div [ class "setting__input" ]
     [ select [ onInput SetColor ]
       [ option [ value "", style "color" "#707070" ] [ text "Change color" ]
@@ -904,7 +910,7 @@ view model =
         , div [ class ("sidebar__settings " ++ ("module-" ++ model.toggleStates.settings)) ] (drawSettings model)
         , div [ class ("sidebar__polloptions " ++ ("module-" ++ model.toggleStates.pollOptions)) ] drawPollOptions
         , div [ class "message"]
-          [ textarea [ class "message__box", onEnter SendMessage, onInput SetMessage, placeholder "Send a message", value model.messageInProgress, Html.Attributes.maxlength 255 ] []
+          [ textarea [ class "message__box", onEnter SendMessage, onInput SetMessage, placeholder "Send a message", value model.messageInProgress, Html.Attributes.maxlength 255, onFocus (BlockKeyShortcuts True), onBlur (BlockKeyShortcuts False) ] []
           , div [ class ("sidebar__emoticons " ++ ("module-" ++ model.toggleStates.emoticons)) ] drawEmoticons
           , div [ class "message__actions" ]
             [

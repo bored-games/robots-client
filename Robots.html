@@ -33,7 +33,10 @@
     var app = Elm.Robots.init({node:document.getElementById('elm-node')});
     
     function setupSocket() {
-      socket = new WebSocket("ws://localhost:4000/ws/robots123")
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      const room_name = urlParams.get('room');
+      socket = new WebSocket("ws://localhost:4000/ws/robots/" + room_name, "TEMP_KEY")
 
       socket.onclose = function() {
         alert("Connection to the server has been lost.");
@@ -50,12 +53,6 @@
           console.log(data);
           socket.send(data);
         });
-        
-        // data = '{"action": "create_room", "content": "this_is_my_room"}';
-        data = '{"action": "join_room", "content": "Default Room"}';
-        console.log("Message from client:")
-        console.log(data);
-        socket.send( data );
 
       }
 

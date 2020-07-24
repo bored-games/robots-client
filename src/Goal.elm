@@ -29,25 +29,26 @@ type alias Goal =
   }
   
 {-| Helper function to print Goal Symbols or get their filenames -}
-toString : GoalSymbol -> { plaintext: String, filename: String }
+toString : Maybe GoalSymbol -> { plaintext: String, filename: String }
 toString goal =
   case goal of
-    RedMoon -> { plaintext = "Red Moon", filename = "red-moon" }
-    GreenMoon -> { plaintext = "Green Moon", filename = "green-moon" }
-    BlueMoon -> { plaintext = "Blue Moon", filename = "blue-moon" }
-    YellowMoon -> { plaintext = "Yellow Moon", filename = "yellow-moon" }
-    RedPlanet -> { plaintext = "Red Planet", filename = "red-planet" }
-    GreenPlanet -> { plaintext = "Green Planet", filename = "green-planet" }
-    BluePlanet -> { plaintext = "Blue Planet", filename = "blue-planet" }
-    YellowPlanet -> { plaintext = "Yellow Planet", filename = "yellow-planet" }
-    RedCross -> { plaintext = "Red Cross", filename = "red-cross" }
-    GreenCross -> { plaintext = "Green Cross", filename = "green-cross" }
-    BlueCross -> { plaintext = "Blue Cross", filename = "blue-cross" }
-    YellowCross -> { plaintext = "Yellow Cross", filename = "yellow-cross" }
-    RedGear -> { plaintext = "Red Gear", filename = "red-gear" }
-    GreenGear -> { plaintext = "Green Gear", filename = "green-gear" }
-    BlueGear -> { plaintext = "Blue Gear", filename = "blue-gear" }
-    YellowGear -> { plaintext = "Yellow Gear", filename = "yellow-gear" }
+    Nothing -> { plaintext = "", filename = "" }
+    Just RedMoon -> { plaintext = "Red Moon", filename = "red-moon" }
+    Just GreenMoon -> { plaintext = "Green Moon", filename = "green-moon" }
+    Just BlueMoon -> { plaintext = "Blue Moon", filename = "blue-moon" }
+    Just YellowMoon -> { plaintext = "Yellow Moon", filename = "yellow-moon" }
+    Just RedPlanet -> { plaintext = "Red Planet", filename = "red-planet" }
+    Just GreenPlanet -> { plaintext = "Green Planet", filename = "green-planet" }
+    Just BluePlanet -> { plaintext = "Blue Planet", filename = "blue-planet" }
+    Just YellowPlanet -> { plaintext = "Yellow Planet", filename = "yellow-planet" }
+    Just RedCross -> { plaintext = "Red Cross", filename = "red-cross" }
+    Just GreenCross -> { plaintext = "Green Cross", filename = "green-cross" }
+    Just BlueCross -> { plaintext = "Blue Cross", filename = "blue-cross" }
+    Just YellowCross -> { plaintext = "Yellow Cross", filename = "yellow-cross" }
+    Just RedGear -> { plaintext = "Red Gear", filename = "red-gear" }
+    Just GreenGear -> { plaintext = "Green Gear", filename = "green-gear" }
+    Just BlueGear -> { plaintext = "Blue Gear", filename = "blue-gear" }
+    Just YellowGear -> { plaintext = "Yellow Gear", filename = "yellow-gear" }
 
 {-| Helper function: does (i, j) match position of Goal? -}
 matchGoal : Int -> Int -> Goal -> Bool
