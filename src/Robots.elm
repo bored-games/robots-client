@@ -667,7 +667,7 @@ drawScore : String -> User -> Html Msg
 drawScore is_self user =
   div [ class "score" ] 
   [ div [ class "score__username", style "color" user.color  ]
-    [ span [ attribute "flow" "down", attribute "tooltip" ("UID: " ++ user.username), attribute "flow" "right" ] [ text user.nickname ]
+    [ span [ attribute "tooltip" ("UID: " ++ user.username), attribute "flow" "right" ] [ text user.nickname ]
     , if is_self == user.username then span [ class "self", attribute "flow" "right", attribute "tooltip" "This is you!" ] [] else span [] []
     , if user.is_admin then span [ class "owner", attribute "flow" "right", attribute "tooltip" "Owner" ] [] else span [] []
     , if user.is_muted then span [ class "muted", attribute "flow" "right", attribute "tooltip" "Muted" ] [] else span [] []
