@@ -96,7 +96,7 @@ init _ =
     ""
     (Keys False False False False False False False False False False False False False)
     False                                                                    -- Block keyboard shortcuts
-    { username = "Patrick", nickname = "patty", color = "#6c6adc", score = 0, is_admin = True, is_muted = False }
+    { username = "Patrick", nickname = "patty", color = "#6c6adc", score = 0, is_admin = True, is_muted = False, team = 0 }
     [ ]                                                                      -- `users` (and scores)
     [ ]                                                                      -- `chat`
     ""                                                                       -- `messageInProgress`
