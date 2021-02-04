@@ -5278,7 +5278,7 @@ var $author$project$Robots$init = function (_v0) {
 	return _Utils_Tuple2(
 		$author$project$Robots$Model('Initialized model.')('')(
 			$author$project$Robots$Keys(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false)(false))(false)(
-			{color: '#6c6adc', is_admin: true, is_muted: false, nickname: 'patty', score: 0, username: 'Patrick'})(_List_Nil)(_List_Nil)('')('')('')(
+			{color: '#6c6adc', is_admin: true, is_muted: false, nickname: 'patty', score: 0, team: 0, username: 'Patrick'})(_List_Nil)(_List_Nil)('')('')('')(
 			A2($author$project$Board$square, 16, $author$project$Robots$testFill))($elm$core$Maybe$Nothing)(_List_Nil)(
 			{countdown: 'flex', emoticons: 'none', pollOptions: 'none', settings: 'none'})(60)(0)(false)(_List_Nil)($elm$core$Maybe$Nothing)(_List_Nil),
 		$elm$core$Platform$Cmd$none);
@@ -5994,18 +5994,19 @@ var $author$project$Chat$chatMessageToChatline = F4(
 	function (room_name, user, message, timestamp) {
 		return A5($author$project$Chat$Chatline, room_name, user, message, timestamp, 1);
 	});
-var $author$project$User$User = F6(
-	function (username, nickname, color, score, is_admin, is_muted) {
-		return {color: color, is_admin: is_admin, is_muted: is_muted, nickname: nickname, score: score, username: username};
+var $author$project$User$User = F7(
+	function (username, nickname, color, team, score, is_admin, is_muted) {
+		return {color: color, is_admin: is_admin, is_muted: is_muted, nickname: nickname, score: score, team: team, username: username};
 	});
 var $elm$json$Json$Decode$bool = _Json_decodeBool;
-var $elm$json$Json$Decode$map6 = _Json_map6;
-var $author$project$User$decodeUser = A7(
-	$elm$json$Json$Decode$map6,
+var $elm$json$Json$Decode$map7 = _Json_map7;
+var $author$project$User$decodeUser = A8(
+	$elm$json$Json$Decode$map7,
 	$author$project$User$User,
 	A2($elm$json$Json$Decode$field, 'username', $elm$json$Json$Decode$string),
 	A2($elm$json$Json$Decode$field, 'nickname', $elm$json$Json$Decode$string),
 	A2($elm$json$Json$Decode$field, 'color', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'team', $elm$json$Json$Decode$int),
 	A2($elm$json$Json$Decode$field, 'score', $elm$json$Json$Decode$int),
 	A2($elm$json$Json$Decode$field, 'is_admin', $elm$json$Json$Decode$bool),
 	A2($elm$json$Json$Decode$field, 'is_muted', $elm$json$Json$Decode$bool));
@@ -6196,16 +6197,17 @@ var $elm$json$Json$Decode$dict = function (decoder) {
 		$elm$core$Dict$fromList,
 		$elm$json$Json$Decode$keyValuePairs(decoder));
 };
-var $author$project$User$HalfUser = F5(
-	function (nickname, color, score, isadmin, ismuted) {
-		return {color: color, isadmin: isadmin, ismuted: ismuted, nickname: nickname, score: score};
+var $author$project$User$HalfUser = F6(
+	function (nickname, color, team, score, isadmin, ismuted) {
+		return {color: color, isadmin: isadmin, ismuted: ismuted, nickname: nickname, score: score, team: team};
 	});
-var $elm$json$Json$Decode$map5 = _Json_map5;
-var $author$project$User$halfUserDecoder = A6(
-	$elm$json$Json$Decode$map5,
+var $elm$json$Json$Decode$map6 = _Json_map6;
+var $author$project$User$halfUserDecoder = A7(
+	$elm$json$Json$Decode$map6,
 	$author$project$User$HalfUser,
 	A2($elm$json$Json$Decode$field, 'nickname', $elm$json$Json$Decode$string),
 	A2($elm$json$Json$Decode$field, 'color', $elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'team', $elm$json$Json$Decode$int),
 	A2($elm$json$Json$Decode$field, 'score', $elm$json$Json$Decode$int),
 	A2($elm$json$Json$Decode$field, 'is_admin', $elm$json$Json$Decode$bool),
 	A2($elm$json$Json$Decode$field, 'is_muted', $elm$json$Json$Decode$bool));
@@ -6213,10 +6215,11 @@ var $author$project$User$halfUserToUser = F2(
 	function (username, _v0) {
 		var nickname = _v0.nickname;
 		var color = _v0.color;
+		var team = _v0.team;
 		var score = _v0.score;
 		var isadmin = _v0.isadmin;
 		var ismuted = _v0.ismuted;
-		return A6($author$project$User$User, username, nickname, color, score, isadmin, ismuted);
+		return A7($author$project$User$User, username, nickname, color, team, score, isadmin, ismuted);
 	});
 var $elm$core$Dict$map = F2(
 	function (func, dict) {
@@ -6271,6 +6274,9 @@ var $author$project$User$encodeUser = function (user) {
 				_Utils_Tuple2(
 				'color',
 				$elm$json$Json$Encode$string(user.color)),
+				_Utils_Tuple2(
+				'team',
+				$elm$json$Json$Encode$int(user.team)),
 				_Utils_Tuple2(
 				'score',
 				$elm$json$Json$Encode$int(user.score)),
@@ -8135,7 +8141,6 @@ var $author$project$Robots$drawScore = F2(
 							$elm$html$Html$span,
 							_List_fromArray(
 								[
-									A2($elm$html$Html$Attributes$attribute, 'flow', 'down'),
 									A2($elm$html$Html$Attributes$attribute, 'tooltip', 'UID: ' + user.username),
 									A2($elm$html$Html$Attributes$attribute, 'flow', 'right')
 								]),
