@@ -11,13 +11,16 @@ import Chat exposing (Chatline)
 
 import Browser
 import Browser.Events
+import Browser.Dom as Dom
 import Dict
 import Html exposing (..)
 import Html.Attributes exposing (id, style, type_, attribute, placeholder, value, class, name, for)
 import Html.Events exposing (onInput, onClick, onFocus, onBlur)
-import Time
-import Json.Encode
 import Json.Decode
+import Json.Encode
+import Process
+import Task
+import Time
 
 
 -- MAIN
@@ -154,6 +157,7 @@ type Msg
   | AddMove Direction
   | PopMove
   | ClearMoves
+  | NoOp
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -426,7 +430,7 @@ update msg model =
     GetChat json ->
       case Json.Decode.decodeValue Chat.decodeChatline json of
         Ok chatline ->
-          ( { model | chat = chatline::model.chat}, Cmd.none )
+          ( { model | chat = chatline::model.chat}, jumpToBottom )
         Err _ ->
           ( { model | debugString = "Error parsing chat JSON"}, Cmd.none )
 
@@ -556,6 +560,9 @@ update msg model =
           )
         )
 
+    NoOp ->
+          ( model, Cmd.none )
+
 isLegalMove : Direction -> Maybe Color -> List Robot -> Bool
 isLegalMove dir activeColor robots =
   case activeColor of
@@ -631,6 +638,14 @@ decodeJSON =
     JSONMessage
     (Json.Decode.field "action" Json.Decode.string)
     (Json.Decode.field "content" Json.Decode.value)
+
+jumpToBottom : Cmd Msg
+jumpToBottom =
+    Process.sleep 200
+      |> (\_ -> (Dom.getViewportOf "chat"
+                |> Task.andThen (\info -> Dom.setViewportOf "chat" 0 info.scene.height)
+                |> Task.attempt (\_ -> NoOp))
+      )
 
 
 -- SUBSCRIPTIONS
@@ -906,7 +921,7 @@ view model =
         ]
       , div [ class "sidebar" ]
         [ h2 [] [ text "Chat" ]
-        , div [class "chat", id "chat"] (List.reverse model.chat |> drawChat)
+        , div [class "chat", id "chat"] ( model.chat |> List.reverse |> drawChat )
         , div [ class ("sidebar__settings " ++ ("module-" ++ model.toggleStates.settings)) ] (drawSettings model)
         , div [ class ("sidebar__polloptions " ++ ("module-" ++ model.toggleStates.pollOptions)) ] drawPollOptions
         , div [ class "message"]

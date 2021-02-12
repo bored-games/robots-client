@@ -59,7 +59,6 @@ chatMessageToChatline : String -> Maybe User -> String -> String -> Chatline
 chatMessageToChatline room_name user message timestamp =
   Chatline room_name user message timestamp 1
 
-
 svgToChatline : String -> Maybe User -> String -> String -> Chatline
 svgToChatline room_name user message timestamp =
   Chatline room_name user message timestamp 2

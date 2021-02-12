@@ -6377,6 +6377,43 @@ var $elm$core$List$head = function (list) {
 		return $elm$core$Maybe$Nothing;
 	}
 };
+var $author$project$Robots$NoOp = {$: 'NoOp'};
+var $elm$core$Task$onError = _Scheduler_onError;
+var $elm$core$Task$attempt = F2(
+	function (resultToMessage, task) {
+		return $elm$core$Task$command(
+			$elm$core$Task$Perform(
+				A2(
+					$elm$core$Task$onError,
+					A2(
+						$elm$core$Basics$composeL,
+						A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+						$elm$core$Result$Err),
+					A2(
+						$elm$core$Task$andThen,
+						A2(
+							$elm$core$Basics$composeL,
+							A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+							$elm$core$Result$Ok),
+						task))));
+	});
+var $elm$browser$Browser$Dom$getViewportOf = _Browser_getViewportOf;
+var $elm$browser$Browser$Dom$setViewportOf = _Browser_setViewportOf;
+var $elm$core$Process$sleep = _Process_sleep;
+var $author$project$Robots$jumpToBottom = function (_v0) {
+	return A2(
+		$elm$core$Task$attempt,
+		function (_v1) {
+			return $author$project$Robots$NoOp;
+		},
+		A2(
+			$elm$core$Task$andThen,
+			function (info) {
+				return A3($elm$browser$Browser$Dom$setViewportOf, 'chat', 0, info.scene.height);
+			},
+			$elm$browser$Browser$Dom$getViewportOf('chat')));
+}(
+	$elm$core$Process$sleep(200));
 var $elm$json$Json$Encode$list = F2(
 	function (func, entries) {
 		return _Json_wrap(
@@ -7103,7 +7140,7 @@ var $author$project$Robots$update = F2(
 								{
 									chat: A2($elm$core$List$cons, chatline, model.chat)
 								}),
-							$elm$core$Platform$Cmd$none);
+							$author$project$Robots$jumpToBottom);
 					} else {
 						return _Utils_Tuple2(
 							_Utils_update(
@@ -7309,7 +7346,7 @@ var $author$project$Robots$update = F2(
 															$elm$core$List$reverse(newQueue)))
 													])))
 										])))));
-				default:
+				case 'ClearMoves':
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -7337,6 +7374,8 @@ var $author$project$Robots$update = F2(
 														A2($elm$json$Json$Encode$list, $author$project$Move$encodeMove, _List_Nil))
 													])))
 										])))));
+				default:
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 			}
 		}
 	});
