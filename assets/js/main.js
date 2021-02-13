@@ -9146,7 +9146,15 @@ var $author$project$Robots$view = function (model) {
 												$elm$core$String$fromInt(
 													$author$project$Move$countRobots(model.movesQueue)))
 											]))
-									]))
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('countdown'),
+										A2($elm$html$Html$Attributes$attribute, 'style', '--duration: 0')
+									]),
+								_List_Nil)
 							]))
 					])),
 				A2(

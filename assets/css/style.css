@@ -894,7 +894,7 @@ span.emoticon {
 
 .timer {
   flex: 0 0 auto;
-  padding: 0.75rem 0.25rem 0.75rem 0.25rem;
+  padding: 0.75rem 0.25rem 0.25rem;
   display: flex;
   flex-wrap: wrap;
   font-family: Monospace;
@@ -909,6 +909,25 @@ span.emoticon {
   border-top: 1px solid #060606;
   transition: 1s ease-in-out background-position;
 }
+
+.countdown {
+  height: 0.25rem;
+  margin-top: 0.5rem;
+  flex: 0 0 100%;
+  background: #4aae90;
+  animation: roundtime calc(var(--duration) * 1s) forwards;
+  transform-origin: left center;
+  border-radius: 2px;
+}
+
+@keyframes roundtime {
+  to {
+    /* More performant than animating `width` */
+    transform: scaleX(0);
+    background: rgb(204, 116, 116);
+  }
+}
+
 
 .timer.winner {
   background-position: top;

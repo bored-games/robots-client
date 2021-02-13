@@ -914,6 +914,7 @@ view model =
             [ span [attribute "flow" "right", attribute "tooltip" "Robots in current solution attempt" ] [div [ class "icon icon--robot"] []]
             , span [] [ text (String.fromInt (Move.countRobots model.movesQueue)) ]
             ]
+          , div [ class "countdown", attribute "style" "--duration: 0" ] []
           ]
         ]
       , div [ class "main"] [
