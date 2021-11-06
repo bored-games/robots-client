@@ -11,6 +11,7 @@
 <body>
   <main id="elm-node"></main>
 
+  <script type="text/javascript" src="./assets/js/config.js"></script>
   <script type="text/javascript">
     
     // prevent backspace from redirecting browser
@@ -24,7 +25,7 @@
       
       const urlParams = new URLSearchParams(window.location.search);
       const room_name = urlParams.get('room');
-      socket = new WebSocket("ws://localhost:56765/ws/robots/" + room_name, "TEMP_KEY")
+      socket = new WebSocket(server_host + room_name, "TEMP_KEY")
 
       socket.onclose = function() {
         alert("Connection to the server has been lost.");

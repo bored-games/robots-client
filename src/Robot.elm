@@ -39,11 +39,10 @@ decodeRobot : Json.Decode.Decoder Robot
 decodeRobot =
   Json.Decode.map3
     Robot
-    (Json.Decode.field "pos" (Json.Decode.map2
-      Coordinate.toCoordinate
-      (Json.Decode.field "x" Json.Decode.int)
-      (Json.Decode.field "y" Json.Decode.int)
-    ))
+    (Json.Decode.map
+      Coordinate.idxToCoordinate
+      (Json.Decode.field "pos" Json.Decode.int)
+    )
     (Json.Decode.field "color" Color.decodeColorSymbol)
     (Json.Decode.field "moves" Board.decodeDirectionsList)
   

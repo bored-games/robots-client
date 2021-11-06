@@ -6164,17 +6164,19 @@ var $author$project$Board$decodeDirection = A2(
 	},
 	$elm$json$Json$Decode$string);
 var $author$project$Board$decodeDirectionsList = $elm$json$Json$Decode$list($author$project$Board$decodeDirection);
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $author$project$Coordinate$idxToCoordinate = function (i) {
+	return _Utils_Tuple2(
+		A2($elm$core$Basics$modBy, 16, i),
+		(i / 16) | 0);
+};
 var $author$project$Robot$decodeRobot = A4(
 	$elm$json$Json$Decode$map3,
 	$author$project$Robot$Robot,
 	A2(
-		$elm$json$Json$Decode$field,
-		'pos',
-		A3(
-			$elm$json$Json$Decode$map2,
-			$author$project$Coordinate$toCoordinate,
-			A2($elm$json$Json$Decode$field, 'x', $elm$json$Json$Decode$int),
-			A2($elm$json$Json$Decode$field, 'y', $elm$json$Json$Decode$int))),
+		$elm$json$Json$Decode$map,
+		$author$project$Coordinate$idxToCoordinate,
+		A2($elm$json$Json$Decode$field, 'pos', $elm$json$Json$Decode$int)),
 	A2($elm$json$Json$Decode$field, 'color', $author$project$Color$decodeColorSymbol),
 	A2($elm$json$Json$Decode$field, 'moves', $author$project$Board$decodeDirectionsList));
 var $author$project$Robot$decodeRobotsList = $elm$json$Json$Decode$list($author$project$Robot$decodeRobot);
@@ -8592,7 +8594,6 @@ var $author$project$Robots$drawSettings = function (model) {
 				]))
 		]);
 };
-var $elm$core$Basics$modBy = _Basics_modBy;
 var $elm$core$String$cons = _String_cons;
 var $elm$core$String$fromChar = function (_char) {
 	return A2($elm$core$String$cons, _char, '');
