@@ -6401,21 +6401,17 @@ var $elm$core$Task$attempt = F2(
 	});
 var $elm$browser$Browser$Dom$getViewportOf = _Browser_getViewportOf;
 var $elm$browser$Browser$Dom$setViewportOf = _Browser_setViewportOf;
-var $elm$core$Process$sleep = _Process_sleep;
-var $author$project$Robots$jumpToBottom = function (_v0) {
-	return A2(
-		$elm$core$Task$attempt,
-		function (_v1) {
-			return $author$project$Robots$NoOp;
+var $author$project$Robots$jumpToBottom = A2(
+	$elm$core$Task$attempt,
+	function (_v0) {
+		return $author$project$Robots$NoOp;
+	},
+	A2(
+		$elm$core$Task$andThen,
+		function (info) {
+			return A3($elm$browser$Browser$Dom$setViewportOf, 'chat', 0, info.scene.height);
 		},
-		A2(
-			$elm$core$Task$andThen,
-			function (info) {
-				return A3($elm$browser$Browser$Dom$setViewportOf, 'chat', 0, info.scene.height);
-			},
-			$elm$browser$Browser$Dom$getViewportOf('chat')));
-}(
-	$elm$core$Process$sleep(200));
+		$elm$browser$Browser$Dom$getViewportOf('chat')));
 var $elm$json$Json$Encode$list = F2(
 	function (func, entries) {
 		return _Json_wrap(

@@ -641,11 +641,9 @@ decodeJSON =
 
 jumpToBottom : Cmd Msg
 jumpToBottom =
-    Process.sleep 200
-      |> (\_ -> (Dom.getViewportOf "chat"
-                |> Task.andThen (\info -> Dom.setViewportOf "chat" 0 info.scene.height)
-                |> Task.attempt (\_ -> NoOp))
-      )
+    Dom.getViewportOf "chat"
+            |> Task.andThen (\info -> Dom.setViewportOf "chat" 0 info.scene.height)
+            |> Task.attempt (\_ -> NoOp)
 
 
 -- SUBSCRIPTIONS
