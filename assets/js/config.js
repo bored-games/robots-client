@@ -1,1 +1,0 @@
-var server_host = "ws://localhost:4000/ws/robots/";
