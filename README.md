@@ -89,4 +89,4 @@ Administration is performed through the use of `/poll <option> [param1, param2]`
 ## Build
 Compile javascript from root directory: ```elm make ./src/Robots.elm --output=./assets/js/main.js```
 
-Start project server at `http://localhost:8000` with ```elm reactor```. Navigate to `http://localhost:8000/Robots.html` to see the project.
+Start project server at `http://localhost:8000` with ```elm reactor```. Navigate to `http://localhost:8000/index.html` to see the project. Note that you will need a functional backend running to play the game.
